@@ -10,10 +10,25 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@eva-design/eva": "^2.0.0",
+    "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-firebase/app": "^8.4.0",
+    "@react-navigation/bottom-tabs": "^5.8.0",
+    "@react-navigation/native": "^5.7.3",
+    "@react-navigation/stack": "^5.9.0",
+    "@ui-kitten/components": "^5.0.0",
+    "@ui-kitten/eva-icons": "^5.0.0",
+    "proxy-polyfill": "^0.3.2",
     "react": "16.13.1",
     "react-native": "0.63.1",
     "react-native-gesture-handler": "^1.6.1",
-    "react-native-reanimated": "2.0.0-alpha.6"
+    "react-native-reanimated": "2.0.0-alpha.6",
+    "react-native-safe-area-context": "^3.1.7",
+    "react-native-screens": "^2.10.1",
+    "react-native-snap-carousel": "^4.0.0-beta.6",
+    "react-native-svg": "^12.1.0",
+    "react-native-typography": "^1.4.1",
+    "react-native-vector-icons": "^7.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",

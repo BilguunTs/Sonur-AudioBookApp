@@ -1,4 +1,4 @@
-package com.reanimated2playground;
+package com.sonur;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
