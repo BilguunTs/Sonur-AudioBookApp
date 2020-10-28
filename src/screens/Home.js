@@ -1,45 +1,56 @@
 import React from 'react';
-import {SafeAreaView, ScrollView, View, Text, Button} from 'react-native';
-
+import {SafeAreaView} from 'react-native';
+import Animated, {
+  useSharedValue,
+  withSpring,
+  useAnimatedStyle,
+  useAnimatedScrollHandler,
+} from 'react-native-reanimated';
 import FeaturedList from '../views/HorizontalBookView';
 import TopBookLists from '../views/TopBookCarousel';
-import Header from '../layout/Header'
+import Header from '../layout/Header';
 export const HomeScreen = ({navigation}) => {
-  const TopArea = () => {
-    return (
-      <>
-        <View
-          style={{
-            backgroundColor: '#ECE8FF',
-            minHeight: 230,
-            borderBottomLeftRadius: 230,
-            marginBottom: 49,
-            borderBottomRightRadius: 230,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              margin: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: 20,
-            }}>
-            <Text category="h2">Caйнуу</Text>
-          </View>
-        </View>
-      </>
-    );
-  };
+  const transY = useSharedValue(0);
+  const isScrolling = useSharedValue(false);
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      transY.value = event.contentOffset.y;
+    },
+    onBeginDrag: (e) => {
+      isScrolling.value = true;
+    },
+    onEndDrag: (e) => {
+      isScrolling.value = false;
+    },
+  });
+
+  const stylez = useAnimatedStyle(() => {
+    const size = isScrolling.value ? 80 : 40;
+    return {
+      transform: [
+        {
+          translateY: transY.value,
+        },
+      ],
+      width: withSpring(size),
+      height: withSpring(size),
+    };
+  });
+
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View>
-        <Header contrast={true} title={'Шилдэг Номнууд'}/>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <Animated.View style={[stylez]}>
+        <Header contrast={true} title={'Шилдэг Номнууд'} />
+      </Animated.View>
+      <Animated.ScrollView
+        scrollEventThrottle={1}
+        onScroll={scrollHandler}
+        showsVerticalScrollIndicator={false}>
         <TopBookLists navigation={navigation} />
         <FeaturedList navigation={navigation} grouptitle="Caнaл бoлгoх" />
         <FeaturedList navigation={navigation} grouptitle="Cyyлд нэmэгдcэн" />
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 };
