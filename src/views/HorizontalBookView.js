@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, VirtualizedList, Text, Image} from 'react-native';
 import BookCard from '../components/BookHeroCard';
-import { iOSUIKit } from 'react-native-typography'
+import {iOSUIKit} from 'react-native-typography';
 const DATA = [
   {
     title: 'Dudasd',
@@ -52,11 +52,14 @@ export default class HorizontalBookView extends Component {
     return (
       <View style={{marginBottom: 25}}>
         <View style={{margin: 10}}>
-          <Text style={iOSUIKit.title3Emphasized}>{this.props.grouptitle || 'Hэр өгөөгyй'}</Text>
+          <Text style={iOSUIKit.title3Emphasized}>
+            {this.props.grouptitle || 'Hэр өгөөгyй'}
+          </Text>
         </View>
         <VirtualizedList
           data={DATA}
           horizontal
+          contentContainerStyle={{}}
           initialNumToRender={4}
           showsHorizontalScrollIndicator={false}
           renderItem={({item}) => {

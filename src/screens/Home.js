@@ -1,9 +1,7 @@
-import React from 'react';
+import React, {useRef, useEffect} from 'react';
 import {SafeAreaView} from 'react-native';
 import Animated, {
   useSharedValue,
-  withSpring,
-  useAnimatedStyle,
   useAnimatedScrollHandler,
 } from 'react-native-reanimated';
 import FeaturedList from '../views/HorizontalBookView';
@@ -12,6 +10,7 @@ import Header from '../layout/Header';
 export const HomeScreen = ({navigation}) => {
   const transY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
+  const scrollRef = useRef();
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -25,29 +24,20 @@ export const HomeScreen = ({navigation}) => {
     },
   });
 
-  const stylez = useAnimatedStyle(() => {
-    const size = isScrolling.value ? 80 : 40;
-    return {
-      transform: [
-        {
-          translateY: transY.value,
-        },
-      ],
-      width: withSpring(size),
-      height: withSpring(size),
-    };
-  });
-
   return (
     <SafeAreaView style={{flex: 1}}>
-      <Animated.View style={[stylez]}>
-        <Header contrast={true} title={'Шилдэг Номнууд'} />
-      </Animated.View>
+      <Header transY={transY} title={'Шилдэг Номнууд'} />
+
       <Animated.ScrollView
+        ref={scrollRef}
+        style={{backgroundColor: '#fffffc'}}
         scrollEventThrottle={1}
+        decelerationRate={0}
+        snapToInterval={150} //your element width
+        snapToAlignment={'center'}
         onScroll={scrollHandler}
         showsVerticalScrollIndicator={false}>
-        <TopBookLists navigation={navigation} />
+        <TopBookLists transY={transY} navigation={navigation} />
         <FeaturedList navigation={navigation} grouptitle="Caнaл бoлгoх" />
         <FeaturedList navigation={navigation} grouptitle="Cyyлд нэmэгдcэн" />
       </Animated.ScrollView>
