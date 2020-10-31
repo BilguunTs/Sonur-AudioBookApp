@@ -1,4 +1,5 @@
 import React from 'react';
+import {View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {HomeScreen} from '../screens/Home';
@@ -6,14 +7,14 @@ import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DetailScreen from '../screens/Details/bookdetail';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-
 import DownloadsScreen from '../screens/Downloads';
+import CustomTabBar from '../layout/custom/TabBarNavigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 const Root = createStackNavigator();
 const BottomNavigator = createBottomTabNavigator();
 const BottomTabs = () => {
   return (
-    <BottomNavigator.Navigator tabBarOptions={{activeTintColor: '#A491FF'}}>
+    <BottomNavigator.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
       <BottomNavigator.Screen
         name="Home"
         options={{
@@ -28,7 +29,7 @@ const BottomTabs = () => {
         }}
         component={HomeScreen}
       />
-      <BottomNavigator.Screen
+      {/* <BottomNavigator.Screen
         name="Search"
         options={{
           title: 'Хайх',
@@ -41,7 +42,7 @@ const BottomTabs = () => {
           ),
         }}
         component={SearchScreen}
-      />
+      /> */}
       <BottomNavigator.Screen
         name="Downloads"
         options={{

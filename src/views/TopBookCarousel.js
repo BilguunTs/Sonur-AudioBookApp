@@ -6,23 +6,49 @@ import {iOSUIKit} from 'react-native-typography';
 import Animated, {useAnimatedStyle, withSpring} from 'react-native-reanimated';
 const WIDTH = Dimensions.get('window').width;
 const DUMMY = [
-  {title: 'Байх ба биш', author: 'МолорЭрдэнэ'},
-  {title: 'Байх ба хугацаа', author: 'МолорЭрдэнэ'},
-  {title: 'Эрх чөлөө эрхэм үг', author: 'МолорЭрдэнэ'},
+  {
+    title: 'Байх ба биш',
+    author: 'МолорЭрдэнэ',
+    thumbnail: {
+      src: 'https://homepages.cae.wisc.edu/~ece533/images/serrano.png',
+      path: '',
+    },
+  },
+  {
+    title: 'Байх ба хугацаа',
+    author: 'МолорЭрдэнэ',
+    thumbnail: {
+      src: 'https://homepages.cae.wisc.edu/~ece533/images/serrano.png',
+      path: '',
+    },
+  },
+  {
+    title: 'Эрх чөлөө эрхэм үг',
+    author: 'МолорЭрдэнэ',
+    thumbnail: {
+      src: 'https://homepages.cae.wisc.edu/~ece533/images/serrano.png',
+      path: '',
+    },
+  },
 ];
 const BackWrapper = ({Y, children}) => {
   const styleContainer = useAnimatedStyle(() => {
-    const Value = 250 - Y.value * 3;
+    const Value = 350 - Y.value * 2;
     return {
-      backgroundColor: '#caffbf',
-      borderBottomLeftRadius: withSpring(Value),
-      borderBottomRightRadius: withSpring(Value),
-      transform: [{translateY: withSpring(1 - Y.value)}],
+      backgroundColor: '#80ffdb',
+      borderBottomLeftRadius: withSpring(Value, {damping: 20, stiffness: 90}),
+      borderBottomRightRadius: withSpring(Value, {damping: 20, stiffness: 90}),
+      transform: [
+        {translateY: withSpring(1 - Y.value, {damping: 20, stiffness: 90})},
+      ],
     };
   });
   const styleChildren = useAnimatedStyle(() => {
     return {
-      transform: [{translateY: withSpring(1 - Y.value * 2)}],
+      marginTop: 100,
+      transform: [
+        {translateY: withSpring(1 - Y.value * 2, {damping: 20, stiffness: 90})},
+      ],
     };
   });
   return (
@@ -32,15 +58,13 @@ const BackWrapper = ({Y, children}) => {
   );
 };
 export default class TopBookCarousel extends Component {
-  constructor(props) {
-    super(props);
-  }
   handlePress = (data) => {
     this.props.navigation.navigate('BookDetail', {...data});
   };
-  _renderItem = ({item, index}) => {
+  _renderItem = ({item}) => {
     return (
       <BookCard
+        img={item.thumbnail.src}
         onPress={this.handlePress.bind(this, item)}
         title={item.title}
         author={item.author}

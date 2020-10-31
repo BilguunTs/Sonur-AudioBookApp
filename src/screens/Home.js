@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useRef} from 'react';
 import {SafeAreaView} from 'react-native';
 import Animated, {
   useSharedValue,
@@ -7,6 +7,7 @@ import Animated, {
 import FeaturedList from '../views/HorizontalBookView';
 import TopBookLists from '../views/TopBookCarousel';
 import Header from '../layout/Header';
+import Faded from '../layout/Faded';
 export const HomeScreen = ({navigation}) => {
   const transY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
@@ -30,10 +31,10 @@ export const HomeScreen = ({navigation}) => {
 
       <Animated.ScrollView
         ref={scrollRef}
-        style={{backgroundColor: '#fffffc'}}
+        style={{backgroundColor: '#e8fff9'}}
         scrollEventThrottle={1}
         decelerationRate={0}
-        snapToInterval={150} //your element width
+        snapToInterval={200} //your element width
         snapToAlignment={'center'}
         onScroll={scrollHandler}
         showsVerticalScrollIndicator={false}>
@@ -41,6 +42,7 @@ export const HomeScreen = ({navigation}) => {
         <FeaturedList navigation={navigation} grouptitle="Caнaл бoлгoх" />
         <FeaturedList navigation={navigation} grouptitle="Cyyлд нэmэгдcэн" />
       </Animated.ScrollView>
+      <Faded color="#fff" height={100}></Faded>
     </SafeAreaView>
   );
 };

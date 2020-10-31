@@ -18,7 +18,7 @@ const HeaderWrapper = ({children, Y, ...rest}) => {
       position: 'absolute',
       top: 0,
       padding: 20,
-      backgroundColor: float ? '#F8F8FF' : 'transparent',
+      backgroundColor: float ? '#edf6f9' : 'transparent',
       borderRadius: 30,
       transform: [
         {scale: withSpring(float ? 0.9 : 1)},
@@ -40,7 +40,7 @@ export default class Header extends Component {
         <TouchableOpacity>
           <Ionicons
             name="md-arrow-back"
-            style={{color: !contrast ? '#121212' : '#fff'}}
+            style={{color: !contrast ? '#7400b8' : '#fff'}}
             size={35}
           />
         </TouchableOpacity>
@@ -51,20 +51,25 @@ export default class Header extends Component {
         <Ionicons
           name="md-menu"
           size={35}
-          style={{color: !contrast ? '#121212' : '#fff'}}
+          style={{color: !contrast ? '#7400b8' : '#fff'}}
         />
       </TouchableOpacity>
+    );
+  };
+  getTitleVariation = () => {
+    return !this.props.contrast ? (
+      <Text style={{color: '#7400b8', ...iOSUIKit.title3}}>
+        {this.props.title}
+      </Text>
+    ) : (
+      <Text style={iOSUIKit.title3White}>{this.props.title}</Text>
     );
   };
   render() {
     const {contrast = false, transY, ...rest} = this.props;
     return (
       <HeaderWrapper Y={transY} {...rest}>
-        {this.props.title && (
-          <Text style={!contrast ? iOSUIKit.title3 : iOSUIKit.title3White}>
-            {this.props.title}
-          </Text>
-        )}
+        {this.props.title && this.getTitleVariation()}
         {this.renderLeftAction()}
       </HeaderWrapper>
     );

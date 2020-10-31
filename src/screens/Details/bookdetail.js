@@ -10,11 +10,12 @@ import {
 
 import {WrapTextContent} from '../../layout/withWrapper';
 import BookHeroCard from '../../components/BookHeroCard';
-import {iOSUIKit} from 'react-native-typography'
-import ReadBtn from  '../../components/ReviewIconBtn'
-import ReviewBtn from  '../../components/ReadBookIconBtn'
-import ListenBtn from  '../../components/ListenBookIconBtn'
-import PlayBtn from '../../components/PlayButton'
+import {iOSUIKit} from 'react-native-typography';
+import ReadBtn from '../../components/ReviewIconBtn';
+import ReviewBtn from '../../components/ReadBookIconBtn';
+import ListenBtn from '../../components/ListenBookIconBtn';
+import PlayBtn from '../../components/PlayButton';
+import Faded from '../../layout/Faded';
 const WIDTH = Dimensions.get('window').width;
 export default ({navigation, route}) => {
   const navigateBack = () => {
@@ -40,7 +41,12 @@ export default ({navigation, route}) => {
             <BookHeroCard disable img={thumbnail?.src} />
           </View>
           <View>
-     <PlayBtn colorIcon={"#fff"} colorBtn={"#4edeaa"} iconOpacity={1} size={40}/>
+            <PlayBtn
+              colorIcon={'#fff'}
+              colorBtn={'#4edeaa'}
+              iconOpacity={1}
+              size={40}
+            />
           </View>
         </View>
         <View
@@ -53,37 +59,40 @@ export default ({navigation, route}) => {
           }}>
           <View
             style={{
-        
               flexDirection: 'row',
               alignItems: 'baseline',
               justifyContent: 'space-between',
             }}>
             <View>
-            <Text style={iOSUIKit.largeTitleEmphasized}>{title}</Text>
-            <Text style={iOSUIKit.title3}>{author}</Text>
+              <Text style={iOSUIKit.largeTitleEmphasized}>{title}</Text>
+              <Text style={iOSUIKit.title3}>{author}</Text>
             </View>
           </View>
           <View
-  style={{
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
-    marginTop:2
-  }}
-/>
-          <View style={{flex:1,flexDirection:'row',justifyContent:'space-around'}}>
-            
-            <ReviewBtn size={35}/>
-            <ListenBtn size={35}/>
-            <ReadBtn size={35}/>
+            style={{
+              borderBottomColor: '#eee',
+              borderBottomWidth: 1,
+              marginTop: 2,
+            }}
+          />
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+            }}>
+            <ReviewBtn size={35} />
+            <ListenBtn size={35} />
+            <ReadBtn size={35} />
           </View>
           <View
-  style={{
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
-    marginTop:5
-  }}
-/>
-   
+            style={{
+              borderBottomColor: '#eee',
+              borderBottomWidth: 1,
+              marginTop: 5,
+            }}
+          />
+
           <ScrollView>
             <View style={{marginVertical: 15}}>
               <Text style={iOSUIKit.subheadEmphasized}>Өмнөх үг</Text>
