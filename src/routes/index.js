@@ -9,6 +9,7 @@ import DetailScreen from '../screens/Details/bookdetail';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import DownloadsScreen from '../screens/Downloads';
 import CustomTabBar from '../layout/custom/TabBarNavigation';
+import GPlayer from '../screens/AudioPlayer';
 import Icon from 'react-native-vector-icons/Ionicons';
 const Root = createStackNavigator();
 const BottomNavigator = createBottomTabNavigator();
@@ -78,6 +79,7 @@ const RootNavigator = () => (
   <Root.Navigator headerMode="none">
     <Root.Screen name="Main" component={BottomTabs} />
     <Root.Screen name="BookDetail" component={DetailScreen} />
+    <Root.Screen name="Gplayer" component={GPlayer} />
   </Root.Navigator>
 );
 

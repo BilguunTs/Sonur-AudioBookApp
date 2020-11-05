@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Dimensions, View, Text} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import BookCard from '../components/BookHeroCard';
-import {iOSUIKit} from 'react-native-typography';
+
 import Animated, {useAnimatedStyle, withSpring} from 'react-native-reanimated';
 const WIDTH = Dimensions.get('window').width;
 const DUMMY = [

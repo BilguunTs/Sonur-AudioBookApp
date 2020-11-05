@@ -15,7 +15,7 @@ import ReadBtn from '../../components/ReviewIconBtn';
 import ReviewBtn from '../../components/ReadBookIconBtn';
 import ListenBtn from '../../components/ListenBookIconBtn';
 import PlayBtn from '../../components/PlayButton';
-import Faded from '../../layout/Faded';
+
 const WIDTH = Dimensions.get('window').width;
 export default ({navigation, route}) => {
   const navigateBack = () => {
@@ -42,6 +42,9 @@ export default ({navigation, route}) => {
           </View>
           <View>
             <PlayBtn
+              onPress={() => {
+                navigation.navigate('Gplayer', {title, thumbnail});
+              }}
               colorIcon={'#fff'}
               colorBtn={'#4edeaa'}
               iconOpacity={1}

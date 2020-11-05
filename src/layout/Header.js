@@ -1,9 +1,9 @@
 import React, {Children, Component} from 'react';
-import {Text, View, TouchableOpacity, Dimensions} from 'react-native';
+import {Text, View, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {iOSUIKit} from 'react-native-typography';
 import Animated, {useAnimatedStyle, withSpring} from 'react-native-reanimated';
-const WIDTH = Dimensions.get('window').width;
+import {D, MAIN} from '../configs';
 
 const HeaderWrapper = ({children, Y, ...rest}) => {
   const headerStyle = useAnimatedStyle(() => {
@@ -13,7 +13,7 @@ const HeaderWrapper = ({children, Y, ...rest}) => {
       flexDirection: 'row',
       alignItems: 'center',
       flexGrow: 1,
-      width: WIDTH,
+      width: D.WIDTH,
       zIndex: 10,
       position: 'absolute',
       top: 0,
@@ -30,6 +30,30 @@ const HeaderWrapper = ({children, Y, ...rest}) => {
     <Animated.View {...rest} style={[headerStyle]}>
       {children}
     </Animated.View>
+  );
+};
+const LeftPlaceHolderWrapper = ({children, Y}) => {
+  const primaryTitleStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{translateY: 1 - Y.value}],
+      opacity: withSpring(Y.value <= 10 ? 1 : 0, MAIN.spring),
+    };
+  });
+  const secondaryTitleStyle = useAnimatedStyle(() => {
+    return {
+      position: 'absolute',
+      top: 0,
+      opacity: withSpring(Y.value <= 10 ? 0 : 1, MAIN.spring),
+      transform: [{translateY: withSpring(Y.value <= 10 ? 20 : 0)}],
+    };
+  });
+  return (
+    <View style={{flexDirection: 'column'}}>
+      <Animated.Text style={[primaryTitleStyle, iOSUIKit.title3]}>
+        {MAIN.app_name}
+      </Animated.Text>
+      <Animated.View style={[secondaryTitleStyle]}>{children}</Animated.View>
+    </View>
   );
 };
 export default class Header extends Component {
@@ -49,7 +73,7 @@ export default class Header extends Component {
     return (
       <TouchableOpacity>
         <Ionicons
-          name="md-menu"
+          name="md-search-outline"
           size={35}
           style={{color: !contrast ? '#7400b8' : '#fff'}}
         />
@@ -69,7 +93,9 @@ export default class Header extends Component {
     const {contrast = false, transY, ...rest} = this.props;
     return (
       <HeaderWrapper Y={transY} {...rest}>
-        {this.props.title && this.getTitleVariation()}
+        <LeftPlaceHolderWrapper Y={transY}>
+          {this.props.title && this.getTitleVariation()}
+        </LeftPlaceHolderWrapper>
         {this.renderLeftAction()}
       </HeaderWrapper>
     );

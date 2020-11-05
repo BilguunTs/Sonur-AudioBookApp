@@ -7,7 +7,8 @@ import Animated, {
 import FeaturedList from '../views/HorizontalBookView';
 import TopBookLists from '../views/TopBookCarousel';
 import Header from '../layout/Header';
-import Faded from '../layout/Faded';
+import {D} from '../configs';
+import {interpolateColors} from '../utils';
 export const HomeScreen = ({navigation}) => {
   const transY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
@@ -27,7 +28,7 @@ export const HomeScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <Header transY={transY} title={'Шилдэг Номнууд'} />
+      <Header transY={transY} title={'Хайх..'} />
 
       <Animated.ScrollView
         ref={scrollRef}
@@ -42,7 +43,6 @@ export const HomeScreen = ({navigation}) => {
         <FeaturedList navigation={navigation} grouptitle="Caнaл бoлгoх" />
         <FeaturedList navigation={navigation} grouptitle="Cyyлд нэmэгдcэн" />
       </Animated.ScrollView>
-      <Faded color="#fff" height={100}></Faded>
     </SafeAreaView>
   );
 };

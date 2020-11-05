@@ -1,11 +1,11 @@
-export function hexToRgb(hex) {
-  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-  var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-  hex = hex.replace(shorthandRegex, function (m, r, g, b) {
-    return r + r + g + g + b + b;
-  });
+import Animated from 'react-native-reanimated';
 
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+const {round, interpolate, Extrapolate, color} = Animated;
+
+const colorRegex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
+
+const hexToRgb = (hex) => {
+  const result = colorRegex.exec(hex);
   return result
     ? {
         r: parseInt(result[1], 16),
@@ -13,4 +13,32 @@ export function hexToRgb(hex) {
         b: parseInt(result[3], 16),
       }
     : null;
-}
+};
+
+const white = {r: 255, g: 255, b: 255};
+
+export const interpolateColors = (animationValue, inputRange, hexColors) => {
+  const colors = hexColors.map((hexColor) => hexToRgb(hexColor) || white);
+  const r = round(
+    interpolate(animationValue, {
+      inputRange,
+      outputRange: colors.map((c) => c.r),
+      extrapolate: Extrapolate.CLAMP,
+    }),
+  );
+  const g = round(
+    interpolate(animationValue, {
+      inputRange,
+      outputRange: colors.map((c) => c.g),
+      extrapolate: Extrapolate.CLAMP,
+    }),
+  );
+  const b = round(
+    interpolate(animationValue, {
+      inputRange,
+      outputRange: colors.map((c) => c.b),
+      extrapolate: Extrapolate.CLAMP,
+    }),
+  );
+  return color(r, g, b);
+};
