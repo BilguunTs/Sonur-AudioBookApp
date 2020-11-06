@@ -5,14 +5,20 @@ import Animated, {
   withSpring,
   useAnimatedGestureHandler,
   useSharedValue,
+  withTiming,
+  delay,
 } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {D, MAIN} from '../../configs';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedButton = Animated.createAnimatedComponent(Pressable);
-export default function FluidPlayButton({isPlaying = false, ...rest}) {
+export default function FluidPlayButton({playing = false, ...rest}) {
   const touchValue = useSharedValue(0);
+  const isPlaying = useSharedValue(false);
+  React.useEffect(() => {
+    isPlaying.value = playing;
+  }, [playing]);
   const buttonStyle = useAnimatedStyle(() => {
     return {
       height: D.HEIGHT / 4,
@@ -20,11 +26,11 @@ export default function FluidPlayButton({isPlaying = false, ...rest}) {
       zIndex: 2,
       transform: [
         {
-          scale: withSpring(isPlaying ? 0.8 : 1, MAIN.spring),
+          scale: withSpring(isPlaying.value ? 0.8 : 1, MAIN.spring),
         },
         {translateX: touchValue.value},
       ],
-      borderRadius: D.WIDTH / 2,
+      borderRadius: withSpring(isPlaying.value ? 1 : D.WIDTH / 2, MAIN.spring),
       backgroundColor: '#bada55',
       justifyContent: 'center',
       alignItems: 'center',
@@ -50,7 +56,7 @@ export default function FluidPlayButton({isPlaying = false, ...rest}) {
     <PanGestureHandler onGestureEvent={_onPanGestureEvent}>
       <AnimatedButton style={[buttonStyle]} {...rest}>
         <AnimatedIcon
-          name={!isPlaying ? 'md-play' : 'md-pause'}
+          name={playing ? 'md-pause' : 'md-play'}
           style={[styleIcon]}
           size={100}
         />

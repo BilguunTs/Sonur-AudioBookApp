@@ -184,7 +184,7 @@ export default class PlayerScreen extends React.Component {
             </Text>
           </TouchableOpacity>
           <FluidButton
-            isPlaying={this.state.playState === 'playing'}
+            playing={this.state.playState === 'playing'}
             onPress={this.handleAction.bind(this)}
           />
           <TouchableOpacity

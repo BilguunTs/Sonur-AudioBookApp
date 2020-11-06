@@ -16,23 +16,24 @@ import ChapterList from './ChapterList';
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedExpander = Animated.createAnimatedComponent(Pressable);
 export default function FluidChapters() {
-  const [toggleList, setToggleList] = React.useState(false);
+  //  const [toggleList, setToggleList] = React.useState(false);
+  const toggleList = useSharedValue(false);
   const containerRef = useAnimatedRef();
 
   const styleListContainer = useAnimatedStyle(() => {
     return {
       position: 'absolute',
-      bottom: withSpring(toggleList ? 0 : 20, MAIN.spring),
+      bottom: withSpring(toggleList.value ? 0 : 20, MAIN.spring),
       backgroundColor: '#d8d8d8',
-      width: withSpring(toggleList ? D.WIDTH : D.WIDTH * 0.9),
+      width: withSpring(toggleList.value ? D.WIDTH : D.WIDTH * 0.9),
       height: withSpring(
-        toggleList ? D.HEIGHT * 0.8 : D.HEIGHT / 8,
+        toggleList.value ? D.HEIGHT * 0.8 : D.HEIGHT / 8,
         MAIN.spring,
       ),
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,
-      borderBottomLeftRadius: withSpring(!toggleList ? 30 : 0),
-      borderBottomRightRadius: withSpring(!toggleList ? 30 : 0),
+      borderBottomLeftRadius: withSpring(!toggleList.value ? 30 : 0),
+      borderBottomRightRadius: withSpring(!toggleList.value ? 30 : 0),
       zIndex: 5,
       // justifyContent: 'center',
     };
@@ -47,7 +48,7 @@ export default function FluidChapters() {
       backgroundColor: 'orange',
       position: 'absolute',
       right: 0,
-      transform: [{scale: 0.6}, {rotate: toggleList ? '180deg' : '0deg'}],
+      transform: [{scale: 0.6}, {rotate: toggleList.value ? '180deg' : '0deg'}],
       alignItems: 'center',
       justifyContent: 'center',
     };
@@ -56,14 +57,19 @@ export default function FluidChapters() {
     return {maxHeight: 50};
   });
   const handleToggleList = () => {
-    setToggleList((pre) => !pre);
+    toggleList.value = !toggleList.value;
   };
   const styleLists = useAnimatedStyle(() => {
     return {
       transform: [
-        {translateY: withSpring(toggleList ? 0 : D.HEIGHT / 2, MAIN.spring)},
+        {
+          translateY: withSpring(
+            toggleList.value ? 0 : D.HEIGHT / 2,
+            MAIN.spring,
+          ),
+        },
       ],
-      opacity: withTiming(toggleList ? 1 : 0),
+      opacity: withTiming(toggleList.value ? 1 : 0),
     };
   });
   return (
