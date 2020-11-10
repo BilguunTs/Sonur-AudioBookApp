@@ -5,7 +5,8 @@ export default class Profile extends Component {
   render() {
     return (
       <View>
-        <Text> I am profile </Text>
+        <Text> I am profile falsdkfj
+        </Text>
       </View>
     );
   }

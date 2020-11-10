@@ -84,7 +84,7 @@ const RootNavigator = () => (
 );
 
 export const AppNavigator = () => (
-  <NavigationContainer>
+  <NavigationContainer> 
     <RootNavigator />
   </NavigationContainer>
 );
