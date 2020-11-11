@@ -1,23 +1,40 @@
 import React from 'react';
 
-import {View, ScrollView, Text} from 'react-native';
+import {D,MAIN} from  '../../configs'
+import Animated ,{useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated'
 import FluidChapters from './FluidChapters';
 import MainPlayer from './MainPlayer';
-export default function AudioPlayer({route}) {
-  const [current, setCurrent] = React.useState();
+import Header from './Header'
+import { withGlobalContext } from '../../context';
 
-  const {title, thumbnail} = route.params;
-  return (
-    <View
-      style={{
+function AudioPlayer(props) {
+  const expantion =useSharedValue(0)
+  React.useEffect(()=>{
+    if(props.global.stats){
+      const {gplayer}=props.global.stats
+      gplayer.isVisible?expantion.value=100:expantion.value=0;
+      
+    }
+  },[props.global.stats.gplayer])
+  const styleContainer =useAnimatedStyle(()=>{
+      return{
         flex: 1,
+        position:"absolute",
+        width:D.WIDTH,
+        height:withSpring(expantion.value,MAIN.spring),
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff',
-      }}>
-      {/* <FluidPlayButton /> */}
+      }
+  })
+  
+  return (
+    <Animated.View
+      style={styleContainer}>
+      <Header/>
       <MainPlayer filename="testaudio.mp3" />
       <FluidChapters />
-    </View>
+    </Animated.View>
   );
 }
+export default withGlobalContext(AudioPlayer)

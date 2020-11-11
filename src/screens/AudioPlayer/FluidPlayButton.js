@@ -21,8 +21,8 @@ export default function FluidPlayButton({playing = false, ...rest}) {
   }, [playing]);
   const buttonStyle = useAnimatedStyle(() => {
     return {
-      height: D.HEIGHT / 4,
-      width: D.WIDTH / 2,
+      height: 200,
+      width:200,
       zIndex: 2,
       transform: [
         {

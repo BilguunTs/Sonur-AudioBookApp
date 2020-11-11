@@ -1,18 +1,17 @@
 import React from 'react';
-import {View, Text, Pressable} from 'react-native';
+import { Text, Pressable} from 'react-native';
 import Animated, {
-  measure,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   useAnimatedRef,
-  useDerivedValue,
-  withDecay,
   withTiming,
+  withDecay,
 } from 'react-native-reanimated';
 import {D, MAIN} from '../../configs';
 import Icon from 'react-native-vector-icons/AntDesign';
 import ChapterList from './ChapterList';
+import {iOSUIKit} from 'react-native-typography'
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedExpander = Animated.createAnimatedComponent(Pressable);
 export default function FluidChapters() {
@@ -27,28 +26,35 @@ export default function FluidChapters() {
       backgroundColor: '#d8d8d8',
       width: withSpring(toggleList.value ? D.WIDTH : D.WIDTH * 0.9),
       height: withSpring(
-        toggleList.value ? D.HEIGHT * 0.8 : D.HEIGHT / 8,
+        toggleList.value ? D.HEIGHT * 0.8 : D.HEIGHT / 9,
         MAIN.spring,
       ),
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
-      borderBottomLeftRadius: withSpring(!toggleList.value ? 30 : 0),
-      borderBottomRightRadius: withSpring(!toggleList.value ? 30 : 0),
+      borderTopLeftRadius: 25,
+      borderTopRightRadius: 25,
+      borderBottomLeftRadius: withSpring(!toggleList.value ? 25 : 0),
+      borderBottomRightRadius: withSpring(!toggleList.value ? 25 : 0),
       zIndex: 5,
       // justifyContent: 'center',
     };
   });
-
+const styledExpandWrapper=useAnimatedStyle(()=>{
+  return {
+    position:"relative",
+    alignItems:'flex-end',
+    flexDirection:"row",
+    justifyContent:"space-between",
+    alignItems:'center',
+    marginLeft:15,
+    
+  }
+})
   const styleExpand = useAnimatedStyle(() => {
     return {
-      height: 100,
-      width: '30%',
+      height:D.HEIGHT/9,
+      width: '25%',
       borderRadius: 30,
-
       backgroundColor: 'orange',
-      position: 'absolute',
-      right: 0,
-      transform: [{scale: 0.6}, {rotate: toggleList.value ? '180deg' : '0deg'}],
+      transform: [{scale:0.8},{rotate: toggleList.value ? '180deg' : '0deg'}],
       alignItems: 'center',
       justifyContent: 'center',
     };
@@ -61,6 +67,7 @@ export default function FluidChapters() {
   };
   const styleLists = useAnimatedStyle(() => {
     return {
+       paddingHorizontal:5,
       transform: [
         {
           translateY: withSpring(
@@ -69,30 +76,34 @@ export default function FluidChapters() {
           ),
         },
       ],
+      
       opacity: withTiming(toggleList.value ? 1 : 0),
     };
   });
   return (
     <Animated.View ref={containerRef} style={[styleListContainer]}>
-      <View style={{flex: 0.2}}>
-        <AnimatedExpander
+     
+      <Animated.View style={[styledExpandWrapper]}>
+        <Text style={[iOSUIKit.title3,{maxWidth:D.WIDTH*0.6}]} numberOfLines={1}>
+          Current chapter
+        </Text>
+      <AnimatedExpander
           onPress={handleToggleList.bind(this)}
           style={[styleExpand]}>
           <AnimatedIcon
             name={'up'}
             style={[styleIcon]}
-            size={50}
+            size={30}
             height="100%"
             width="100%"
             color="#eee"
           />
         </AnimatedExpander>
-      </View>
-      <View style={{flex: 1}}>
+            </Animated.View>
         <Animated.ScrollView style={[styleLists]}>
-          <ChapterList />
+          <ChapterList  />
         </Animated.ScrollView>
-      </View>
+      
     </Animated.View>
   );
 }

@@ -5,6 +5,7 @@ import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/AntDesign';
 import FluidButton from './FluidPlayButton';
 import {iOSUIKit} from 'react-native-typography';
+
 export default class PlayerScreen extends React.Component {
   static navigationOptions = (props) => ({
     title: props.navigation.state.params.title,
@@ -21,7 +22,7 @@ export default class PlayerScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.play();
+   // this.play();
 
     this.timeout = setInterval(() => {
       if (
@@ -144,7 +145,7 @@ export default class PlayerScreen extends React.Component {
   render() {
     const currentTimeString = this.getAudioTimeString(this.state.playSeconds);
     const durationString = this.getAudioTimeString(this.state.duration);
-
+  
     return (
       <View
         style={{
@@ -153,15 +154,9 @@ export default class PlayerScreen extends React.Component {
           justifyContent: 'center',
           backgroundColor: 'white',
         }}>
-        <View
-          style={{
-            position: 'absolute',
-            top: 50,
-            width: '100%',
-            alignItems: 'center',
-          }}>
-          <Text style={[iOSUIKit.largeTitleEmphasized]}>Title goes here</Text>
-        </View>
+         <Text style={[iOSUIKit.title3Object,{color: '#333', alignSelf: 'center'}]}>
+          {currentTimeString}/{durationString}
+        </Text>
         <View
           style={{
             flexDirection: 'row',
@@ -183,6 +178,7 @@ export default class PlayerScreen extends React.Component {
               15
             </Text>
           </TouchableOpacity>
+          
           <FluidButton
             playing={this.state.playState === 'playing'}
             onPress={this.handleAction.bind(this)}
@@ -203,12 +199,10 @@ export default class PlayerScreen extends React.Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <Text style={{color: '#333', alignSelf: 'center', ...iOSUIKit.title3}}>
-          {currentTimeString}/{durationString}
-        </Text>
+       
         <View
           style={{
-            marginVertical: 15,
+            marginTop:35,
             marginHorizontal: 15,
             flexDirection: 'row',
             position: 'absolute',

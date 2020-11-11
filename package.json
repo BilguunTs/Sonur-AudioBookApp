@@ -22,7 +22,7 @@
     "proxy-polyfill": "^0.3.2",
     "react": "16.13.1",
     "react-native": "0.63.1",
-    "react-native-gesture-handler": "^1.6.1",
+    "react-native-gesture-handler": "^1.8.0",
     "react-native-reanimated": "2.0.0-alpha.6",
     "react-native-safe-area-context": "^3.1.7",
     "react-native-screens": "^2.10.1",
