@@ -5,7 +5,7 @@ import Sound from 'react-native-sound';
 import Icon from 'react-native-vector-icons/AntDesign';
 import FluidButton from './FluidPlayButton';
 import {iOSUIKit} from 'react-native-typography';
-import Header from './Header'
+
 export default class PlayerScreen extends React.Component {
   static navigationOptions = (props) => ({
     title: props.navigation.state.params.title,
@@ -154,7 +154,6 @@ export default class PlayerScreen extends React.Component {
           justifyContent: 'center',
           backgroundColor: 'white',
         }}>
-         <Header/>
          <Text style={[iOSUIKit.title3Object,{color: '#333', alignSelf: 'center'}]}>
           {currentTimeString}/{durationString}
         </Text>

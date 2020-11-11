@@ -1,9 +1,9 @@
 import React from 'react';
-import {View} from 'react-native';
+//import {View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {HomeScreen} from '../screens/Home';
-import SearchScreen from '../screens/SearchScreen';
+//import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DetailScreen from '../screens/Details/bookdetail';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -11,6 +11,7 @@ import DownloadsScreen from '../screens/Downloads';
 import CustomTabBar from '../layout/custom/TabBarNavigation';
 import GPlayer from '../screens/AudioPlayer';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {withGlobalContext} from '../context'
 const Root = createStackNavigator();
 const BottomNavigator = createBottomTabNavigator();
 const BottomTabs = () => {
@@ -79,12 +80,14 @@ const RootNavigator = () => (
   <Root.Navigator headerMode="none">
     <Root.Screen name="Main" component={BottomTabs} />
     <Root.Screen name="BookDetail" component={DetailScreen} />
-    <Root.Screen name="Gplayer" component={GPlayer} />
   </Root.Navigator>
 );
+const MainRoot = (_props)=>{
+return <><NavigationContainer>
+  <RootNavigator {..._props}/>
+</NavigationContainer>
+<GPlayer/>
+</>
+}
 
-export const AppNavigator = () => (
-  <NavigationContainer> 
-    <RootNavigator />
-  </NavigationContainer>
-);
+export const AppNavigator = withGlobalContext(MainRoot)
