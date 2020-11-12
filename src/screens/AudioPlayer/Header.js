@@ -3,21 +3,15 @@ import {View,Text} from 'react-native';
 import {iOSUIKit} from 'react-native-typography';
 import Animated ,{useAnimatedStyle} from 'react-native-reanimated'
 import BackButton from '../../components/BackButton'
-export default ({text})=>{
-    return <>
-    
-    <View
+export default ({text,leftAction})=>{
+    return <View
     style={{
-      position: 'absolute',
-      top: 35,
-      width: '100%',
       alignItems: 'center',
-      flexDirection:"row",
-      
+      flexDirection:"row",    
     }}>
         <View style={{flex:1,alignItems:'center'}}>
 
-    <BackButton/>
+    <BackButton onPress={leftAction}/>
         </View>
         <View style={{flex:3,alignItems:'center'}}>
 
@@ -27,5 +21,4 @@ export default ({text})=>{
 
         </View>
   </View>
-  </>
 }

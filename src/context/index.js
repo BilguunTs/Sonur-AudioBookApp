@@ -1,4 +1,5 @@
 import React, {createContext, Component} from 'react';
+import { Alert } from 'react-native';
 import {GLOBAL_VALUE} from '../configs'
 export const Contextulize = createContext();
 
@@ -26,7 +27,7 @@ export class ContextProvider extends Component{
     }
     _getMethods(){
         return{
-            setGplayer:()=>this.setGplayer()
+            setGplayer:(o)=>this.setGplayer(o)
         }
     }
 }

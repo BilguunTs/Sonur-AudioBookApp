@@ -15,6 +15,8 @@ export const GLOBAL_VALUE={
     length:0,
     current:'',
     chapters:[],
+    author:"",
+    thumbnail:{},
     isActive:false
   }
 }

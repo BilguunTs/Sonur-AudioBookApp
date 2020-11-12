@@ -3,7 +3,6 @@ import {
   SafeAreaView,
   View,
   ScrollView,
-  Dimensions,
   ImageBackground,
   Text,
 } from 'react-native';
@@ -15,14 +14,17 @@ import ReadBtn from '../../components/ReviewIconBtn';
 import ReviewBtn from '../../components/ReadBookIconBtn';
 import ListenBtn from '../../components/ListenBookIconBtn';
 import PlayBtn from '../../components/PlayButton';
+import {withGlobalContext} from '../../context'
 
-const WIDTH = Dimensions.get('window').width;
-export default ({navigation, route}) => {
+export default withGlobalContext(({navigation, route,global}) => {
   const navigateBack = () => {
     navigation.goBack();
   };
   const {title, author, thumbnail} = route.params;
 
+  const handleOnPlay=()=>{
+    global.methods.setGplayer(route.params)
+  }
   return (
     <SafeAreaView style={{flex: 1}}>
       <ImageBackground
@@ -42,9 +44,7 @@ export default ({navigation, route}) => {
           </View>
           <View>
             <PlayBtn
-              onPress={() => {
-                navigation.navigate('Gplayer', {title, thumbnail});
-              }}
+              onPress={handleOnPlay.bind(this)}
               colorIcon={'#fff'}
               colorBtn={'#4edeaa'}
               iconOpacity={1}
@@ -113,4 +113,4 @@ export default ({navigation, route}) => {
       </ImageBackground>
     </SafeAreaView>
   );
-};
+});
