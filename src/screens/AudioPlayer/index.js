@@ -9,8 +9,8 @@ import FluidChapters from './FluidChapters';
 import MainPlayer from './MainPlayer';
 import Header from './Header'
 import { withGlobalContext } from '../../context';
-import { Circle } from 'react-native-svg';
-const CIRCLE_SIZE=D.HEIGHT-D.HEIGHT*0.85
+
+const CIRCLE_SIZE=MAIN.CIRCLE_SIZE
 function AudioPlayer(props) {
   const expantion =useSharedValue(false)
   const drag=useDerivedValue(()=>{
@@ -20,6 +20,12 @@ function AudioPlayer(props) {
       return withSpring( D.HEIGHT,MAIN.spring)
     }
   });
+  const circleY= useDerivedValue(()=>{
+    if(drag.value>=D.HEIGHT*0.95-CIRCLE_SIZE){
+      return withSpring(D.HEIGHT*0.95-CIRCLE_SIZE,MAIN.spring)
+    }
+    return  withSpring(drag.value,MAIN.spring)
+  })
   const dWidth=useDerivedValue(()=>{
     if(drag.value<=0){
       return withSpring(D.WIDTH,MAIN.spring)
@@ -33,7 +39,10 @@ function AudioPlayer(props) {
     }
   })
   const dHeight = useDerivedValue(()=>{
-    return withSpring(D.HEIGHT-drag.value,MAIN.spring)
+    
+    
+    return withSpring(D.HEIGHT*0.95-(drag.value+CIRCLE_SIZE),MAIN.spring)
+    
   })
   const dleft =useDerivedValue(()=>{
     let center=dWidth.value/2;
@@ -62,8 +71,8 @@ function AudioPlayer(props) {
     
   })
   const dOpacity = useDerivedValue(()=>{
-    let dv=drag.value<0?1:drag.value
-    let fxV =1-dv/D.HEIGHT
+    let dv=dWidth.value<0?1:drag.value
+    let fxV =1-dv/D.WIDTH
     if(fxV<=0.3){
       fxV=0
     }  
@@ -74,10 +83,11 @@ function AudioPlayer(props) {
         position:"absolute",
         width:dWidth.value,
        // left:dleft.value,
-        height:dHeight.value-CIRCLE_SIZE,
-       // transform:[{translateY:CIRCLE_SIZE}],
+        height:dHeight.value,
+      transform:[{translateX:-dleft.value}],
         justifyContent: 'center',
-        borderRadius:dBorderRadius.value,
+       // borderTopRightRadius:dBorderRadius.value,
+       // borderBottomRightRadius:dBorderRadius.value,
         alignItems: 'center',
         overflow:'hidden',
         bottom:dBottom.value,
@@ -97,23 +107,43 @@ function AudioPlayer(props) {
   const styleWrapper  =useAnimatedStyle(()=>{
     return{
       opacity:dOpacity.value,
+      flex:1,
       width:D.WIDTH,
-      height:D.HEIGHT,
+      //height:D.HEIGHT,
       alignItems:'center',
-      zIndex:3
+      zIndex:2
     }
   })
   const styleDragCircle =useAnimatedStyle(()=>{
     return {
       position:'absolute',
-      
       width:circleWidth.value,
       height:CIRCLE_SIZE,
-      transform:[{translateX:-circleX.value},{translateY:drag.value}],
+      transform:[{translateX:-circleX.value},{translateY:circleY.value}],
       borderWidth:1,
-      top:-35,
-      borderRadius:D.HEIGHT*0.85,
-      backgroundColor:"#343434"
+      top:0,
+      zIndex:3,     
+      borderTopRightRadius: D.HEIGHT*0.85,
+      borderBottomRightRadius:D.HEIGHT*0.85,
+      backgroundColor:"#eee"
+    }
+  })
+  const styleIcon =useAnimatedStyle(()=>{
+    let badgeSize = CIRCLE_SIZE*0.6
+    return{
+      height:badgeSize,
+      width:badgeSize,
+      borderRadius:badgeSize,
+      backgroundColor:"green",
+      position:'absolute',
+      top:CIRCLE_SIZE/2-badgeSize/2,
+      right:CIRCLE_SIZE/2-badgeSize/2
+    }
+  })
+  const styleHeader = useAnimatedStyle(()=>{
+    return{ 
+      zIndex:4,
+      transform:[{translateX:-dleft.value}]
     }
   })
   const handleGestureEvent=useAnimatedGestureHandler({
@@ -153,7 +183,10 @@ function AudioPlayer(props) {
     <PanGestureHandler onGestureEvent={handleGestureEvent}>
 
     <Animated.View style={[styleDragCircle]}>
+      <Animated.View style={[styleHeader]}>
     <Header leftAction={toggleshrink}/>  
+      </Animated.View>
+      <Animated.View style={[styleIcon]}/>
       </Animated.View>
     </PanGestureHandler>
     <Animated.View

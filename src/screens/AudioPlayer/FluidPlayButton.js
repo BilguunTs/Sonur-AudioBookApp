@@ -4,18 +4,27 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
   useAnimatedGestureHandler,
-  useSharedValue,
-  withTiming,
-  delay,
+  useSharedValue, 
+  useDerivedValue
 } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {D, MAIN} from '../../configs';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedButton = Animated.createAnimatedComponent(Pressable);
-export default function FluidPlayButton({playing = false, ...rest}) {
+export default function FluidPlayButton({playing = false, onPress,...rest}) {
   const touchValue = useSharedValue(0);
+  const pressing=useSharedValue(false)
   const isPlaying = useSharedValue(false);
+  const scale = useDerivedValue(()=>{
+    if(pressing.value ){
+      return withSpring(0.69,MAIN.spring)
+    }else if(isPlaying.value){
+      return withSpring(0.8,MAIN.spring)  
+    }
+    return withSpring(1,MAIN.spring)
+    
+  })
   React.useEffect(() => {
     isPlaying.value = playing;
   }, [playing]);
@@ -26,7 +35,7 @@ export default function FluidPlayButton({playing = false, ...rest}) {
       zIndex: 2,
       transform: [
         {
-          scale: withSpring(isPlaying.value ? 0.8 : 1, MAIN.spring),
+          scale: scale.value,
         },
         {translateX: touchValue.value},
       ],
@@ -42,19 +51,27 @@ export default function FluidPlayButton({playing = false, ...rest}) {
   });
   const _onPanGestureEvent = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
+      pressing.value=true;
       ctx.startX = touchValue.value;
     },
     onActive: (event, ctx) => {
       touchValue.value = ctx.startX + event.translationX;
     },
     onEnd: (_) => {
-      touchValue.value = withSpring(0);
+      touchValue.value = withSpring(0,MAIN.spring);
     },
+    onCancel:()=>{
+    console.log('not pressed')
+    },
+    onFinish:()=>{
+      pressing.value=false
+      onPress()
+    }
   });
 
   return (
     <PanGestureHandler onGestureEvent={_onPanGestureEvent}>
-      <AnimatedButton style={[buttonStyle]} {...rest}>
+      <AnimatedButton style={[buttonStyle]} >
         <AnimatedIcon
           name={playing ? 'md-pause' : 'md-play'}
           style={[styleIcon]}

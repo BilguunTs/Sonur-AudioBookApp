@@ -7,6 +7,7 @@ export const D = {
 export const MAIN = {
   app_name: 'Сонур',
   spring: {damping: 20, stiffness: 90},
+  CIRCLE_SIZE: D.HEIGHT-D.HEIGHT*0.85
 };
 
 export const GLOBAL_VALUE={

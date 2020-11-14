@@ -1,10 +1,13 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, Platform, Alert} from 'react-native';
+
 import Slider from '@react-native-community/slider';
 import Sound from 'react-native-sound';
-import Icon from 'react-native-vector-icons/AntDesign';
+
+import {D} from '../../configs'
 import FluidButton from './FluidPlayButton';
 import {iOSUIKit} from 'react-native-typography';
+import ActionButton from './ActionButton'
 
 export default class PlayerScreen extends React.Component {
   static navigationOptions = (props) => ({
@@ -103,10 +106,10 @@ export default class PlayerScreen extends React.Component {
   };
 
   jumpPrev15Seconds = () => {
-    this.jumpSeconds(-15);
+    this.jumpSeconds(-10);
   };
   jumpNext15Seconds = () => {
-    this.jumpSeconds(15);
+    this.jumpSeconds(10);
   };
   jumpSeconds = (secsDelta) => {
     if (this.sound) {
@@ -145,68 +148,34 @@ export default class PlayerScreen extends React.Component {
   render() {
     const currentTimeString = this.getAudioTimeString(this.state.playSeconds);
     const durationString = this.getAudioTimeString(this.state.duration);
-  
+    
     return (
       <View
         style={{
-          flex: 1,
           width: '100%',
+         flex:0.8,
           justifyContent: 'center',
           backgroundColor: 'white',
         }}>
          <Text style={[iOSUIKit.title3Object,{color: '#333', alignSelf: 'center'}]}>
           {currentTimeString}/{durationString}
         </Text>
+         <ActionButton onPress={this.jumpPrev15Seconds} direction='left'/>  
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
             marginVertical: 15,
           }}>
-          <TouchableOpacity
-            onPress={this.jumpPrev15Seconds}
-            style={{justifyContent: 'center'}}>
-            <Icon name={'left'} size={30} style={{width: 30, height: 30}} />
-            <Text
-              style={{
-                position: 'absolute',
-                alignSelf: 'center',
-                marginTop: 1,
-                color: '#333',
-                fontSize: 12,
-              }}>
-              15
-            </Text>
-          </TouchableOpacity>
-          
-          <FluidButton
-            playing={this.state.playState === 'playing'}
-            onPress={this.handleAction.bind(this)}
-          />
-          <TouchableOpacity
-            onPress={this.jumpNext15Seconds}
-            style={{justifyContent: 'center'}}>
-            <Icon name={'right'} size={30} style={{width: 30, height: 30}} />
-            <Text
-              style={{
-                position: 'absolute',
-                alignSelf: 'center',
-                marginTop: 1,
-                color: '#333',
-                fontSize: 12,
-              }}>
-              15
-            </Text>
-          </TouchableOpacity>
-        </View>
-       
+           <FluidButton playing={this.state.playState === 'playing'} onPress={this.handleAction}/>
+        </View>  
+          <ActionButton onPress={this.jumpNext15Seconds} direction="right"/>
         <View
           style={{
             marginTop:35,
             marginHorizontal: 15,
             flexDirection: 'row',
-            position: 'absolute',
-            bottom: 120,
+            
           }}>
           <Slider
             onTouchStart={this.onSliderEditStart}
