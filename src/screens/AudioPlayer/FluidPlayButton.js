@@ -17,9 +17,7 @@ export default function FluidPlayButton({playing = false, onPress,...rest}) {
   const pressing=useSharedValue(false)
   const isPlaying = useSharedValue(false);
   const scale = useDerivedValue(()=>{
-    if(pressing.value ){
-      return withSpring(0.69,MAIN.spring)
-    }else if(isPlaying.value){
+    if(isPlaying.value){
       return withSpring(0.8,MAIN.spring)  
     }
     return withSpring(1,MAIN.spring)
@@ -64,8 +62,8 @@ export default function FluidPlayButton({playing = false, onPress,...rest}) {
     console.log('not pressed')
     },
     onFinish:()=>{
-      pressing.value=false
       onPress()
+      pressing.value=false
     }
   });
 

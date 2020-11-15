@@ -19,5 +19,6 @@ export const GLOBAL_VALUE={
     author:"",
     thumbnail:{},
     isActive:false
-  }
+  },
+  user:{}
 }

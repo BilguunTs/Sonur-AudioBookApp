@@ -50,7 +50,7 @@ export default class HorizontalBookView extends Component {
   };
   render() {
     return (
-      <View style={{marginBottom: 25}}>
+      <View style={{marginBottom: 1}}>
         <View style={{margin: 10}}>
           <Text style={iOSUIKit.title3Emphasized}>
             {this.props.grouptitle || 'Hэр өгөөгyй'}
@@ -64,7 +64,7 @@ export default class HorizontalBookView extends Component {
           showsHorizontalScrollIndicator={false}
           renderItem={({item}) => {
             return (
-              <View key={item.id} style={{margin: 15}}>
+              <View key={item.id} style={{margin: 10}}>
                 <BookCard
                   onPress={this.handlePress.bind(this, item)}
                   title={item.title}

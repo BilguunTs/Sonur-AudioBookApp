@@ -172,7 +172,7 @@ export default class PlayerScreen extends React.Component {
           <ActionButton onPress={this.jumpNext15Seconds} direction="right"/>
         <View
           style={{
-            marginTop:35,
+            //marginTop:35,
             marginHorizontal: 15,
             flexDirection: 'row',
             

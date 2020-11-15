@@ -1,63 +1,34 @@
 {
   "project_info": {
-    "project_number": "935403746588",
-    "firebase_url": "https://audiobookdemo-890e8.firebaseio.com",
-    "project_id": "audiobookdemo-890e8",
-    "storage_bucket": "audiobookdemo-890e8.appspot.com"
+    "project_number": "986223919228",
+    "firebase_url": "https://sonuuraudiobook.firebaseio.com",
+    "project_id": "sonuuraudiobook",
+    "storage_bucket": "sonuuraudiobook.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:935403746588:android:9f7d00fba447dec41cf6d9",
-        "android_client_info": {
-          "package_name": "com.audiobookdemo"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "935403746588-13ci89a7sdbd5h4haqj45jqo2sngp86u.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAYTbeNDD609xhiJyGbhTrbL3eRTgbLHiE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "935403746588-13ci89a7sdbd5h4haqj45jqo2sngp86u.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:935403746588:android:155cbad7511e167b1cf6d9",
+        "mobilesdk_app_id": "1:986223919228:android:95245c71eca2bb067a89f9",
         "android_client_info": {
           "package_name": "com.sonur"
         }
       },
       "oauth_client": [
         {
-          "client_id": "935403746588-13ci89a7sdbd5h4haqj45jqo2sngp86u.apps.googleusercontent.com",
+          "client_id": "986223919228-obkn0evl78subkjnaqe5ffndgdtb5akf.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAYTbeNDD609xhiJyGbhTrbL3eRTgbLHiE"
+          "current_key": "AIzaSyDdyuv7KZ2Iks0JuL1S-a-IKw-Xz4ozz3Y"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "935403746588-13ci89a7sdbd5h4haqj45jqo2sngp86u.apps.googleusercontent.com",
+              "client_id": "986223919228-obkn0evl78subkjnaqe5ffndgdtb5akf.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

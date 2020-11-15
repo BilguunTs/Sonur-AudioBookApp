@@ -1,23 +1,25 @@
 import React from 'react';
 
-import {TouchableOpacity, Dimensions} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import Animated, {useAnimatedStyle, withSpring} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-const WIDTH = Dimensions.get('window').width;
+import {withGlobalContext} from '../../context'
+import {D,MAIN}from '../../configs'
+const WIDTH = D.WIDTH;
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-function CustomTabBar({state, descriptors, navigation}) {
+function CustomTabBar({state, descriptors, navigation,...args}) {
   const styleTabs = useAnimatedStyle(() => {
     let itemW = WIDTH * 0.7;
-    let lpTo = WIDTH / 2 - itemW / 2;
+    let centered =WIDTH / 2 - itemW / 2
+    let lpostion=args.global.stats.gplayer.isActive? centered+20:centered;
     return {
       flexDirection: 'row',
       backgroundColor: '#fffffc',
       height: 60,
       marginBottom: 15,
       width: itemW,
-      left: lpTo,
+      left: lpostion,
       bottom: 0,
       position: 'absolute',
       borderRadius: 50,
@@ -145,4 +147,4 @@ function CustomTabBar({state, descriptors, navigation}) {
     </Animated.View>
   );
 }
-export default CustomTabBar;
+export default withGlobalContext(CustomTabBar);

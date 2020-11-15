@@ -24,24 +24,24 @@ function AudioPlayer(props) {
     if(drag.value>=D.HEIGHT*0.95-CIRCLE_SIZE){
       return withSpring(D.HEIGHT*0.95-CIRCLE_SIZE,MAIN.spring)
     }
-    return  withSpring(drag.value,MAIN.spring)
+    return  drag.value
   })
   const dWidth=useDerivedValue(()=>{
     if(drag.value<=0){
-      return withSpring(D.WIDTH,MAIN.spring)
+      return D.WIDTH
     }else {
 
       let fixed = D.WIDTH-drag.value
       if(fixed<D.WIDTH/4){
         fixed=D.WIDTH/4
       }
-      return withSpring(fixed,MAIN.spring)
+      return fixed
     }
   })
   const dHeight = useDerivedValue(()=>{
     
     
-    return withSpring(D.HEIGHT*0.95-(drag.value+CIRCLE_SIZE),MAIN.spring)
+    return D.HEIGHT*0.95-(drag.value+CIRCLE_SIZE)
     
   })
   const dleft =useDerivedValue(()=>{
@@ -86,12 +86,13 @@ function AudioPlayer(props) {
         height:dHeight.value,
       transform:[{translateX:-dleft.value}],
         justifyContent: 'center',
-       // borderTopRightRadius:dBorderRadius.value,
-       // borderBottomRightRadius:dBorderRadius.value,
+       borderTopLeftRadius:30,
+       borderTopRightRadius:30,
         alignItems: 'center',
         overflow:'hidden',
         bottom:dBottom.value,
         backgroundColor: '#fff',
+      
       }
   })
   const circleWidth =useDerivedValue(()=>{
@@ -120,12 +121,12 @@ function AudioPlayer(props) {
       width:circleWidth.value,
       height:CIRCLE_SIZE,
       transform:[{translateX:-circleX.value},{translateY:circleY.value}],
-      borderWidth:1,
       top:0,
-      zIndex:3,     
-      borderTopRightRadius: D.HEIGHT*0.85,
-      borderBottomRightRadius:D.HEIGHT*0.85,
-      backgroundColor:"#eee"
+      zIndex:3,
+      borderTopRightRadius:dBorderRadius.value ,
+      borderBottomRightRadius:dBorderRadius.value,
+      backgroundColor:"#fff",
+      
     }
   })
   const styleIcon =useAnimatedStyle(()=>{
@@ -137,13 +138,16 @@ function AudioPlayer(props) {
       backgroundColor:"green",
       position:'absolute',
       top:CIRCLE_SIZE/2-badgeSize/2,
-      right:CIRCLE_SIZE/2-badgeSize/2
+      left:CIRCLE_SIZE/2-badgeSize/2,
+      zIndex:5
     }
   })
   const styleHeader = useAnimatedStyle(()=>{
     return{ 
       zIndex:4,
-      transform:[{translateX:-dleft.value}]
+      transform:[{translateX:-dleft.value}],
+      opacity:dOpacity.value,
+    
     }
   })
   const handleGestureEvent=useAnimatedGestureHandler({
@@ -158,7 +162,7 @@ function AudioPlayer(props) {
     if(fixedY<=0){
       fixedY=1;
     }
-    return drag.value=withSpring(fixedY,MAIN.spring)
+    return drag.value=fixedY
    //return drag.value=withSpring(e.translationY,MAIN.spring)
    },
    onEnd:(e)=>{
@@ -183,10 +187,10 @@ function AudioPlayer(props) {
     <PanGestureHandler onGestureEvent={handleGestureEvent}>
 
     <Animated.View style={[styleDragCircle]}>
-      <Animated.View style={[styleHeader]}>
-    <Header leftAction={toggleshrink}/>  
-      </Animated.View>
       <Animated.View style={[styleIcon]}/>
+      <Animated.View style={[styleHeader]}>
+    <Header hideleft leftAction={toggleshrink}/>  
+      </Animated.View>
       </Animated.View>
     </PanGestureHandler>
     <Animated.View

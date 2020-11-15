@@ -38,10 +38,10 @@ const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
 export default BookHeroCard;
 const styles = StyleSheet.create({
   stretch: {
-    height: 200,
+    height: 150,
     width: 122,
     overflow: 'hidden',
-    borderRadius: 10,
+    
     zIndex: 20,
   },
 });
