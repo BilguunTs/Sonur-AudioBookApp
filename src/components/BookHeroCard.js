@@ -27,8 +27,8 @@ const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
             marginVertical: 15,
             
           }}>
-          <Text style={{flex: 1, flexWrap: 'wrap',...Title}}>{withlimit(title)}</Text>
-          <Text style={FootNote}>{withlimit(author)}</Text>
+          <Text numberOfLines={1} style={{fontFamily:"Conforta",...Title}}>{title}</Text>
+          <Text numberOfLines={1} style={[FootNote,{fontFamily:'Conforta'}]}>{withlimit(author)}</Text>
         </View>
       )}
     </TouchableOpacity>

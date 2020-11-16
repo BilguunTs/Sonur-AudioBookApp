@@ -10,19 +10,19 @@ const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 function CustomTabBar({state, descriptors, navigation,...args}) {
   const styleTabs = useAnimatedStyle(() => {
-    let itemW = WIDTH * 0.7;
+    let itemW = WIDTH ;
     let centered =WIDTH / 2 - itemW / 2
     let lpostion=args.global.stats.gplayer.isActive? centered+20:centered;
     return {
       flexDirection: 'row',
       backgroundColor: '#fffffc',
       height: 60,
-      marginBottom: 15,
       width: itemW,
       left: lpostion,
       bottom: 0,
       position: 'absolute',
-      borderRadius: 50,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius:20,
       justifyContent: 'center',
       alignItems: 'center',
     };
@@ -46,7 +46,7 @@ function CustomTabBar({state, descriptors, navigation,...args}) {
         transform: [{scale: withSpring(focused ? 1.1 : 1)}],
       };
     });
-    return <Animated.Text style={[styleText]}>{txt}</Animated.Text>;
+    return <Animated.Text style={[styleText,{fontFamily:"Conforta"}]}>{txt}</Animated.Text>;
   };
   const getIcon = (iconName, focused) => {
     let instance;

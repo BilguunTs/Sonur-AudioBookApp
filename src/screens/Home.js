@@ -41,7 +41,7 @@ export const HomeScreen = ({navigation}) => {
         showsVerticalScrollIndicator={false}>
         <TopBookLists transY={transY} navigation={navigation} />
         <FeaturedList navigation={navigation} grouptitle="Caнaл бoлгoх" />
-        <FeaturedList navigation={navigation} grouptitle="Cyyлд нэmэгдcэн" />
+        <FeaturedList navigation={navigation} grouptitle="Cүүлд нэmэгдcэн" />
       </Animated.ScrollView>
     </SafeAreaView>
   );

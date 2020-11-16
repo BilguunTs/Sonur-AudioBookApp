@@ -36,6 +36,13 @@
 		B9E66D920AE84AA4B751BD10 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8122AA031617470F85FBE6FB /* Octicons.ttf */; };
 		54BF63555DA24032B5FBB2A7 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5905685B8BF648BA95BDF5D0 /* SimpleLineIcons.ttf */; };
 		59535AEA176A4058A5882B5C /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0F1FAC0BE604486690B3089E /* Zocial.ttf */; };
+		75001E6B758B4B8EA1F77202 /* Moderno.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F12B5F9BB19A437F97AD591C /* Moderno.ttf */; };
+		1563F3BA1F4A4B8BA51C26F4 /* Conforta.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 80D19ADC7C1B4377B5F63BD6 /* Conforta.ttf */; };
+		E963FEDB25904AE3831C8CFA /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D92882B6F37C49B0B96BBBC5 /* Comfortaa-Bold.ttf */; };
+		A7DCDB08157146A4A9145A6E /* Comfortaa-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 09340FBE579946CDB2BBD5FC /* Comfortaa-Light.ttf */; };
+		7E7F68A1ABDC4F9CB812E51C /* Comfortaa-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 315F37CE30714F62834FF218 /* Comfortaa-Medium.ttf */; };
+		6AC63DEA72574DC88300E846 /* Comfortaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 465C1407D0D9456EA68E9146 /* Comfortaa-Regular.ttf */; };
+		D8568041640A48DCA73E8E4D /* Comfortaa-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B6893B957B6474DA2E99CBB /* Comfortaa-SemiBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +106,13 @@
 		8122AA031617470F85FBE6FB /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		5905685B8BF648BA95BDF5D0 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		0F1FAC0BE604486690B3089E /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F12B5F9BB19A437F97AD591C /* Moderno.ttf */ = {isa = PBXFileReference; name = "Moderno.ttf"; path = "../assets/fonts/Moderno.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		80D19ADC7C1B4377B5F63BD6 /* Conforta.ttf */ = {isa = PBXFileReference; name = "Conforta.ttf"; path = "../assets/fonts/Conforta.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D92882B6F37C49B0B96BBBC5 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; name = "Comfortaa-Bold.ttf"; path = "../assets/fonts/static/Comfortaa-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		09340FBE579946CDB2BBD5FC /* Comfortaa-Light.ttf */ = {isa = PBXFileReference; name = "Comfortaa-Light.ttf"; path = "../assets/fonts/static/Comfortaa-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		315F37CE30714F62834FF218 /* Comfortaa-Medium.ttf */ = {isa = PBXFileReference; name = "Comfortaa-Medium.ttf"; path = "../assets/fonts/static/Comfortaa-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		465C1407D0D9456EA68E9146 /* Comfortaa-Regular.ttf */ = {isa = PBXFileReference; name = "Comfortaa-Regular.ttf"; path = "../assets/fonts/static/Comfortaa-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0B6893B957B6474DA2E99CBB /* Comfortaa-SemiBold.ttf */ = {isa = PBXFileReference; name = "Comfortaa-SemiBold.ttf"; path = "../assets/fonts/static/Comfortaa-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -249,6 +263,13 @@
 				8122AA031617470F85FBE6FB /* Octicons.ttf */,
 				5905685B8BF648BA95BDF5D0 /* SimpleLineIcons.ttf */,
 				0F1FAC0BE604486690B3089E /* Zocial.ttf */,
+				F12B5F9BB19A437F97AD591C /* Moderno.ttf */,
+				80D19ADC7C1B4377B5F63BD6 /* Conforta.ttf */,
+				D92882B6F37C49B0B96BBBC5 /* Comfortaa-Bold.ttf */,
+				09340FBE579946CDB2BBD5FC /* Comfortaa-Light.ttf */,
+				315F37CE30714F62834FF218 /* Comfortaa-Medium.ttf */,
+				465C1407D0D9456EA68E9146 /* Comfortaa-Regular.ttf */,
+				0B6893B957B6474DA2E99CBB /* Comfortaa-SemiBold.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -415,6 +436,13 @@
 				B9E66D920AE84AA4B751BD10 /* Octicons.ttf in Resources */,
 				54BF63555DA24032B5FBB2A7 /* SimpleLineIcons.ttf in Resources */,
 				59535AEA176A4058A5882B5C /* Zocial.ttf in Resources */,
+				75001E6B758B4B8EA1F77202 /* Moderno.ttf in Resources */,
+				1563F3BA1F4A4B8BA51C26F4 /* Conforta.ttf in Resources */,
+				E963FEDB25904AE3831C8CFA /* Comfortaa-Bold.ttf in Resources */,
+				A7DCDB08157146A4A9145A6E /* Comfortaa-Light.ttf in Resources */,
+				7E7F68A1ABDC4F9CB812E51C /* Comfortaa-Medium.ttf in Resources */,
+				6AC63DEA72574DC88300E846 /* Comfortaa-Regular.ttf in Resources */,
+				D8568041640A48DCA73E8E4D /* Comfortaa-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

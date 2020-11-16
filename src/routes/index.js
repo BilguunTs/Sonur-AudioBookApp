@@ -86,7 +86,7 @@ const MainRoot = (_props)=>{
 return <><NavigationContainer>
   <RootNavigator {..._props}/>
 </NavigationContainer>
-<GPlayer/>
+ {_props.global.stats.gplayer.isActive&& <GPlayer/>}
 </>
 }
 

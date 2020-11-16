@@ -52,7 +52,7 @@ export default class HorizontalBookView extends Component {
     return (
       <View style={{marginBottom: 1}}>
         <View style={{margin: 10}}>
-          <Text style={iOSUIKit.title3Emphasized}>
+          <Text style={[iOSUIKit.title3Emphasized,{fontFamily:"Conforta"}]}>
             {this.props.grouptitle || 'Hэр өгөөгyй'}
           </Text>
         </View>

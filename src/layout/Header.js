@@ -49,7 +49,7 @@ const LeftPlaceHolderWrapper = ({children, Y}) => {
   });
   return (
     <View style={{flexDirection: 'column'}}>
-      <Animated.Text style={[primaryTitleStyle, iOSUIKit.title3]}>
+      <Animated.Text style={[primaryTitleStyle, iOSUIKit.title3,{fontFamily:"Conforta"}]}>
         {MAIN.app_name}
       </Animated.Text>
       <Animated.View style={[secondaryTitleStyle]}>{children}</Animated.View>
@@ -82,11 +82,11 @@ export default class Header extends Component {
   };
   getTitleVariation = () => {
     return !this.props.contrast ? (
-      <Text style={{color: '#7400b8', ...iOSUIKit.title3}}>
+      <Text style={{color: '#7400b8', fontFamily:"Conforta",...iOSUIKit.title3}}>
         {this.props.title}
       </Text>
     ) : (
-      <Text style={iOSUIKit.title3White}>{this.props.title}</Text>
+      <Text style={[iOSUIKit.title3White,{fontFamily:"Conforta"}]}>{this.props.title}</Text>
     );
   };
   render() {
