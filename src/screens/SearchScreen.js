@@ -6,7 +6,7 @@ export default function SearchScreen() {
   const [value, setValue] = React.useState('');
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#35cb6f'}}>
       <View style={{marginTop: 64, marginHorizontal: 20, marginBottom: 30}}>
         <Input
           value={value}

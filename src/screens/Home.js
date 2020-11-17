@@ -1,14 +1,16 @@
 import React, {useRef} from 'react';
-import {SafeAreaView} from 'react-native';
+import {SafeAreaView,Text} from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
 } from 'react-native-reanimated';
-import FeaturedList from '../views/HorizontalBookView';
-import TopBookLists from '../views/TopBookCarousel';
+//import FeaturedList from '../views/HorizontalBookView';
+//import TopBookLists from '../views/TopBookCarousel';
+import VerticalBookList from '../views/VerticalListBook'
 import Header from '../layout/Header';
 import {D} from '../configs';
-import {interpolateColors} from '../utils';
+import VerticalBooks from '../views/VerticalListBook';
+//import {interpolateColors} from '../utils';
 export const HomeScreen = ({navigation}) => {
   const transY = useSharedValue(0);
   const isScrolling = useSharedValue(false);
@@ -27,15 +29,19 @@ export const HomeScreen = ({navigation}) => {
   });
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <Header transY={transY} title={'Хайх..'} />
-
-      <Animated.ScrollView
+    <SafeAreaView style={{flex: 1,backgroundColor:'#e8ebf2'}}>
+      <Header transY={transY} title={<Text style={{fontFamily:'Conforta'}}>Хайх..</Text>} />
+      <VerticalBooks  onScroll={scrollHandler}/>
+    </SafeAreaView>
+  );
+};
+/**suits on bigger data
+ *  <Animated.ScrollView
         ref={scrollRef}
-        style={{backgroundColor: '#e8fff9'}}
+        style={{backgroundColor: '#e8ebf2'}}
         scrollEventThrottle={1}
         decelerationRate={0}
-        snapToInterval={200} //your element width
+  
         snapToAlignment={'center'}
         onScroll={scrollHandler}
         showsVerticalScrollIndicator={false}>
@@ -43,6 +49,4 @@ export const HomeScreen = ({navigation}) => {
         <FeaturedList navigation={navigation} grouptitle="Caнaл бoлгoх" />
         <FeaturedList navigation={navigation} grouptitle="Cүүлд нэmэгдcэн" />
       </Animated.ScrollView>
-    </SafeAreaView>
-  );
-};
+ */

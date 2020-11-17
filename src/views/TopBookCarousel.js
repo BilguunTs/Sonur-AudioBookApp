@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {Dimensions, View, Text} from 'react-native';
+import {D} from '../configs'
 import Carousel from 'react-native-snap-carousel';
 import BookCard from '../components/BookHeroCard';
 
 import Animated, {useAnimatedStyle, withSpring} from 'react-native-reanimated';
-const WIDTH = Dimensions.get('window').width;
+const WIDTH = D.WIDTH
 const DUMMY = [
   {
     title: 'Байх ба биш',
@@ -35,7 +35,7 @@ const BackWrapper = ({Y, children}) => {
   const styleContainer = useAnimatedStyle(() => {
     const Value = 350 - Y.value * 2;
     return {
-      backgroundColor: '#80ffdb',
+      backgroundColor: '#dbe0e9',
       borderBottomLeftRadius: withSpring(Value, {damping: 20, stiffness: 90}),
       borderBottomRightRadius: withSpring(Value, {damping: 20, stiffness: 90}),
       transform: [

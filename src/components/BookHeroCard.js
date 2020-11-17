@@ -1,7 +1,8 @@
 import React from 'react';
 import {Image, View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import { iOSUIKit } from 'react-native-typography'
-import {withlimit} from '../utils/replaceString';
+import {MAIN} from '../configs'
+import {BoxShadow} from '../modules'
 const BookHeroCard = ({
   onPress,
   title = '',
@@ -15,12 +16,14 @@ const BookHeroCard = ({
   const Title=!contrast?iOSUIKit.title3:iOSUIKit.title3White
 const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
   return (
-    <TouchableOpacity disabled={disable} onPress={onPress}>
+    
+    <TouchableOpacity  disabled={disable} onPress={onPress}>
+      <BoxShadow setting={MAIN.shadowOpt}>
       <Image
         style={{margin, width, ...styles.stretch}}
-        // source={require('../../assets/img/art.jpg')}
         source={{uri: img}}
       />
+        </BoxShadow>
       {!disable && (
         <View
           style={{
@@ -28,7 +31,7 @@ const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
             
           }}>
           <Text numberOfLines={1} style={{fontFamily:"Conforta",...Title}}>{title}</Text>
-          <Text numberOfLines={1} style={[FootNote,{fontFamily:'Conforta'}]}>{withlimit(author)}</Text>
+          <Text numberOfLines={1} style={[FootNote,{fontFamily:'Conforta'}]}>{author}</Text>
         </View>
       )}
     </TouchableOpacity>
@@ -38,10 +41,12 @@ const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
 export default BookHeroCard;
 const styles = StyleSheet.create({
   stretch: {
-    height: 150,
+    height: 170,
     width: 122,
     overflow: 'hidden',
+    borderBottomRightRadius:10,
+    borderTopRightRadius:10,    
+    //zIndex: 20,
     
-    zIndex: 20,
   },
 });

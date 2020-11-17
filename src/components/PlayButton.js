@@ -7,16 +7,8 @@ export default class ReadBookIconBtn extends Component {
     return (
       <TouchableOpacity
         style={{
-          shadowColor: this.props.colorBtn,
-          shadowOffset: {
-            width: 0,
-            height: 5,
-          },
-          shadowOpacity: 0.34,
-          shadowRadius: 6.27,
           height: this.props.size * 2,
           width: this.props.size * 2,
-          elevation: this.props.elevation || 3,
         }}
         onPress={this.props.onPress}
         {...this.props}>

@@ -48,7 +48,7 @@ const BottomTabs = () => {
       <BottomNavigator.Screen
         name="Downloads"
         options={{
-          title: 'Татсан',
+          title: 'Тавиур',
           tabBarIcon: (e) => (
             <Icon
               name="md-download"

@@ -4,7 +4,7 @@ import {TouchableOpacity} from 'react-native';
 import Animated, {useAnimatedStyle, withSpring} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {withGlobalContext} from '../../context'
-import {D,MAIN}from '../../configs'
+import {D}from '../../configs'
 const WIDTH = D.WIDTH;
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -15,14 +15,14 @@ function CustomTabBar({state, descriptors, navigation,...args}) {
     let lpostion=args.global.stats.gplayer.isActive? centered+20:centered;
     return {
       flexDirection: 'row',
-      backgroundColor: '#fffffc',
+      backgroundColor: '#fff',
       height: 60,
       width: itemW,
       left: lpostion,
       bottom: 0,
       position: 'absolute',
-      borderTopLeftRadius: 20,
-      borderTopRightRadius:20,
+      borderTopLeftRadius: 25,
+      borderTopRightRadius:25,
       justifyContent: 'center',
       alignItems: 'center',
     };
@@ -40,10 +40,10 @@ function CustomTabBar({state, descriptors, navigation,...args}) {
   const getText = (txt, focused) => {
     const styleText = useAnimatedStyle(() => {
       return {
-        color: '#64dfdf',
+        color: '#35cb6f',
         textAlign: 'center',
         opacity: withSpring(focused ? 1 : 0, {damping: 20, stiffness: 90}),
-        transform: [{scale: withSpring(focused ? 1.1 : 1)}],
+        transform: [{scale: withSpring(focused ? 1 : 0.9)}],
       };
     });
     return <Animated.Text style={[styleText,{fontFamily:"Conforta"}]}>{txt}</Animated.Text>;
@@ -53,16 +53,16 @@ function CustomTabBar({state, descriptors, navigation,...args}) {
     const IconStyle = useAnimatedStyle(() => {
       return {
         textAlign: 'center',
-        color: focused ? '#72efdd' : '#8d99ae',
+        color: focused ? '#35cb6f' : '#8d99ae',
         transform: [
           {
-            scale: withSpring(focused ? 1.1 : 1, {
+            scale: withSpring(focused ? 1.1 :1 , {
               damping: 20,
               stiffness: 90,
             }),
           },
           {
-            translateY: withSpring(focused ? -5 : 10, {mass: 0.5}),
+            translateY: withSpring(focused ? -2 : 10, {mass: 0.5}),
           },
         ],
       };
@@ -71,7 +71,7 @@ function CustomTabBar({state, descriptors, navigation,...args}) {
       case 'Home':
         instance = (
           <AnimatedIcon
-            name={focused ? 'md-home' : 'md-home-outline'}
+            name={focused ? 'md-book' : 'md-book-outline'}
             size={25}
             style={[IconStyle]}
           />
@@ -80,7 +80,7 @@ function CustomTabBar({state, descriptors, navigation,...args}) {
       case 'Downloads':
         instance = (
           <AnimatedIcon
-            name={focused ? 'md-download' : 'md-download-outline'}
+            name={focused ? 'md-albums' : 'md-albums-outline'}
             size={25}
             style={[IconStyle]}
           />
