@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {View} from 'react-native'
-import Svg,{ Rect,Defs,LinearGradient,Stop,RadialGradient,Path } from 'react-native-svg'
+import Svg,{ Rect,Defs,LinearGradient,Stop } from 'react-native-svg'
 
 export default class BorderShadow extends Component {
 	render = () => {

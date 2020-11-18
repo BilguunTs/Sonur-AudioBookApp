@@ -6,15 +6,16 @@ import {
   Text,
 } from 'react-native';
 
-import {WrapTextContent} from '../../layout/withWrapper';
+import {D} from '../../configs'
 import BookHeroCard from '../../components/BookHeroCard';
 import {iOSUIKit} from 'react-native-typography';
 //import ReadBtn from '../../components/ReviewIconBtn';
 //import ReviewBtn from '../../components/ReadBookIconBtn';
 //import ListenBtn from '../../components/ListenBookIconBtn';
 //import PlayBtn from '../../components/PlayButton';
+import FloatingFooterActions from '../../components/FloatingFooterActions'
 import {withGlobalContext} from '../../context'
-
+import LinearGradient from 'react-native-linear-gradient';
 export default withGlobalContext(({navigation, route,global}) => {
   const navigateBack = () => {
     navigation.goBack();
@@ -25,9 +26,8 @@ export default withGlobalContext(({navigation, route,global}) => {
     global.methods.setGplayer(route.params)
   }
   return (
-    <SafeAreaView style={{flex: 1,backgroundColor:'#fff'}}>
-      
-        
+    <SafeAreaView style={{flex: 1,backgroundColor:'#fff'}}>  
+          <ScrollView style={{flex:1}}>
         <View
           style={{
             flex:1,
@@ -47,17 +47,30 @@ export default withGlobalContext(({navigation, route,global}) => {
               <Text style={[iOSUIKit.title3,{fontFamily:'Conforta',fontSize:23}]} numberOfLines={2}>{title}</Text>
               <Text style={iOSUIKit.subhead,{fontFamily:"Conforta"}} numberOfLines={1}>{author}</Text>
           </View>
-          <ScrollView style={{flex:1}}>
-            <Text numberOfLines={5} style={[iOSUIKit.bodyObject,{fontFamily:"Conforta"}]}>slakdfjlkasdjflkajsdlfkjalksdfjlkasjdflksadjlfjlksdajflk
+            <Text style={[iOSUIKit.bodyObject,{fontFamily:"Conforta"}]}>slakdfjlkasdjflkajsdlfkjalksdfjlkasjdflksadjlfjlksdajflk
+                slakdfjlkasdjflkajsdlfkjalksdfjlkasjdflksadjlfjlksdajflk
+                slakdfjlkasdjflkajsdlfkjalksdfjlkasjdflksadjlfjlksdajflk
+                slakdfjlkasdjflkajsdlfkjalksdfjlkasjdflksadjlfjlksdajflk
                 slakdfjlkasdjflkajsdlfkjalksdfjlkasjdflksadjlfjlksdajflk
                 slakdfjlkasdjflkajsdlfkjalksdfjlkasjdflksadjlfjlksdajflk
                 slakdfjlkasdjflkajsdlfkjalksdfjlkasjdflksadjlfjlksdajflk
                 slakdfjlkasdjflkajsdlfkjalksdfjlkasjdflksadjlfjlksdajflk
                 </Text>
+
+
           
-          </ScrollView>
         </View>
-      
+            </ScrollView>
+            <View style={{position:'absolute',
+            bottom:0,
+            width:D.WIDTH,}}>
+            <LinearGradient style={{width:"100%",alignItems:'center' }} colors={['rgba(255, 255, 255, 0.5)', '#f6f6f6', '#fff']}> 
+              <View style={{marginBottom:10}}>
+              <FloatingFooterActions/>
+              </View>
+            </LinearGradient>
+            </View>
+
     </SafeAreaView>
   );
 });

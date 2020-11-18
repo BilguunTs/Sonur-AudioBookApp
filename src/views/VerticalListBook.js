@@ -5,7 +5,7 @@ import BookItem from '../components/FlatBookItem'
 import {D} from '../configs'
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList)
 const dummydata=[
-  {
+  { id:1,
     title: 'Dudasd',
     author: 'ude2',
     thumbnail: {
@@ -13,9 +13,11 @@ const dummydata=[
       path: '',
     },
     count_chapter:30,
-    duration:2
+    duration:"10:33:03",
+    about:"this is book about asdf blasjlkajsblkjasbdlbsdjsblkjsbldkjs some girl and bla bla thaoid toasidgmevm, oaosie , oggasdg",
+    price:20000
   },
-  {
+  { id:2,
     title: 'HarryPotter:Prisoner of Azbakan',
     author: 'ude2',
     thumbnail: {
@@ -23,19 +25,25 @@ const dummydata=[
       path: '',
     },
     count_chapter:20,
-    duration:3
+    duration:"20:33:33",
+    about:"this is book about some girl and bla bla thaoid toasidgmevm, oaosie , oggasdg",
+    price:14000
   },
   {
-    title: 'The lord of the rings',
-    author: 'ude2',
-    thumbnail: {
+     id:3,
+     title: 'The lord of the rings',
+     author: 'ude2',
+     thumbnail: {
       src: 'https://homepages.cae.wisc.edu/~ece533/images/monarch.png',
       path: '',
     },
     count_chapter:40,
-    duration:3
+    duration:"5:34:13",
+    about:"this is book about some girl and bla bla thaoid toasidgmevm, oaosie , oggasdg",
+    price:34000
   },
   {
+    id:4,
     title: 'Dudeest',
     author: 'ude3',
     thumbnail: {
@@ -43,10 +51,12 @@ const dummydata=[
       path: '',
     },
     count_chapter:30,
-    duration:3
+    duration:"1:44:32",
+    about:"this is book about some girl and bla bla thaoid toasidgmevm, oaosie , oggasdg",
+    price:5000
   },
 ];
-const VerticalBooks = ({onPress})=>{
+const VerticalBooks = ({navigation})=>{
     const direction = useSharedValue(0);
     const skewY=useDerivedValue(()=>{
       if(direction.value===1){
@@ -69,16 +79,18 @@ const VerticalBooks = ({onPress})=>{
         });
     
     const renderItem = ({ item }) => {
-          return (<BookItem
-            skewY={skewY.value}  
-            img={item.thumbnail.src}
-             {...item}
-             onPress={onPress}
-             />
+      return (<BookItem
+                skewY={skewY.value}  
+                img={item.thumbnail.src}
+                onPress={()=>navigation.navigate("BookDetail",{...item})}
+                {...item}/>
              );
          }
+    const handleFetchMore=()=>{}
     return <AnimatedFlatList
-            onScroll={scrollHandler}   
+            onScroll={scrollHandler} 
+            onEndReachedThreshold={0.4}  
+            onEndReached={handleFetchMore.bind(this)}
             style={[{marginHorizontal:10}]}
             ListFooterComponent={<Animated.View style={{height:D.HEIGHT/5}}/>}   
             ListHeaderComponent={<Animated.View style={{height:D.HEIGHT/5}}/>}   

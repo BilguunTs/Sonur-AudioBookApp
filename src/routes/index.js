@@ -10,10 +10,18 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import DownloadsScreen from '../screens/Downloads';
 import CustomTabBar from '../layout/custom/TabBarNavigation';
 import GPlayer from '../screens/AudioPlayer';
+import BookLists from '../screens/BookLists'
 import Icon from 'react-native-vector-icons/Ionicons';
 import {withGlobalContext} from '../context'
 const Root = createStackNavigator();
 const BottomNavigator = createBottomTabNavigator();
+const HomeStack = createStackNavigator()
+const HomeStackScreens=()=>{
+  return <HomeStack.Navigator headerMode="none" initialRouteName="Home" >
+             <HomeStack.Screen name="Home" component={HomeScreen}/>
+             <HomeStack.Screen name="BookLists" component={BookLists}/>
+  </HomeStack.Navigator>
+}
 const BottomTabs = () => {
   return (
     <BottomNavigator.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
@@ -29,7 +37,7 @@ const BottomTabs = () => {
             />
           ),
         }}
-        component={HomeScreen}
+        component={HomeStackScreens}
       />
       {/* <BottomNavigator.Screen
         name="Search"
