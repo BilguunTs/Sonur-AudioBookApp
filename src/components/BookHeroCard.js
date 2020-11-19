@@ -25,11 +25,7 @@ const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
       />
         </BoxShadow>
       {!disable && (
-        <View
-          style={{
-            marginVertical: 15,
-            
-          }}>
+        <View>
           <Text numberOfLines={1} style={{fontFamily:"Conforta",...Title}}>{title}</Text>
           <Text numberOfLines={1} style={[FootNote,{fontFamily:'Conforta'}]}>{author}</Text>
         </View>
@@ -41,11 +37,10 @@ const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
 export default BookHeroCard;
 const styles = StyleSheet.create({
   stretch: {
-    height: 170,
+    height: MAIN.book.height,
     width: 122,
-    overflow: 'hidden',
-    borderBottomRightRadius:10,
-    borderTopRightRadius:10,    
+    overflow: 'hidden', 
+    borderRadius: 10,    
     //zIndex: 20,
     
   },

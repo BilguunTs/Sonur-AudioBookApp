@@ -1,12 +1,12 @@
-import React, {Children, Component} from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
+import React, { Component} from 'react';
+import {Text, View, Pressable} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {iOSUIKit} from 'react-native-typography';
 import Animated, {useAnimatedStyle, withSpring} from 'react-native-reanimated';
 import {D, MAIN} from '../configs';
 
-const HeaderWrapper = ({children, Y, ...rest}) => {
-  const headerStyle = useAnimatedStyle(() => {
+const HeaderWrapper = ({children, Y, relative,...rest}) => {
+  const headerStyleSticky = useAnimatedStyle(() => {
     const float = Y.value > 100;
     return {
       justifyContent: 'space-between',
@@ -26,8 +26,27 @@ const HeaderWrapper = ({children, Y, ...rest}) => {
       ],
     };
   });
+  const headerStyleRelative = useAnimatedStyle(() => {
+    return {
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      alignItems: 'center',
+      flexGrow: 1,
+      width: D.WIDTH,
+      zIndex: 10,
+      position: 'absolute',
+      top: 0,
+      padding: 20,
+      backgroundColor:  '#edf6f9', 
+      borderRadius: 30,
+      transform: [
+        {scale:  0.9}, 
+        {translateY: 8}
+      ],
+    };
+  });
   return (
-    <Animated.View {...rest} style={[headerStyle]}>
+    <Animated.View {...rest} style={[relative? headerStyleRelative:headerStyleSticky]}>
       {children}
     </Animated.View>
   );
@@ -58,26 +77,26 @@ const LeftPlaceHolderWrapper = ({children, Y}) => {
 };
 export default class Header extends Component {
   renderLeftAction = () => {
-    const {type, contrast} = this.props;
-    if (type === 'back') {
+    const {type, contrast,backAction=false,...rest} = this.props;
+    if (type === 'back'||backAction===true) {
       return (
-        <TouchableOpacity>
+        <Pressable android_ripple={{borderless:true}} onPress={()=>rest.navigation.goBack()}>
           <Ionicons
             name="md-arrow-back"
             style={{color: !contrast ? '#7400b8' : '#fff'}}
             size={35}
           />
-        </TouchableOpacity>
+        </Pressable>
       );
     }
     return (
-      <TouchableOpacity>
+      <Pressable android_ripple={{borderless:true}}>
         <Ionicons
           name="md-search-outline"
           size={35}
           style={{color: !contrast ? '#35cb6f' : '#fff'}}
         />
-      </TouchableOpacity>
+      </Pressable>
     );
   };
   getTitleVariation = () => {
@@ -90,13 +109,26 @@ export default class Header extends Component {
     );
   };
   render() {
-    const {contrast = false, transY, ...rest} = this.props;
+    const {contrast = false, transY=0, replace=false,...rest} = this.props;
+    if(rest.relative){
+      return <HeaderWrapper Y={transY} {...rest}>
+      {replace&& this.renderLeftAction()}
+      {replace&& this.props.title && this.getTitleVariation()}
+      { !replace&&this.props.title && this.getTitleVariation()}
+      {!replace && this.renderLeftAction()}
+      </HeaderWrapper>
+    }
     return (
       <HeaderWrapper Y={transY} {...rest}>
-        <LeftPlaceHolderWrapper Y={transY}>
+        {!replace&&<><LeftPlaceHolderWrapper Y={transY}>
           {this.props.title && this.getTitleVariation()}
         </LeftPlaceHolderWrapper>
         {this.renderLeftAction()}
+        </>}
+        {replace&&<>{this.renderLeftAction()}
+        <LeftPlaceHolderWrapper Y={transY}>
+          {this.props.title && this.getTitleVariation()}
+        </LeftPlaceHolderWrapper></>}
       </HeaderWrapper>
     );
   }

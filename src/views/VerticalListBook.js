@@ -1,11 +1,12 @@
 import React from 'react';
-import Animated,{useDerivedValue,useSharedValue,useAnimatedStyle,useAnimatedScrollHandler,withSpring,interpolate} from 'react-native-reanimated'
-import {FlatList} from 'react-native'
+import Animated,{useDerivedValue,useSharedValue,useAnimatedScrollHandler,withSpring,interpolate} from 'react-native-reanimated'
+import {FlatList,View} from 'react-native'
 import BookItem from '../components/FlatBookItem'
-import {D} from '../configs'
+import {D,MAIN} from '../configs'
+import {withHeader} from '../HOC'
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList)
 const dummydata=[
-  { id:1,
+  { id:'1',
     title: 'Dudasd',
     author: 'ude2',
     thumbnail: {
@@ -17,7 +18,7 @@ const dummydata=[
     about:"this is book about asdf blasjlkajsblkjasbdlbsdjsblkjsbldkjs some girl and bla bla thaoid toasidgmevm, oaosie , oggasdg",
     price:20000
   },
-  { id:2,
+  { id:'2',
     title: 'HarryPotter:Prisoner of Azbakan',
     author: 'ude2',
     thumbnail: {
@@ -30,7 +31,7 @@ const dummydata=[
     price:14000
   },
   {
-     id:3,
+     id:'3',
      title: 'The lord of the rings',
      author: 'ude2',
      thumbnail: {
@@ -43,7 +44,7 @@ const dummydata=[
     price:34000
   },
   {
-    id:4,
+    id:'4',
     title: 'Dudeest',
     author: 'ude3',
     thumbnail: {
@@ -98,5 +99,6 @@ const VerticalBooks = ({navigation})=>{
             data={dummydata} 
             keyExtractor={(item) => item.id} 
             renderItem={renderItem}/>
+ 
 }
-export default VerticalBooks
+export default withHeader(MAIN.HEADER.WITH.BACK)(VerticalBooks)

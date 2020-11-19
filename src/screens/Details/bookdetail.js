@@ -27,7 +27,7 @@ export default withGlobalContext(({navigation, route,global}) => {
   }
   return (
     <SafeAreaView style={{flex: 1,backgroundColor:'#fff'}}>  
-          <ScrollView style={{flex:1}}>
+          <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
         <View
           style={{
             flex:1,
@@ -56,9 +56,6 @@ export default withGlobalContext(({navigation, route,global}) => {
                 slakdfjlkasdjflkajsdlfkjalksdfjlkasjdflksadjlfjlksdajflk
                 slakdfjlkasdjflkajsdlfkjalksdfjlkasjdflksadjlfjlksdajflk
                 </Text>
-
-
-          
         </View>
             </ScrollView>
             <View style={{position:'absolute',

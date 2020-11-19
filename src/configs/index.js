@@ -11,6 +11,17 @@ export const MAIN = {
   book:{
     height:D.HEIGHT/3.4
   },
+  HEADER:{
+    TYPE:{
+      FLOAT:"FLOAT",
+      STICKY:"STICKY",
+      RELATIVE:"RELATIVE"
+    },
+    WITH:{
+      BACK:"BACK",
+      SEARCH:"SEARCH"
+    }
+  },
   shadowOpt : {
     width:122,
     height:D.HEIGHT/3.4 ,
