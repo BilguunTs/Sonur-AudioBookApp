@@ -88,6 +88,7 @@ export default class HorizontalBookView extends Component {
             return (
               <View key={item.id} style={{margin: 10}}>
                 <BookCard
+                  animated
                   onPress={this.handlePress.bind(this, item)}
                   title={item.title}
                   author={item.author}

@@ -11,13 +11,14 @@ import {D} from '../configs';
 //import {interpolateColors} from '../utils';
 import {withHeader} from '../HOC'
 import { useNavigation } from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient'
 const ScreenOne = () => {
   const navigation=useNavigation()
   return (
-    <> 
+    <LinearGradient colors={["#caf0f8","#f5f5f5"]}> 
       <FeaturedList navigation={navigation} grouptitle="Шинэ ном" />
       <View style={{height:D.HEIGHT/5}}/>
-    </>
+    </LinearGradient>
   );
 };
 const HomeScreen = withHeader()(ScreenOne);

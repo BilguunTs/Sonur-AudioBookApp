@@ -19,7 +19,7 @@ export default class FloatingFooterActions extends Component {
           style={{
             flex: 1,
             justifyContent: 'center',
-            backgroundColor: this.props.colorBtn || 'green',
+            backgroundColor: this.props.colorBtn || '#90ee90',
             borderRadius: 30,
             height: 40,
           }}>
