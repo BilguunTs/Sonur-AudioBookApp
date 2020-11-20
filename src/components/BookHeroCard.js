@@ -1,7 +1,13 @@
 import React from 'react';
-import {Image, View, TouchableOpacity, StyleSheet, Text} from 'react-native';
+import {Image, View, TouchableOpacity, StyleSheet, Text,Pressable} from 'react-native';
 import { iOSUIKit } from 'react-native-typography'
-import {withlimit} from '../utils/replaceString';
+import Animated,{
+       useSharedValue,
+       useAnimatedStyle,
+       useDerivedValue,
+       withSpring} from 'react-native-reanimated'
+import {MAIN} from '../configs'
+import {BoxShadow} from '../modules'
 const BookHeroCard = ({
   onPress,
   title = '',
@@ -10,25 +16,62 @@ const BookHeroCard = ({
   margin = 0,
   disable = false,
   width = 122,
-  contrast
+  contrast,
+  animated=false,
 }) => {
+  const pressing = useSharedValue(false);
+  const scale =useDerivedValue(()=>{
+    if(pressing.value){
+      return withSpring(0.9)
+    }
+    return withSpring(1)
+  })
+  const styleImg = useAnimatedStyle(()=>{
+    return{
+      transform:[{scale:scale.value}]
+    }
+  })
+  const handleOnPress =()=>{
+    if(animated){
+      pressing.value=true;
+    }
+    onPress()
+  }
   const Title=!contrast?iOSUIKit.title3:iOSUIKit.title3White
-const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
+  const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
+  if (animated){
+   return <Pressable android_ripple={{color:"#90ee90"}} onPressIn={()=>pressing.value=true} 
+                     onPressOut={()=>pressing.value=false} 
+                     onPress={handleOnPress}>
+     <Animated.View style={[styleImg]}>
+    <BoxShadow setting={MAIN.shadowOpt}>
+    <Image
+      style={{margin, width, ...styles.stretch}}
+      source={{uri: img}}
+      />
+      </BoxShadow>
+    </Animated.View>
+    {!disable && (
+      <View>
+        <Text numberOfLines={1} style={{fontFamily:"Conforta",...Title}}>{title}</Text>
+        <Text numberOfLines={1} style={[FootNote,{fontFamily:'Conforta'}]}>{author}</Text>
+      </View>
+    )}
+   </Pressable>  
+  }
   return (
-    <TouchableOpacity disabled={disable} onPress={onPress}>
+    
+    <TouchableOpacity  disabled={disable} onPress={handleOnPress}>
+      <BoxShadow setting={MAIN.shadowOpt}>
       <Image
         style={{margin, width, ...styles.stretch}}
-        // source={require('../../assets/img/art.jpg')}
         source={{uri: img}}
       />
+        </BoxShadow>
       {!disable && (
-        <View
-          style={{
-            marginVertical: 15,
-            
-          }}>
-          <Text style={{flex: 1, flexWrap: 'wrap',...Title}}>{withlimit(title)}</Text>
-          <Text style={FootNote}>{withlimit(author)}</Text>
+        <View>
+          <Text numberOfLines={1} style={{fontFamily:"Conforta",...Title}}>{title}</Text>
+          <Text numberOfLines={1} style={[FootNote,{fontFamily:'Conforta'}]}>{author}</Text>
         </View>
       )}
     </TouchableOpacity>
@@ -38,10 +81,11 @@ const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
 export default BookHeroCard;
 const styles = StyleSheet.create({
   stretch: {
-    height: 200,
+    height: MAIN.book.height,
     width: 122,
-    overflow: 'hidden',
-    borderRadius: 10,
-    zIndex: 20,
+    overflow: 'hidden', 
+    borderRadius: 10,    
+    //zIndex: 20,
+    
   },
 });

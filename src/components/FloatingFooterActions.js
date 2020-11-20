@@ -1,14 +1,17 @@
 import React, {Component} from 'react';
-import {TouchableOpacity, Text, View} from 'react-native';
+import {Pressable, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {iOSUIKit} from 'react-native-typography';
-export default class ReadBookIconBtn extends Component {
+
+export default class FloatingFooterActions extends Component {
+  constructor(props){
+      super(props)
+      this.size=this.props.size||40
+  }
   render() {
     return (
-      <TouchableOpacity
-        style={{
-          height: this.props.size * 2,
-          width: this.props.size * 2,
+      <Pressable style={{
+          height: this.size * 2,
+          width: this.size * 2,
         }}
         onPress={this.props.onPress}
         {...this.props}>
@@ -16,7 +19,7 @@ export default class ReadBookIconBtn extends Component {
           style={{
             flex: 1,
             justifyContent: 'center',
-            backgroundColor: this.props.colorBtn || 'orange',
+            backgroundColor: this.props.colorBtn || '#90ee90',
             borderRadius: 30,
             height: 40,
           }}>
@@ -31,7 +34,7 @@ export default class ReadBookIconBtn extends Component {
             size={this.props.size || 30}
           />
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 }

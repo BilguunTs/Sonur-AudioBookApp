@@ -15,9 +15,8 @@ export default class BackButton extends PureComponent {
           borderWidth:1,
             borderRadius:10,
             borderColor:"gray",
-            height: 40,
+            height: 30,
             width:40
-            
           }}>
           <Icon
             name="up"
@@ -27,6 +26,7 @@ export default class BackButton extends PureComponent {
               transform:[{rotate:'180deg'}],
               opacity: this.props.iconOpacity || 0.5,
               textAlign: 'center',
+              
             }}
             size={this.props.size || 25}
           />

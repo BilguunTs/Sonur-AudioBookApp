@@ -1,48 +1,41 @@
 import React, {useRef} from 'react';
-import {SafeAreaView} from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedScrollHandler,
-} from 'react-native-reanimated';
+
+import {View} from 'react-native'
 import FeaturedList from '../views/HorizontalBookView';
-import TopBookLists from '../views/TopBookCarousel';
-import Header from '../layout/Header';
+//import FluidHeader from '../components/HeaderWithBackWrapper'
+//import TopBookLists from '../views/TopBookCarousel';
+//import VerticalBookList from '../views/VerticalListBook'
+//import Header from '../layout/Header';
 import {D} from '../configs';
-import {interpolateColors} from '../utils';
-export const HomeScreen = ({navigation}) => {
-  const transY = useSharedValue(0);
-  const isScrolling = useSharedValue(false);
-  const scrollRef = useRef();
-
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      transY.value = event.contentOffset.y;
-    },
-    onBeginDrag: (e) => {
-      isScrolling.value = true;
-    },
-    onEndDrag: (e) => {
-      isScrolling.value = false;
-    },
-  });
-
+//import VerticalBooks from '../views/VerticalListBook';
+//import {interpolateColors} from '../utils';
+import {withHeader} from '../HOC'
+import { useNavigation } from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient'
+const ScreenOne = () => {
+  const navigation=useNavigation()
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <Header transY={transY} title={'Хайх..'} />
-
-      <Animated.ScrollView
+    <LinearGradient colors={["#caf0f8","#f5f5f5"]}> 
+      <FeaturedList navigation={navigation} grouptitle="Шинэ ном" />
+      <View style={{height:D.HEIGHT/5}}/>
+    </LinearGradient>
+  );
+};
+const HomeScreen = withHeader()(ScreenOne);
+export {HomeScreen}
+/**suits on bigger data
+<VerticalBooks navigation={navigation} onScroll={scrollHandler}/>
+ *  <Animated.ScrollView
         ref={scrollRef}
-        style={{backgroundColor: '#e8fff9'}}
+        style={{backgroundColor: '#e8ebf2'}}
         scrollEventThrottle={1}
         decelerationRate={0}
-        snapToInterval={200} //your element width
+  
         snapToAlignment={'center'}
         onScroll={scrollHandler}
         showsVerticalScrollIndicator={false}>
         <TopBookLists transY={transY} navigation={navigation} />
         <FeaturedList navigation={navigation} grouptitle="Caнaл бoлгoх" />
-        <FeaturedList navigation={navigation} grouptitle="Cyyлд нэmэгдcэн" />
+        <FeaturedList navigation={navigation} grouptitle="Cүүлд нэmэгдcэн" />
       </Animated.ScrollView>
-    </SafeAreaView>
-  );
-};
+ */

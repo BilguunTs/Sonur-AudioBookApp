@@ -1,26 +1,28 @@
 import React from 'react';
 
-import {TouchableOpacity, Dimensions} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import Animated, {useAnimatedStyle, withSpring} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-const WIDTH = Dimensions.get('window').width;
+import {withGlobalContext} from '../../context'
+import {D}from '../../configs'
+const WIDTH = D.WIDTH;
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-function CustomTabBar({state, descriptors, navigation}) {
+function CustomTabBar({state, descriptors, navigation,...args}) {
   const styleTabs = useAnimatedStyle(() => {
-    let itemW = WIDTH * 0.7;
-    let lpTo = WIDTH / 2 - itemW / 2;
+    let itemW = WIDTH ;
+    let centered =WIDTH / 2 - itemW / 2
+    let lpostion=args.global.stats.gplayer.isActive? centered+20:centered;
     return {
       flexDirection: 'row',
-      backgroundColor: '#fffffc',
+      backgroundColor: '#fff',
       height: 60,
-      marginBottom: 15,
       width: itemW,
-      left: lpTo,
+      left: lpostion,
       bottom: 0,
       position: 'absolute',
-      borderRadius: 50,
+      borderTopLeftRadius: 25,
+      borderTopRightRadius:25,
       justifyContent: 'center',
       alignItems: 'center',
     };
@@ -38,29 +40,29 @@ function CustomTabBar({state, descriptors, navigation}) {
   const getText = (txt, focused) => {
     const styleText = useAnimatedStyle(() => {
       return {
-        color: '#64dfdf',
+        color: '#35cb6f',
         textAlign: 'center',
         opacity: withSpring(focused ? 1 : 0, {damping: 20, stiffness: 90}),
-        transform: [{scale: withSpring(focused ? 1.1 : 1)}],
+        transform: [{scale: withSpring(focused ? 1 : 0.9)}],
       };
     });
-    return <Animated.Text style={[styleText]}>{txt}</Animated.Text>;
+    return <Animated.Text style={[styleText,{fontFamily:"Conforta"}]}>{txt}</Animated.Text>;
   };
   const getIcon = (iconName, focused) => {
     let instance;
     const IconStyle = useAnimatedStyle(() => {
       return {
         textAlign: 'center',
-        color: focused ? '#72efdd' : '#8d99ae',
+        color: focused ? '#35cb6f' : '#8d99ae',
         transform: [
           {
-            scale: withSpring(focused ? 1.1 : 1, {
+            scale: withSpring(focused ? 1.1 :1 , {
               damping: 20,
               stiffness: 90,
             }),
           },
           {
-            translateY: withSpring(focused ? -5 : 10, {mass: 0.5}),
+            translateY: withSpring(focused ? -2 : 10, {mass: 0.5}),
           },
         ],
       };
@@ -69,7 +71,7 @@ function CustomTabBar({state, descriptors, navigation}) {
       case 'Home':
         instance = (
           <AnimatedIcon
-            name={focused ? 'md-home' : 'md-home-outline'}
+            name={focused ? 'md-book' : 'md-book-outline'}
             size={25}
             style={[IconStyle]}
           />
@@ -78,7 +80,7 @@ function CustomTabBar({state, descriptors, navigation}) {
       case 'Downloads':
         instance = (
           <AnimatedIcon
-            name={focused ? 'md-download' : 'md-download-outline'}
+            name={focused ? 'md-albums' : 'md-albums-outline'}
             size={25}
             style={[IconStyle]}
           />
@@ -145,4 +147,4 @@ function CustomTabBar({state, descriptors, navigation}) {
     </Animated.View>
   );
 }
-export default CustomTabBar;
+export default withGlobalContext(CustomTabBar);
