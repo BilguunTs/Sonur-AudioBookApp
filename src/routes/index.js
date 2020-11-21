@@ -7,7 +7,7 @@ import {HomeScreen} from '../screens/Home';
 import ProfileScreen from '../screens/ProfileScreen';
 import DetailScreen from '../screens/Details/bookdetail';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import DownloadsScreen from '../screens/Downloads';
+import BookShelfScreen from '../screens/BookShelf';
 import CustomTabBar from '../layout/custom/TabBarNavigation';
 import GPlayer from '../screens/AudioPlayer';
 import BookLists from '../screens/BookLists'
@@ -27,16 +27,7 @@ const BottomTabs = () => {
     <BottomNavigator.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
       <BottomNavigator.Screen
         name="Home"
-        options={{
-          title: 'Нүүр',
-          tabBarIcon: (e) => (
-            <Icon
-              name="md-home"
-              size={e.focused ? 25 : 20}
-              color={e.focused ? '#A491FF' : '#C6B9FF'}
-            />
-          ),
-        }}
+        options={{title: 'Нүүр'}}
         component={HomeStackScreens}
       />
       {/* <BottomNavigator.Screen
@@ -54,31 +45,14 @@ const BottomTabs = () => {
         component={SearchScreen}
       /> */}
       <BottomNavigator.Screen
-        name="Downloads"
-        options={{
-          title: 'Тавиур',
-          tabBarIcon: (e) => (
-            <Icon
-              name="md-download"
-              size={e.focused ? 25 : 20}
-              color={e.focused ? '#A491FF' : '#C6B9FF'}
-            />
-          ),
-        }}
-        component={DownloadsScreen}
+        name="BookShelf"
+        options={{title: 'Тавиур'}}
+        component={BookShelfScreen
+      }
       />
       <BottomNavigator.Screen
         name="Profile"
-        options={{
-          title: 'Бүртгэл',
-          tabBarIcon: (e) => (
-            <Icon
-              name="md-person"
-              size={e.focused ? 25 : 20}
-              color={e.focused ? '#A491FF' : '#C6B9FF'}
-            />
-          ),
-        }}
+        options={{title: 'Бүртгэл'}}
         component={ProfileScreen}
       />
     </BottomNavigator.Navigator>

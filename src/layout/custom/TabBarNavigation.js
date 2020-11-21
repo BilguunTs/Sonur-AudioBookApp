@@ -40,7 +40,7 @@ function CustomTabBar({state, descriptors, navigation,...args}) {
   const getText = (txt, focused) => {
     const styleText = useAnimatedStyle(() => {
       return {
-        color: '#35cb6f',
+        color: '#9088d4',
         textAlign: 'center',
         opacity: withSpring(focused ? 1 : 0, {damping: 20, stiffness: 90}),
         transform: [{scale: withSpring(focused ? 1 : 0.9)}],
@@ -53,7 +53,7 @@ function CustomTabBar({state, descriptors, navigation,...args}) {
     const IconStyle = useAnimatedStyle(() => {
       return {
         textAlign: 'center',
-        color: focused ? '#35cb6f' : '#8d99ae',
+        color: focused ? '#9088d4' : '#8d99ae',
         transform: [
           {
             scale: withSpring(focused ? 1.1 :1 , {
@@ -77,7 +77,7 @@ function CustomTabBar({state, descriptors, navigation,...args}) {
           />
         );
         break;
-      case 'Downloads':
+      case 'BookShelf':
         instance = (
           <AnimatedIcon
             name={focused ? 'md-albums' : 'md-albums-outline'}

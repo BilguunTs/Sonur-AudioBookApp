@@ -6,13 +6,14 @@ export const BackWrapper = ({Y, children}) => {
     const styleContainer = useAnimatedStyle(() => {
       const Value = 350 - Y.value * 2;
       return {
-        backgroundColor: '#dbe0e94D',
+        backgroundColor: '#70689799',
         minHeight:150,
         borderBottomLeftRadius: withSpring(Value, {damping: 20, stiffness: 90}),
         borderBottomRightRadius: withSpring(Value, {damping: 20, stiffness: 90}),
         transform: [
           {translateY: withSpring(1 - Y.value, {damping: 20, stiffness: 90})},
         ],
+        maxHeight:450
       };
     });
     const styleChildren = useAnimatedStyle(() => {
@@ -24,10 +25,10 @@ export const BackWrapper = ({Y, children}) => {
       };
     });
     return (
-      <LinearGradient colors={["#03045e","#caf0f8"]} >
       <Animated.View style={[styleContainer]}>
-        <Animated.View style={[styleChildren]}>{children}</Animated.View>
+        <Animated.View style={[styleChildren]}>
+          {children}
+          </Animated.View>
       </Animated.View>
-    </LinearGradient>
     );
   };

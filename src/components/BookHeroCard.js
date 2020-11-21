@@ -40,7 +40,7 @@ const BookHeroCard = ({
   const Title=!contrast?iOSUIKit.title3:iOSUIKit.title3White
   const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
   if (animated){
-   return <Pressable android_ripple={{color:"#90ee90"}} onPressIn={()=>pressing.value=true} 
+   return <Pressable android_ripple={{color:"#9088d494"}} onPressIn={()=>pressing.value=true} 
                      onPressOut={()=>pressing.value=false} 
                      onPress={handleOnPress}>
      <Animated.View style={[styleImg]}>

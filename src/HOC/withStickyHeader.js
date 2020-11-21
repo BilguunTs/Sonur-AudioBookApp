@@ -8,7 +8,7 @@ import {MAIN} from '../configs'
 import Header from "../layout/Header"
 import {BackWrapper} from '../components/BackWrapper'
 import TestSvg from '../svg'
-import Sun from '../svg/Sun'
+
 const ScrollContainer =({children,headerType})=>{
     const transY = useSharedValue(0);
     const isScrolling = useSharedValue(false);

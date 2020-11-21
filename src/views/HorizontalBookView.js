@@ -57,27 +57,20 @@ export default class HorizontalBookView extends Component {
   render() {
     return (
       <View style={{marginBottom: 1}}>
-        <View style={{margin: 10,flexDirection:'row',flex:1,alignContent:'space-between'}}>
+        <Pressable
+            onPress={this.handleNavigate}  
+            android_ripple={{
+              color:"#9088d4"
+            }}>  
+        <View style={{margin: 10,flexDirection:'row',alignItems:'center',alignContent:'space-between'}}>
           <Text style={[iOSUIKit.title3Emphasized,{fontFamily:"Conforta",flex:1}]}>
             {this.props.grouptitle || 'Hэр өгөөгyй'}
           </Text>
-          <View  style={{flex:1,flexDirection:'row',justifyContent:"flex-end",alignItems:"center"}}>
-          <Pressable
-            onPress={this.handleNavigate}  
-            android_ripple={{
-            color:'#fd8369',
-            borderless:true,
-            radius:10
-            }}>
-            <View style={{flexDirection:'row',alignItems:'center'}}>
-          <Text style={[iOSUIKit.bodyObject,{fontFamily:"Conforta",color:'#fd8369'}]}>
-           {'цааш үзэх'}
-          </Text>
-          <Icon size={14} name={'chevron-right'} color={"#fd8369"}/>
-            </View>
-          </Pressable>
-          </View>
+      
+          <Icon size={30} name={'arrow-right'} color={"#00000094"}/>
+          
         </View>
+          </Pressable>
         <VirtualizedList
           data={DATA}
           horizontal
