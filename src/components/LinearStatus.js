@@ -38,6 +38,7 @@ const style=StyleSheet.create({
         fontFamily:"Conforta",
         fontSize:10,
         color:"#eee",
+        fontWeight:"bold",
         lineHeight:13,
     }
 })

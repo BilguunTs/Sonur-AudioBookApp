@@ -5,7 +5,7 @@ export default class BookShelf extends Component {
   render() {
     return (
       <View>
-        <Downloads/>
+        <Downloads navigation={this.props.navigation}/>
       </View>
     );
   }

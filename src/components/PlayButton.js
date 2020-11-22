@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {TouchableOpacity, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {iOSUIKit} from 'react-native-typography';
-export default class ReadBookIconBtn extends Component {
+import {color} from '../configs'
+export default class ReadBookIconBtn extends Component {  
   render() {
     return (
       <TouchableOpacity
@@ -16,7 +17,7 @@ export default class ReadBookIconBtn extends Component {
           style={{
             flex: 1,
             justifyContent: 'center',
-            backgroundColor: this.props.colorBtn || 'orange',
+            backgroundColor: this.props.colorBtn || color.PRIMARY,
             borderRadius: 30,
             height: 40,
           }}>

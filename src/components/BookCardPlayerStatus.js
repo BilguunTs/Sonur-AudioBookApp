@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, View, TouchableOpacity, StyleSheet, Text,Pressable} from 'react-native';
+import {Image, View,StyleSheet, Text,Pressable} from 'react-native';
 import { iOSUIKit } from 'react-native-typography'
 import Animated,{
   useSharedValue,
@@ -13,7 +13,7 @@ import PlayButton from './PlayButton'
 import StatusBar from  './LinearStatus'
 import {numberWithCommas} from '../utils'
 import Icon from 'react-native-vector-icons/Feather'
-const FlatBookItem = ({
+const BookWithPlayerStatus = ({
   onPress,
   title = '',
   author = '',
@@ -42,8 +42,10 @@ const styleCont=useAnimatedStyle(()=>{
   }
 })
 const handleNavigate=()=>{onPress()}
+const handleLongPress= ()=>{}
 return (
     <Pressable  
+    onLongPress={handleLongPress}
     android_ripple={{color:"#fff",radius:30}} 
     onPress={handleNavigate.bind(this)} 
     onPressIn={()=>pressing.value=true}
@@ -67,7 +69,7 @@ return (
             </View>
             <View style={[styles.body]}>
             <BoxShadow setting={MAIN.shadow_Play_BTN}>
-          <PlayButton colorBtn='#35cb6f' size={40}/>
+          <PlayButton colorBtn='#9088d4' size={40}/>
           </BoxShadow> 
           </View>
             <View style={[styles.footer]}>
@@ -83,7 +85,7 @@ return (
   );
 };
 
-export default FlatBookItem;
+export default BookWithPlayerStatus
 const styles = StyleSheet.create({
   container:{
    // backgroundColor:'#dce1ea',

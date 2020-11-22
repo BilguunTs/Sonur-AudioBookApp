@@ -4,6 +4,9 @@ export const D = {
   WIDTH: Dimensions.get('window').width,
   HEIGHT: Dimensions.get('window').height,
 };
+export const color={
+  PRIMARY:"#9088d4"
+}
 export const MAIN = {
   app_name: 'Сонур',
   spring: {damping: 20, stiffness: 90},
@@ -36,7 +39,7 @@ export const MAIN = {
   shadow_Play_BTN:{
     width:80,
     height:80,
-    color:"#35cb6f",
+    color:color.PRIMARY,
     border:20,
     radius:30,
     opacity:0.2,
