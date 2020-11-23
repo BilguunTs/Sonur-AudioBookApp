@@ -14,6 +14,13 @@ import PlayButton from './PlayButton'
 
 import {numberWithCommas} from '../utils'
 import Icon from 'react-native-vector-icons/Feather'
+
+const Elevation =({elevated, children})=>{
+  if(elevated){
+  return <BoxShadow setting={MAIN.shadowOpt}>{children}</BoxShadow>
+  }
+  return <>{children}</>
+}
 const FlatBookItem = ({
   onPress,
   title = '',
@@ -24,6 +31,7 @@ const FlatBookItem = ({
   duration=0,
   skewY=0,
   about="",
+  elevated=true,
   price=0,
 }) => {
   const pressing = useSharedValue(false)
@@ -43,6 +51,7 @@ const styleCont=useAnimatedStyle(()=>{
     transform:[{skewY:`${skewY}deg`},{scale:scale.value}]
   }
 })
+
 const handleNavigate=()=>{onPress()}
 return (
     <Pressable  
@@ -52,15 +61,15 @@ return (
     onPressOut={()=>pressing.value=false}>
       <Animated.View style={[styleCont,styles.container]}>
         <View style={styles.left}>
-          <View style={{transform:[{translateY:-5}]}}>
-      <BoxShadow setting={MAIN.shadowOpt}>
+          <View>
+      <Elevation elevated={elevated}>
       <Pressable android_ripple onPress={onPress}>
       <Image
         style={{margin, width, ...styles.stretch}}
         source={{uri: img}}
         />
         </Pressable>
-        </BoxShadow>
+        </Elevation>
           </View>
         </View>
         <View

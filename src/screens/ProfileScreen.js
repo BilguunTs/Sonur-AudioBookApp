@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {Text, View,StyleSheet,Image} from 'react-native';
+import {Text, View,StyleSheet,Image,ScrollView} from 'react-native';
 import {iOSUIKit} from 'react-native-typography'
+import TabViews from '../views/TabViews'
 const URI="https://image.freepik.com/free-vector/cute-girl-gaming-holding-joystick-cartoon-icon-illustration-people-technology-icon-concept-isolated-flat-cartoon-style_138676-2169.jpg"
 export default class Profile extends Component {
   render() {
@@ -12,7 +13,7 @@ export default class Profile extends Component {
             <Text style={[style.text]}>дуусгасан</Text>
           </View>
           <View style={[style.centered,style.flex1]}>
-            <View style={style.avatarContainer}>
+            <View style={[style.avatarContainer,style.centered]}>
             <Image style={[style.avatar]} source={{uri:URI}}/>
             </View>
           </View>
@@ -22,12 +23,18 @@ export default class Profile extends Component {
           </View>
         </View>
         <View style={[style.body]}>
-          <View style={[style.centered,{marginVertical:3}]}>
-            <Text numberOfLines={1} style={[iOSUIKit.title3,style.text,{fontSize:25,lineHeight:32}]}>Bill bilguun</Text>
+          <View style={[style.centered,{marginVertical:1}]}>
+            <Text numberOfLines={1} style={[iOSUIKit.title3,style.text,{fontSize:25,lineHeight:30}]}>Bill bilguun</Text>
           </View>
-          <View style={[style.nowReading]}></View>
+          <View style={[style.tabContainer,style.centered]}>
+            <TabViews>
+              <View tabLabel={{label: "Бүртгэл"}}></View>
+              <View tabLabel={{label: "Тохиргоо"}}></View>
+            </TabViews>
+            
+          </View>
         </View>
-        <View style={[style.footer]}></View>
+        
       </View>
     );
   }
@@ -44,7 +51,10 @@ header:{
   flex:1,
   flexDirection:'row'
 },
-centered:{
+tabContainer:{
+  flex:1,
+}
+,centered:{
   justifyContent:'center',
   alignItems:'center'
 },
@@ -55,14 +65,15 @@ flex1:{
 flex:1
 },
 avatar:{
-   height:"100%",
-   width:"100%",
-   resizeMode:'contain'
+  width: 100,
+  height:100,
+  borderRadius: 50,
+
    
 },
 avatarContainer:{
   width:"100%",
 },
-body:{flex:2},
+body:{flex:4},
 footer:{flex:1}
 })
