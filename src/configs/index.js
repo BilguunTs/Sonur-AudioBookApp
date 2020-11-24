@@ -49,15 +49,3 @@ export const MAIN = {
   }
 };
 
-export const GLOBAL_VALUE={
-  gplayer:{
-    title:"",
-    length:0,
-    current:'',
-    chapters:[],
-    author:"",
-    thumbnail:{},
-    isActive:false
-  },
-  user:{}
-}

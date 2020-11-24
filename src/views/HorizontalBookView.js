@@ -3,50 +3,19 @@ import {View, VirtualizedList, Text, Pressable,Image} from 'react-native';
 import BookCard from '../components/BookHeroCard';
 import {iOSUIKit} from 'react-native-typography';
 import Icon from 'react-native-vector-icons/Feather'
+import {withGlobalContext} from '../context'
 
-const DATA = [
-  {
-    title: 'Dudasd',
-    author: 'ude2',
-    thumbnail: {
-      src: 'https://homepages.cae.wisc.edu/~ece533/images/arctichare.png',
-      path: '',
-    },
-  },
-  {
-    title: 'Duder',
-    author: 'ude2',
-    thumbnail: {
-      src: 'https://homepages.cae.wisc.edu/~ece533/images/girl.png',
-      path: '',
-    },
-  },
-  {
-    title: 'Dudest',
-    author: 'ude2',
-    thumbnail: {
-      src: 'https://homepages.cae.wisc.edu/~ece533/images/monarch.png',
-      path: '',
-    },
-  },
-  {
-    title: 'Dudeest',
-    author: 'ude3',
-    thumbnail: {
-      src: 'https://homepages.cae.wisc.edu/~ece533/images/serrano.png',
-      path: '',
-    },
-  },
-];
-export default class HorizontalBookView extends Component {
+ class HorizontalBookView extends Component {
   getItem = (data, index) => {
     return {
-      id: Math.random().toString(12).substring(0),
+      id: data[index].id,
       title: data[index].title,
+      isLocked:data[index].isLocked,
       author: data[index].author,
       thumbnail: data[index].thumbnail,
     };
   };
+ 
   handlePress = (data) => {
     this.props.navigation.navigate('BookDetail', {...data});
   };
@@ -55,6 +24,7 @@ export default class HorizontalBookView extends Component {
   this.props.navigation.navigate('BookLists');
   }
   render() {
+    const {stats} =this.props.global
     return (
       <View style={{marginBottom: 1}}>
         <Pressable
@@ -71,8 +41,9 @@ export default class HorizontalBookView extends Component {
           
         </View>
           </Pressable>
+          {stats.books.new_books.length!==0&&
         <VirtualizedList
-          data={DATA}
+          data={stats?.books.new_books}
           horizontal
           contentContainerStyle={{}}
           initialNumToRender={4}
@@ -81,6 +52,7 @@ export default class HorizontalBookView extends Component {
             return (
               <View key={item.id} style={{margin: 10}}>
                 <BookCard
+                  id={item.id}
                   animated
                   onPress={this.handlePress.bind(this, item)}
                   title={item.title}
@@ -91,10 +63,11 @@ export default class HorizontalBookView extends Component {
             );
           }}
           keyExtractor={(item) => item.id}
-          getItemCount={() => DATA.length}
+          getItemCount={() =>stats?.books.new_books.length}
           getItem={this.getItem.bind(this)}
-        />
+        />}
       </View>
     );
   }
 }
+export default withGlobalContext(HorizontalBookView)

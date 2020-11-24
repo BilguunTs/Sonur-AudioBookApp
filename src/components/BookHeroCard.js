@@ -40,7 +40,7 @@ const BookHeroCard = ({
   const Title=!contrast?iOSUIKit.title3:iOSUIKit.title3White
   const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
   if (animated){
-   return <Pressable android_ripple={{color:"#9088d494"}} onPressIn={()=>pressing.value=true} 
+   return <Pressable style={{maxWidth:122}} android_ripple={{color:"#9088d494"}} onPressIn={()=>pressing.value=true} 
                      onPressOut={()=>pressing.value=false} 
                      onPress={handleOnPress}>
      <Animated.View style={[styleImg]}>
@@ -53,8 +53,8 @@ const BookHeroCard = ({
     </Animated.View>
     {!disable && (
       <View>
-        <Text numberOfLines={1} style={{fontFamily:"Conforta",...Title}}>{title}</Text>
-        <Text numberOfLines={1} style={[FootNote,{fontFamily:'Conforta'}]}>{author}</Text>
+        <Text numberOfLines={2} lineBreakMode='tail' style={{fontFamily:"Conforta",...Title}}>{title}</Text>
+        <Text numberOfLines={1} style={[FootNote,{fontFamily:'Conforta',opacity:0.5}]}>{author}</Text>
       </View>
     )}
    </Pressable>  
