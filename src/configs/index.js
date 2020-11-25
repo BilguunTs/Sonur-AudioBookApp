@@ -25,6 +25,9 @@ export const MAIN = {
       SEARCH:"SEARCH"
     }
   },
+  bottom_tab:{
+    HEIGHT:60
+  },
   shadowOpt : {
     width:122,
     height:D.HEIGHT/3.4 ,

@@ -22,7 +22,8 @@ function AudioPlayer(props) {
   });
   const circleY= useDerivedValue(()=>{
     if(drag.value>=D.HEIGHT*0.95-CIRCLE_SIZE){
-      return withSpring(D.HEIGHT*0.95-CIRCLE_SIZE,MAIN.spring)
+      let fixed=D.HEIGHT-MAIN.bottom_tab.HEIGHT-CIRCLE_SIZE
+      return withSpring(fixed-CIRCLE_SIZE/2,MAIN.spring)
     }
     return  drag.value
   })
@@ -39,7 +40,6 @@ function AudioPlayer(props) {
     }
   })
   const dHeight = useDerivedValue(()=>{
-    
     
     return D.HEIGHT*0.95-(drag.value+CIRCLE_SIZE)
     
@@ -123,8 +123,9 @@ function AudioPlayer(props) {
       transform:[{translateX:-circleX.value},{translateY:circleY.value}],
       top:0,
       zIndex:3,
-      borderTopRightRadius:dBorderRadius.value ,
-      borderBottomRightRadius:dBorderRadius.value,
+      //borderTopRightRadius:dBorderRadius.value ,
+      //borderBottomRightRadius:dBorderRadius.value,
+      borderRadius:dBorderRadius.value,
       backgroundColor:"#fff",
       
     }
@@ -151,27 +152,29 @@ function AudioPlayer(props) {
     }
   })
   const handleGestureEvent=useAnimatedGestureHandler({
-   onStart:()=>{
-    
+   onStart:(_,c)=>{
+    c.startY=drag.value
    },
-   onActive:(e)=>{
+   onActive:(e,c)=>{
     //  if(e.translationY<0){
     //    return drag.value=withSpring(0,MAIN.spring)
     //  }
     let fixedY=e.translationY;
-    if(fixedY<=0){
-      fixedY=1;
-    }
-    return drag.value=fixedY
+    // if(fixedY<=0){
+    //   fixedY=1;
+    // }
+    drag.value=c.startY+fixedY
    //return drag.value=withSpring(e.translationY,MAIN.spring)
    },
-   onEnd:(e)=>{
-    if (e.translationY<D.HEIGHT/3){
-      drag.value=withSpring(0,MAIN.spring)
-    }else{
-      drag.value=withSpring(D.HEIGHT*0.85,MAIN.spring)
+   onEnd:(e,c)=>{
+    // if (e.translationY<D.HEIGHT/3){
+    //   c.startY=0
+    //   drag.value=withSpring(0,MAIN.spring)
+    // }else{
+    //   c.startY=D.HEIGHT*0.85
+    //   drag.value=withSpring(D.HEIGHT*0.85,MAIN.spring)
 
-    }
+    // }
    }
   })
  const toggleshrink = ()=>{

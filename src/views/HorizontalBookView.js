@@ -21,7 +21,7 @@ import {withGlobalContext} from '../context'
   };
   handleNavigate=()=>{
   
-  this.props.navigation.navigate('BookLists');
+  this.props.navigation.navigate('BookLists',{grouptitle:this.props.grouptitle||""});
   }
   render() {
     const {stats} =this.props.global

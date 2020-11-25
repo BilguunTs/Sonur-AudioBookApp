@@ -75,10 +75,10 @@ export class ContextProvider extends Component{
     init =()=>{
       //let user = Object.assign(single_values.user,{...dummyuser,isAuth:true})
       //this.setUser(user)
-      this.initBooks(dummydata,dummyuser.purchased)
+      this.initBooks()
      }
      componentWillUnmount(){
-       console.log("unmounting")
+       console.log('unmounting')
      }
     setUser =(obj)=>{
       this.setState({user:obj})
@@ -87,24 +87,28 @@ export class ContextProvider extends Component{
       let instance = Object.assign(GLOBAL_VALUE.gplayer,{...obj});
       this.setState({gplayer:{...instance,isActive:true}})
     }
-    initBooks =(books,userbooks)=>{
-      if(books===undefined||userbooks===undefined)return
-      let array =this.state.books.new_books
-      let b=0
-      books.map((b,i)=>{
-        let instance =Object.assign(single_values.book,{...b})
-        
+    initBooks = async()=>{
+      if(dummydata===undefined||dummyuser===undefined)return
+      const userbooks=dummyuser.purchased
+      try{
+        let fixedBooks=[]
+        for( let b of dummydata){
+        let instance =await Object.assign(single_values.book,{...b})
         if(userbooks[b.id]===undefined){
-          instance.isLocked=true
-          
+          instance.isLocked= true      
         } else if( userbooks[b.id]!==undefined){
-          instance.isLocked=false
-
+          instance.isLocked= false
         }
-        b++
-      })
-      console.log(b)
-      
+        fixedBooks.push({...instance})
+      }
+      this.setNewBooks(fixedBooks)
+    }catch(e){
+      console.log(e)
+    }
+    }
+    setNewBooks=(books)=>{
+     if(books===undefined)return
+     this.setState({books:{...this.state.books,new_books:books}})
     }
     render(){ 
      return(

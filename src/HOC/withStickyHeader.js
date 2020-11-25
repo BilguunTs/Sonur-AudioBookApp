@@ -48,10 +48,11 @@ const ScrollContainer =({children,headerType})=>{
             </Animated.ScrollView>
     </SafeAreaView>
 }
-const StickyHeaderWrapper =(headerType=MAIN.HEADER.WITH.SEARCH)=>(Component)=>{ 
-    if(headerType===MAIN.HEADER.WITH.BACK){
+const StickyHeaderWrapper =(headerType=MAIN.HEADER.WITH.SEARCH)=>(Component)=>{
+   if(headerType===MAIN.HEADER.WITH.BACK){
         return class Wrapped extends React.Component{
             render(){
+              
                return <SafeAreaView style={{flex: 1,backgroundColor:'#e8ebf2'}}>
                        <Header 
                               {...this.props} 

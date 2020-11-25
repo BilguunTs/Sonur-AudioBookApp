@@ -6,7 +6,7 @@ import {D,MAIN} from '../configs'
 import {withHeader} from '../HOC'
 import {withGlobalContext} from '../context'
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList)
-const VerticalBooks = ({navigation,...props})=>{
+const VerticalBooks = ({navigation,params,...props})=>{
     const direction = useSharedValue(0);
     const {stats}=props.global
     const skewY=useDerivedValue(()=>{
@@ -51,4 +51,4 @@ const VerticalBooks = ({navigation,...props})=>{
             renderItem={renderItem}/>
  
 }
-export default withHeader(MAIN.HEADER.WITH.BACK)(withGlobalContext(VerticalBooks))
+export default withGlobalContext(VerticalBooks)

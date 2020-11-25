@@ -78,7 +78,7 @@ export default withGlobalContext(({navigation, route,global}) => {
             <View style={{position:'absolute',bottom:0,width:D.WIDTH}}>
             <LinearGradient style={{width:"100%",alignItems:'center' }} colors={['rgba(255, 255, 255, 0.3)',  '#fff']}> 
               <View style={{marginBottom:10}}>
-              <FloatingFooterActions type={isLocked?"purchase":"play"}/>
+              <FloatingFooterActions item={route.params} global={global} type={isLocked?"purchase":"play"}/>
               </View>
             </LinearGradient>
             </View>
