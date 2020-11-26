@@ -11,7 +11,7 @@ import BookShelfScreen from '../screens/BookShelf';
 import CustomTabBar from '../layout/custom/TabBarNavigation';
 import GPlayer from '../screens/AudioPlayer';
 import BookLists from '../screens/BookLists'
-import Icon from 'react-native-vector-icons/Ionicons';
+
 import {withGlobalContext} from '../context'
 const Root = createStackNavigator();
 const BottomNavigator = createBottomTabNavigator();
@@ -68,7 +68,6 @@ const MainRoot = (_props)=>{
 return <><NavigationContainer>
   <RootNavigator {..._props}/>
 </NavigationContainer>
- {_props.global.stats.gplayer.isActive&& <GPlayer/>}
 </>
 }
 

@@ -132,7 +132,10 @@ export function withGlobalContext(Component) {
       render() {
         return (
           <Contextulize.Consumer>
-            {(store) => <Component {...this.props} global={store} />}
+            {(store) =><> 
+            <Component {...this.props} global={store} />
+            {store.stats.gplayer.isActive&& <GPlayer/>}
+          </>}
           </Contextulize.Consumer>
         );
       }
