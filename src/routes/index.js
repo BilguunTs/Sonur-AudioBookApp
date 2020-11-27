@@ -30,20 +30,6 @@ const BottomTabs = () => {
         options={{title: 'Нүүр'}}
         component={HomeStackScreens}
       />
-      {/* <BottomNavigator.Screen
-        name="Search"
-        options={{
-          title: 'Хайх',
-          tabBarIcon: (e) => (
-            <Icon
-              name="md-search"
-              size={e.focused ? 25 : 20}
-              color={e.focused ? '#A491FF' : '#C6B9FF'}
-            />
-          ),
-        }}
-        component={SearchScreen}
-      /> */}
       <BottomNavigator.Screen
         name="BookShelf"
         options={{title: 'Тавиур'}}

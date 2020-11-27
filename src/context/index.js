@@ -1,6 +1,8 @@
 import React, {createContext, Component} from 'react';
-import { Alert } from 'react-native';
+import {View,StyleSheet } from 'react-native';
+import Animated,{useSharedValue,useAnimatedGestureHandler} from 'react-native-reanimated'
 import {GLOBAL_VALUE,single_values} from './states'
+import Gplayer from '../screens/AudioPlayer'
 export const Contextulize = createContext();
 const dummydata=[
   { id:'1',
@@ -62,6 +64,7 @@ const dummyuser={
     "4":{title:"Dudeest"}
   }
 }
+
 export class ContextProvider extends Component{
     constructor(props) {
         super(props);
@@ -134,7 +137,6 @@ export function withGlobalContext(Component) {
           <Contextulize.Consumer>
             {(store) =><> 
             <Component {...this.props} global={store} />
-            {store.stats.gplayer.isActive&& <GPlayer/>}
           </>}
           </Contextulize.Consumer>
         );

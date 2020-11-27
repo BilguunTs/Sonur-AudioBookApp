@@ -1,42 +1,17 @@
 import React from 'react';
 
-import {TouchableOpacity} from 'react-native';
-import Animated, {useAnimatedStyle, withSpring} from 'react-native-reanimated';
+import {TouchableOpacity,StyleSheet} from 'react-native';
+import Animated, {useAnimatedStyle, useSharedValue,withSpring,interpolate,Extrapolate} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Gplayer from '../../screens/AudioPlayer'
 import {withGlobalContext} from '../../context'
 import {D,MAIN}from '../../configs'
 const WIDTH = D.WIDTH;
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-function CustomTabBar({state, descriptors, navigation,...args}) {
-  const styleTabs = useAnimatedStyle(() => {
-    let itemW = WIDTH ;
-    let centered =WIDTH / 2 - itemW / 2
-    
-    return {
-      flexDirection: 'row',
-      backgroundColor: '#fff',
-      height: MAIN.bottom_tab.HEIGHT,
-      width: itemW,
-      left:centered,
-      bottom: 0,
-      position: 'absolute',
-      borderTopLeftRadius: 25,
-      borderTopRightRadius:25,
-      justifyContent: 'center',
-      alignItems: 'center',
-    };
-  });
-
-  const styleTab = useAnimatedStyle(() => {
-    return {
-      flex: 1,
-      justifyContent: 'center',
-      height: 50,
-      margin: 4,
-      borderRadius: 50,
-    };
-  });
+const CustomTabBar=({state, descriptors, navigation,...args})=> {
+  const dragValue=useSharedValue(0)
+  const maxDrag=D.HEIGHT-MAIN.bottom_tab.HEIGHT  
   const getText = (txt, focused) => {
     const styleText = useAnimatedStyle(() => {
       return {
@@ -100,7 +75,67 @@ function CustomTabBar({state, descriptors, navigation,...args}) {
     }
     return instance;
   };
-  return (
+  const styleTab = useAnimatedStyle(() => {
+    return {
+      flex: 1,
+      justifyContent: 'center',
+      height: 50,
+      margin: 4,
+      borderRadius: 50,
+    };
+  });
+  const styleGplayerContainer =useAnimatedStyle(()=>{
+    const width = interpolate(dragValue.value,
+      [0,maxDrag],
+      [D.WIDTH,D.WIDTH/4],
+      Extrapolate.CLAMP);
+    const height= interpolate(dragValue.value,
+      [0,maxDrag],
+      [D.HEIGHT,MAIN.bottom_tab.HEIGHT],
+      Extrapolate.CLAMP)
+    const borderRadius =interpolate(dragValue.value,
+      [0,maxDrag],
+      [0,width/2],
+      Extrapolate.CLAMP)
+    return {
+      width,
+      height,
+      left:WIDTH / 2 - width / 2,
+      borderRadius,
+      transform:[{translateY:interpolate(
+        dragValue.value,
+        [0,maxDrag],
+        [0,D.HEIGHT*0.8],
+        Extrapolate.CLAMP)}],
+      backgroundColor:"#fff",
+    }
+  })
+  const styleTabs = useAnimatedStyle(() => {
+    let itemW = WIDTH ;
+    let centered =WIDTH / 2 - itemW / 2
+    return {
+      flexDirection: 'row',
+      backgroundColor: '#fff',
+      height: MAIN.bottom_tab.HEIGHT,
+      width: itemW,
+      left:centered,
+      bottom: 0,
+      position: 'absolute',
+      borderTopLeftRadius: 25,
+      borderTopRightRadius:25,
+      justifyContent: 'center',
+      alignItems: 'center',
+      transform:[{translateY:interpolate(dragValue.value,
+        [0,D.HEIGHT*0.5],
+        [MAIN.bottom_tab.HEIGHT,0],
+        Extrapolate.CLAMP
+        )}]
+    };
+  });
+  return (<>
+    <Animated.View style={[StyleSheet.absoluteFill,styleGplayerContainer]}>
+    <Gplayer dragValue={dragValue} global={args.global}/>
+    </Animated.View>
     <Animated.View style={[styleTabs]}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
@@ -145,6 +180,8 @@ function CustomTabBar({state, descriptors, navigation,...args}) {
         );
       })}
     </Animated.View>
+    </>
   );
 }
+
 export default withGlobalContext(CustomTabBar);

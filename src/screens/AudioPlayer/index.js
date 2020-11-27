@@ -1,37 +1,31 @@
 import React from 'react';
-
+import {View,StyleSheet}from 'react-native'
 import {D,MAIN} from  '../../configs'
-import Animated ,{
-  useAnimatedStyle,
-  useSharedValue, 
-} from 'react-native-reanimated'
+import Animated,{
+  interpolate,
+  Extrapolate
+ } from 'react-native-reanimated'
 
 import FluidChapters from './FluidChapters';
 import MainPlayer from './MainPlayer';
-
-import { withGlobalContext } from '../../context';
-
+import Header from './Header'
 const CIRCLE_SIZE=MAIN.CIRCLE_SIZE
-function AudioPlayer(props) {
-  const expantion =useSharedValue(false)
-
-  React.useEffect(()=>{
-    if(props.global.stats){
-      const {gplayer}=props.global.stats
-      if(gplayer.isActive){
-        expantion.value=true;
-      }else{
-        expantion.value=false;
-      }
-      
-    }
-  },[props.global.stats.gplayer.isActive])
+const AudioPlayer=({global,dragValue})=> {
   
-
-  return (<Animated.View  style={{position:'absolute',width:D.WIDTH,height:D.HEIGHT}}>
-      <MainPlayer filename="testaudio.mp3" />
-      <FluidChapters /> 
-   </Animated.View>
+  return (
+  <View  style={{flex:1}}>
+    <Animated.View style={StyleSheet.absoluteFill} >
+<Animated.View style={{flex:1,justifyContent:'center'}}>
+      <Header dragValue={dragValue} leftAction={()=>console.log("clicked due")}/>
+    </Animated.View>
+    <View style={{flex:3,justifyContent:'center'}}>
+      <MainPlayer  filename="testaudio.mp3" />
+    </View>
+    <View style={{flex:1,alignItems:'center'}}>
+      <FluidChapters />
+      </View> 
+    </Animated.View>
+   </View>
   );
 }
-export default withGlobalContext(AudioPlayer)
+export default AudioPlayer
