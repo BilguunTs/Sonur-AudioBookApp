@@ -9,7 +9,6 @@ import DetailScreen from '../screens/Details/bookdetail';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import BookShelfScreen from '../screens/BookShelf';
 import CustomTabBar from '../layout/custom/TabBarNavigation';
-import GPlayer from '../screens/AudioPlayer';
 import BookLists from '../screens/BookLists'
 
 import {withGlobalContext} from '../context'

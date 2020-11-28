@@ -2,7 +2,7 @@ import React, {createContext, Component} from 'react';
 import {View,StyleSheet } from 'react-native';
 import Animated,{useSharedValue,useAnimatedGestureHandler} from 'react-native-reanimated'
 import {GLOBAL_VALUE,single_values} from './states'
-import Gplayer from '../screens/AudioPlayer'
+
 export const Contextulize = createContext();
 const dummydata=[
   { id:'1',
