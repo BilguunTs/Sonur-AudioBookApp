@@ -11,6 +11,7 @@ import {withGlobalContext} from '../context'
       id: data[index].id,
       title: data[index].title,
       isLocked:data[index].isLocked,
+      price:data[index].price,
       author: data[index].author,
       thumbnail: data[index].thumbnail,
     };
@@ -36,22 +37,21 @@ import {withGlobalContext} from '../context'
           <Text style={[iOSUIKit.title3Emphasized,{fontFamily:"Conforta",flex:1}]}>
             {this.props.grouptitle || 'Hэр өгөөгyй'}
           </Text>
-      
           <Icon size={30} name={'arrow-right'} color={"#00000094"}/>
-          
         </View>
           </Pressable>
           {stats.books.new_books.length!==0&&
         <VirtualizedList
           data={stats?.books.new_books}
           horizontal
-          contentContainerStyle={{}}
+          contentContainerStyle={{paddingHorizontal:10}}
           initialNumToRender={4}
           showsHorizontalScrollIndicator={false}
           renderItem={({item}) => {
             return (
-              <View key={item.id} style={{margin: 10}}>
+              <View key={item.id} style={{marginHorizontal:7}} >
                 <BookCard
+                  price={item.price}
                   id={item.id}
                   animated
                   onPress={this.handlePress.bind(this, item)}

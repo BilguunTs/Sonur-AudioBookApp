@@ -12,7 +12,8 @@ export const MAIN = {
   spring: {damping: 20, stiffness: 90},
   CIRCLE_SIZE: D.HEIGHT-D.HEIGHT*0.85,
   book:{
-    height:D.HEIGHT/3.4
+    height:150,
+    width:110
   },
   HEADER:{
     TYPE:{
@@ -29,8 +30,8 @@ export const MAIN = {
     HEIGHT:60
   },
   shadowOpt : {
-    width:122,
-    height:D.HEIGHT/3.4 ,
+    height:150,
+    width:110,
     color:"#000",
     border:10,
     radius:10,

@@ -6,6 +6,7 @@ import {HomeScreen} from '../screens/Home';
 //import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DetailScreen from '../screens/Details/bookdetail';
+import SettingsScreen from '../screens/Settings'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import BookShelfScreen from '../screens/BookShelf';
 import CustomTabBar from '../layout/custom/TabBarNavigation';
@@ -32,13 +33,17 @@ const BottomTabs = () => {
       <BottomNavigator.Screen
         name="BookShelf"
         options={{title: 'Тавиур'}}
-        component={BookShelfScreen
-      }
+        component={BookShelfScreen}
       />
       <BottomNavigator.Screen
         name="Profile"
         options={{title: 'Бүртгэл'}}
         component={ProfileScreen}
+      />
+      <BottomNavigator.Screen
+        name="Settings"
+        options={{title: 'Тохиргоо'}}
+        component={SettingsScreen}
       />
     </BottomNavigator.Navigator>
   );

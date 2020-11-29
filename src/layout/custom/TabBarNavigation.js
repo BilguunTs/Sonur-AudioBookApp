@@ -2,13 +2,14 @@ import React from 'react';
 import {TouchableOpacity,StyleSheet,View} from 'react-native';
 import Animated, {
   useAnimatedStyle,
+  useAnimatedGestureHandler,
   useSharedValue,
   withSpring,
   interpolate,
   Extrapolate,
   } from 'react-native-reanimated';
+import {PanGestureHandler} from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons';
-
 import FluidChapters from '../../screens/AudioPlayer/FluidChapters';
 import MainPlayer from '../../screens/AudioPlayer/MainPlayer';
 import Header from '../../screens/AudioPlayer/Header'
@@ -24,7 +25,7 @@ const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 const StickyContainer = ({dragValue})=> {
   const styleShrink =useAnimatedStyle(()=>{
     const opacity=interpolate(dragValue.value,
-      [0,maxDrag],
+      [0,maxDrag/2],
       [1,0],
       Extrapolate.CLAMP)
     const scale =interpolate(dragValue.value,
@@ -35,33 +36,59 @@ const StickyContainer = ({dragValue})=> {
       [0,maxDrag],
       [0,maxDrag],
       Extrapolate.CLAMP)
+    const flex=interpolate(dragValue.value,[0,maxDrag],[3,0],Extrapolate.CLAMP)
     return {
       opacity,
+      flex,
       transform:[{scale},{translateY}],
       overflow:'hidden'
     }
   })
-  const styleCircle=useAnimatedStyle(()=>{
+  const styleHeaderWrapper =useAnimatedStyle(()=>{
+    const opacity = interpolate(dragValue.value,[0,maxDrag/2],[1,0],Extrapolate.CLAMP)
+    const width=interpolate(dragValue.value,[0,maxDrag+100],[D.WIDTH,0],Extrapolate.CLAMP)
     return {
-      width:MAIN.CIRCLE_SIZE*0.8,
-      height:MAIN.CIRCLE_SIZE*0.8,
-      borderRadius:MAIN.CIRCLE_SIZE/2,
-      backgroundColor:color.PRIMARY,
-      position:'absolute',
-      top:withSpring(MAIN.CIRCLE_SIZE/2-(MAIN.CIRCLE_SIZE*0.8)/2),
-      right:0,
+      width,
+      opacity,
+      overflow:'hidden',
     }
   })
-  const handleCollapse=()=>{
-   dragValue.value=withSpring(maxDrag,MAIN.spring)
-  }
+  const styleGrabber =useAnimatedStyle(()=>{
+    const borderRadius = interpolate(dragValue.value,[0,maxDrag],[0,MAIN.CIRCLE_SIZE/2],Extrapolate.CLAMP)
+    const bgOpacity=interpolate(dragValue.value,[0,maxDrag],[0,1],Extrapolate.CLAMP)
+    return {
+     flex:1,
+     justifyContent:'center',
+     borderRadius,
+     backgroundColor:`rgba(144, 136, 212, ${bgOpacity})`,
+    }
+  })
+  const handleCollapse=()=>dragValue.value=withSpring(maxDrag,MAIN.spring)
+
+  const handleEvent=useAnimatedGestureHandler({
+    onStart:(_,c)=>{
+      c.startY=dragValue.value
+    },
+    onActive:(e,ctx)=>{
+      dragValue.value=ctx.startY+e.translationY
+    },
+    onEnd:(e,ctx)=>{
+      if(e.translationY<maxDrag/2){
+        dragValue.value=withSpring(0,MAIN.spring)
+      }else{
+        dragValue.value=withSpring(maxDrag,MAIN.spring)
+      }
+    }
+  })
   return (<View style={StyleSheet.absoluteFill}>
-    <Animated.View style={{flex:1, justifyContent:'center'}}>
-      <Header dragValue={dragValue} maxDrag={maxDrag}  leftAction={handleCollapse}>
-      </Header>
-   <Animated.View style={styleCircle}/>
+    <PanGestureHandler onGestureEvent={handleEvent}>
+    <Animated.View style={styleGrabber}>
+      <Animated.View style={styleHeaderWrapper}>
+      <Header dragValue={dragValue} maxDrag={maxDrag}  leftAction={handleCollapse}/>
+      </Animated.View>
     </Animated.View>
-  <Animated.View style={[styleShrink,{flex:3}]} >
+    </PanGestureHandler>
+  <Animated.View style={[styleShrink]} >
     <Animated.View style={[{flex:3,justifyContent:'center'}]}>
       <MainPlayer  filename="testaudio.mp3" />
     </Animated.View>
@@ -73,7 +100,7 @@ const StickyContainer = ({dragValue})=> {
   );
 }
 const CustomTabBar=({state, descriptors, navigation,...args})=> {
-  const dragValue=useSharedValue(0)
+  const dragValue=useSharedValue(maxDrag)
   const getText = (txt, focused) => {
     const styleText = useAnimatedStyle(() => {
       return {
@@ -132,6 +159,15 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
           />
         );
         break;
+      case 'Settings':
+          instance = (
+            <AnimatedIcon
+              name={focused ? 'md-settings' : 'md-settings-outline'}
+              size={25}
+              style={[IconStyle]}
+            />
+          );
+          break;
       default:
         instance = null;
     }
@@ -142,18 +178,18 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
       flex: 1,
       justifyContent: 'center',
       height: 50,
-      margin: 4,
+      margin: 0,
       borderRadius: 50,
     };
   });
   const styleGplayerContainer =useAnimatedStyle(()=>{
     const width = interpolate(dragValue.value,
       [0,maxDrag],
-      [D.WIDTH,MAIN.CIRCLE_SIZE],
+      [D.WIDTH,MAIN.CIRCLE_SIZE*0.4],
       Extrapolate.CLAMP);
     const height= interpolate(dragValue.value,
       [0,maxDrag],
-      [D.HEIGHT,MAIN.CIRCLE_SIZE],
+      [D.HEIGHT,MAIN.CIRCLE_SIZE*0.4],
       Extrapolate.CLAMP)
     const borderRadius =interpolate(dragValue.value,
       [0,maxDrag],
@@ -161,20 +197,17 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
       Extrapolate.CLAMP)
     const bottom =interpolate(dragValue.value,
       [0,D.HEIGHT*0.5],
-      [0,MAIN.bottom_tab.HEIGHT+5],
+      [0,MAIN.bottom_tab.HEIGHT-(MAIN.CIRCLE_SIZE*0.5)],
       Extrapolate.CLAMP)
     return {
       width,
       height,
+      zIndex:7,
       bottom,
       position:'absolute',
       left:WIDTH / 2 - width / 2,
       borderRadius,
-      // transform:[{translateY:interpolate(
-      //   dragValue.value,
-      //   [0,maxDrag],
-      //   [0,D.HEIGHT*0.8],
-      //   Extrapolate.CLAMP)}],
+      elevation:15,
       backgroundColor:"#fff",
     }
   })
@@ -189,12 +222,13 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
       left:centered,
       bottom: 0,
       position: 'absolute',
-      borderTopLeftRadius: 25,
-      borderTopRightRadius:25,
+      elevation:10,
+      borderTopLeftRadius: 15,
+      borderTopRightRadius:15,
       justifyContent: 'center',
       alignItems: 'center',
       transform:[{translateY:interpolate(dragValue.value,
-        [0,D.HEIGHT*0.5],
+        [0,maxDrag],
         [MAIN.bottom_tab.HEIGHT,0],
         Extrapolate.CLAMP
         )}]
@@ -252,7 +286,10 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={[styleTab]}>
+            style={[{
+              marginRight:index===1?MAIN.CIRCLE_SIZE/3:0,
+              marginLeft:index===2?MAIN.CIRCLE_SIZE/3:0
+              },styleTab]}>
             {getIcon(route.name, isFocused)}
             {getText(label, isFocused)}
           </AnimatedTouchable>
