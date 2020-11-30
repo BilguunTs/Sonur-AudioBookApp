@@ -3,91 +3,56 @@ import {View, VirtualizedList, Text, Pressable,Image} from 'react-native';
 import BookCard from '../components/BookHeroCard';
 import {iOSUIKit} from 'react-native-typography';
 import Icon from 'react-native-vector-icons/Feather'
+import {withGlobalContext} from '../context'
 
-const DATA = [
-  {
-    title: 'Dudasd',
-    author: 'ude2',
-    thumbnail: {
-      src: 'https://homepages.cae.wisc.edu/~ece533/images/arctichare.png',
-      path: '',
-    },
-  },
-  {
-    title: 'Duder',
-    author: 'ude2',
-    thumbnail: {
-      src: 'https://homepages.cae.wisc.edu/~ece533/images/girl.png',
-      path: '',
-    },
-  },
-  {
-    title: 'Dudest',
-    author: 'ude2',
-    thumbnail: {
-      src: 'https://homepages.cae.wisc.edu/~ece533/images/monarch.png',
-      path: '',
-    },
-  },
-  {
-    title: 'Dudeest',
-    author: 'ude3',
-    thumbnail: {
-      src: 'https://homepages.cae.wisc.edu/~ece533/images/serrano.png',
-      path: '',
-    },
-  },
-];
-export default class HorizontalBookView extends Component {
+ class HorizontalBookView extends Component {
   getItem = (data, index) => {
     return {
-      id: Math.random().toString(12).substring(0),
+      id: data[index].id,
       title: data[index].title,
+      isLocked:data[index].isLocked,
+      price:data[index].price,
       author: data[index].author,
       thumbnail: data[index].thumbnail,
     };
   };
+ 
   handlePress = (data) => {
     this.props.navigation.navigate('BookDetail', {...data});
   };
   handleNavigate=()=>{
   
-  this.props.navigation.navigate('BookLists');
+  this.props.navigation.navigate('BookLists',{grouptitle:this.props.grouptitle||""});
   }
   render() {
+    const {stats} =this.props.global
     return (
       <View style={{marginBottom: 1}}>
-        <View style={{margin: 10,flexDirection:'row',flex:1,alignContent:'space-between'}}>
+        <Pressable
+            onPress={this.handleNavigate}  
+            android_ripple={{
+              color:"#9088d4"
+            }}>  
+        <View style={{margin: 10,flexDirection:'row',alignItems:'center',alignContent:'space-between'}}>
           <Text style={[iOSUIKit.title3Emphasized,{fontFamily:"Conforta",flex:1}]}>
             {this.props.grouptitle || 'Hэр өгөөгyй'}
           </Text>
-          <View  style={{flex:1,flexDirection:'row',justifyContent:"flex-end",alignItems:"center"}}>
-          <Pressable
-            onPress={this.handleNavigate}  
-            android_ripple={{
-            color:'#fd8369',
-            borderless:true,
-            radius:10
-            }}>
-            <View style={{flexDirection:'row',alignItems:'center'}}>
-          <Text style={[iOSUIKit.bodyObject,{fontFamily:"Conforta",color:'#fd8369'}]}>
-           {'цааш үзэх'}
-          </Text>
-          <Icon size={14} name={'chevron-right'} color={"#fd8369"}/>
-            </View>
-          </Pressable>
-          </View>
+          <Icon size={30} name={'arrow-right'} color={"#00000094"}/>
         </View>
+          </Pressable>
+          {stats.books.new_books.length!==0&&
         <VirtualizedList
-          data={DATA}
+          data={stats?.books.new_books}
           horizontal
-          contentContainerStyle={{}}
+          contentContainerStyle={{paddingHorizontal:10}}
           initialNumToRender={4}
           showsHorizontalScrollIndicator={false}
           renderItem={({item}) => {
             return (
-              <View key={item.id} style={{margin: 10}}>
+              <View key={item.id} style={{marginHorizontal:7}} >
                 <BookCard
+                  price={item.price}
+                  id={item.id}
                   animated
                   onPress={this.handlePress.bind(this, item)}
                   title={item.title}
@@ -98,10 +63,11 @@ export default class HorizontalBookView extends Component {
             );
           }}
           keyExtractor={(item) => item.id}
-          getItemCount={() => DATA.length}
+          getItemCount={() =>stats?.books.new_books.length}
           getItem={this.getItem.bind(this)}
-        />
+        />}
       </View>
     );
   }
 }
+export default withGlobalContext(HorizontalBookView)

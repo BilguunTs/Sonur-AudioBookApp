@@ -33,7 +33,6 @@ export default function FluidChapters() {
       borderTopRightRadius: 25,
       borderBottomLeftRadius: withSpring(!toggleList.value ? 25 : 0),
       borderBottomRightRadius: withSpring(!toggleList.value ? 25 : 0),
-      zIndex: 5,
       // justifyContent: 'center',
     };
   });

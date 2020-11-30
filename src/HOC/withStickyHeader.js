@@ -8,7 +8,7 @@ import {MAIN} from '../configs'
 import Header from "../layout/Header"
 import {BackWrapper} from '../components/BackWrapper'
 import TestSvg from '../svg'
-import Sun from '../svg/Sun'
+
 const ScrollContainer =({children,headerType})=>{
     const transY = useSharedValue(0);
     const isScrolling = useSharedValue(false);
@@ -48,10 +48,11 @@ const ScrollContainer =({children,headerType})=>{
             </Animated.ScrollView>
     </SafeAreaView>
 }
-const StickyHeaderWrapper =(headerType=MAIN.HEADER.WITH.SEARCH)=>(Component)=>{ 
-    if(headerType===MAIN.HEADER.WITH.BACK){
+const StickyHeaderWrapper =(headerType=MAIN.HEADER.WITH.SEARCH)=>(Component)=>{
+   if(headerType===MAIN.HEADER.WITH.BACK){
         return class Wrapped extends React.Component{
             render(){
+              
                return <SafeAreaView style={{flex: 1,backgroundColor:'#e8ebf2'}}>
                        <Header 
                               {...this.props} 

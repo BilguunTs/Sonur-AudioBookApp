@@ -94,7 +94,7 @@ export default class Header extends Component {
         <Ionicons
           name="md-search-outline"
           size={35}
-          style={{color: !contrast ? '#35cb6f' : '#fff'}}
+          style={{color: !contrast ? '#706897' : '#fff'}}
         />
       </Pressable>
     );

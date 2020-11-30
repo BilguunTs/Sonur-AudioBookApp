@@ -6,12 +6,12 @@ import {HomeScreen} from '../screens/Home';
 //import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DetailScreen from '../screens/Details/bookdetail';
+import SettingsScreen from '../screens/Settings'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import DownloadsScreen from '../screens/Downloads';
+import BookShelfScreen from '../screens/BookShelf';
 import CustomTabBar from '../layout/custom/TabBarNavigation';
-import GPlayer from '../screens/AudioPlayer';
 import BookLists from '../screens/BookLists'
-import Icon from 'react-native-vector-icons/Ionicons';
+
 import {withGlobalContext} from '../context'
 const Root = createStackNavigator();
 const BottomNavigator = createBottomTabNavigator();
@@ -27,59 +27,23 @@ const BottomTabs = () => {
     <BottomNavigator.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
       <BottomNavigator.Screen
         name="Home"
-        options={{
-          title: 'Нүүр',
-          tabBarIcon: (e) => (
-            <Icon
-              name="md-home"
-              size={e.focused ? 25 : 20}
-              color={e.focused ? '#A491FF' : '#C6B9FF'}
-            />
-          ),
-        }}
+        options={{title: 'Нүүр'}}
         component={HomeStackScreens}
       />
-      {/* <BottomNavigator.Screen
-        name="Search"
-        options={{
-          title: 'Хайх',
-          tabBarIcon: (e) => (
-            <Icon
-              name="md-search"
-              size={e.focused ? 25 : 20}
-              color={e.focused ? '#A491FF' : '#C6B9FF'}
-            />
-          ),
-        }}
-        component={SearchScreen}
-      /> */}
       <BottomNavigator.Screen
-        name="Downloads"
-        options={{
-          title: 'Тавиур',
-          tabBarIcon: (e) => (
-            <Icon
-              name="md-download"
-              size={e.focused ? 25 : 20}
-              color={e.focused ? '#A491FF' : '#C6B9FF'}
-            />
-          ),
-        }}
-        component={DownloadsScreen}
+        name="BookShelf"
+        options={{title: 'Тавиур'}}
+        component={BookShelfScreen}
       />
       <BottomNavigator.Screen
         name="Profile"
-        options={{
-          title: 'Бүртгэл',
-          tabBarIcon: (e) => (
-            <Icon
-              name="md-person"
-              size={e.focused ? 25 : 20}
-              color={e.focused ? '#A491FF' : '#C6B9FF'}
-            />
-          ),
-        }}
+        options={{title: 'Бүртгэл'}}
         component={ProfileScreen}
+      />
+      <BottomNavigator.Screen
+        name="Settings"
+        options={{title: 'Тохиргоо'}}
+        component={SettingsScreen}
       />
     </BottomNavigator.Navigator>
   );
@@ -94,7 +58,6 @@ const MainRoot = (_props)=>{
 return <><NavigationContainer>
   <RootNavigator {..._props}/>
 </NavigationContainer>
- {_props.global.stats.gplayer.isActive&& <GPlayer/>}
 </>
 }
 

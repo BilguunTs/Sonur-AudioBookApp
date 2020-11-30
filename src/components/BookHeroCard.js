@@ -1,6 +1,7 @@
 import React from 'react';
 import {Image, View, TouchableOpacity, StyleSheet, Text,Pressable} from 'react-native';
-import { iOSUIKit } from 'react-native-typography'
+import { material}  from 'react-native-typography'
+import {numberWithCommas} from '../utils'
 import Animated,{
        useSharedValue,
        useAnimatedStyle,
@@ -15,8 +16,9 @@ const BookHeroCard = ({
   img,
   margin = 0,
   disable = false,
-  width = 122,
+  width = MAIN.book.width,
   contrast,
+  price=0,
   animated=false,
 }) => {
   const pressing = useSharedValue(false);
@@ -37,30 +39,34 @@ const BookHeroCard = ({
     }
     onPress()
   }
-  const Title=!contrast?iOSUIKit.title3:iOSUIKit.title3White
-  const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
+
+  const Title=!contrast?material.body1:material.buttonWhite
+  const FootNote=!contrast?material.caption:material.subheadingWhite
   if (animated){
-   return <Pressable android_ripple={{color:"#90ee90"}} onPressIn={()=>pressing.value=true} 
+   return <Pressable style={{width:MAIN.book.width}} android_ripple={{color:"#9088d494"}}
+                     onPressIn={()=>pressing.value=true} 
                      onPressOut={()=>pressing.value=false} 
                      onPress={handleOnPress}>
-     <Animated.View style={[styleImg]}>
-    <BoxShadow setting={MAIN.shadowOpt}>
-    <Image
-      style={{margin, width, ...styles.stretch}}
-      source={{uri: img}}
-      />
-      </BoxShadow>
+          <Animated.View style={[styleImg]}>
+          <BoxShadow setting={MAIN.shadowOpt}>
+          <Image style={{margin, width, ...styles.stretch}}
+                 source={{uri: img}}/>
+          </BoxShadow>
     </Animated.View>
     {!disable && (
       <View>
-        <Text numberOfLines={1} style={{fontFamily:"Conforta",...Title}}>{title}</Text>
-        <Text numberOfLines={1} style={[FootNote,{fontFamily:'Conforta'}]}>{author}</Text>
+        <View style={{ flex:2 }}>
+        <Text numberOfLines={2} style={{...Title,fontFamily:"Conforta"}}>{title}</Text>
+        </View>
+        <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+        <Text numberOfLines={1} style={[FootNote,{fontFamily:'Conforta',opacity:0.7}]}>{author}</Text>
+        <Text numberOfLines={1} style={[material.caption,{fontFamily:'Conforta',opacity:0.7}]}>{numberWithCommas(price)}₮</Text>
+        </View>
       </View>
     )}
    </Pressable>  
   }
-  return (
-    
+  return (    
     <TouchableOpacity  disabled={disable} onPress={handleOnPress}>
       <BoxShadow setting={MAIN.shadowOpt}>
       <Image
@@ -82,7 +88,7 @@ export default BookHeroCard;
 const styles = StyleSheet.create({
   stretch: {
     height: MAIN.book.height,
-    width: 122,
+    width: MAIN.book.width,
     overflow: 'hidden', 
     borderRadius: 10,    
     //zIndex: 20,

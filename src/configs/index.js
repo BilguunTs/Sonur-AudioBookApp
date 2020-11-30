@@ -4,12 +4,16 @@ export const D = {
   WIDTH: Dimensions.get('window').width,
   HEIGHT: Dimensions.get('window').height,
 };
+export const color={
+  PRIMARY:"#9088d4"
+}
 export const MAIN = {
   app_name: 'Сонур',
   spring: {damping: 20, stiffness: 90},
   CIRCLE_SIZE: D.HEIGHT-D.HEIGHT*0.85,
   book:{
-    height:D.HEIGHT/3.4
+    height:150,
+    width:110
   },
   HEADER:{
     TYPE:{
@@ -22,9 +26,12 @@ export const MAIN = {
       SEARCH:"SEARCH"
     }
   },
+  bottom_tab:{
+    HEIGHT:60
+  },
   shadowOpt : {
-    width:122,
-    height:D.HEIGHT/3.4 ,
+    height:150,
+    width:110,
     color:"#000",
     border:10,
     radius:10,
@@ -36,7 +43,7 @@ export const MAIN = {
   shadow_Play_BTN:{
     width:80,
     height:80,
-    color:"#35cb6f",
+    color:color.PRIMARY,
     border:20,
     radius:30,
     opacity:0.2,
@@ -46,15 +53,3 @@ export const MAIN = {
   }
 };
 
-export const GLOBAL_VALUE={
-  gplayer:{
-    title:"",
-    length:0,
-    current:'',
-    chapters:[],
-    author:"",
-    thumbnail:{},
-    isActive:false
-  },
-  user:{}
-}

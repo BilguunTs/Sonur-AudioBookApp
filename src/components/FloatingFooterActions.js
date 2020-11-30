@@ -1,40 +1,30 @@
 import React, {Component} from 'react';
-import {Pressable, Text, View} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-
+import PlayBtn from './PlayButton'
+import PurchaseBtn from './PurchaseBtn'
 export default class FloatingFooterActions extends Component {
   constructor(props){
       super(props)
-      this.size=this.props.size||40
+      this.size=this.props.size||40;
+  }
+  handlePress=()=>{
+    const {type,item,global} =this.props;
+    switch(type){
+      case "purchase":
+        console.log("should open invoice dialog");
+        break;
+      case"play":
+        global.methods.setGplayer(item);
+        break;
+    }
+   
   }
   render() {
-    return (
-      <Pressable style={{
-          height: this.size * 2,
-          width: this.size * 2,
-        }}
-        onPress={this.props.onPress}
-        {...this.props}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            backgroundColor: this.props.colorBtn || '#90ee90',
-            borderRadius: 30,
-            height: 40,
-          }}>
-          <Icon
-            name="md-play"
-            color={this.props.colorIcon || '#121212'}
-            style={{
-              elevation: 2,
-              opacity: this.props.iconOpacity || 0.5,
-              textAlign: 'center',
-            }}
-            size={this.props.size || 30}
-          />
-        </View>
-      </Pressable>
-    );
+    const {type}=this.props;
+     if(type==='purchase'){
+       return <PurchaseBtn onPress={this.handlePress}/>
+     }else if(type==='play'){
+       return <PlayBtn onPress={this.handlePress} size={this.size}/>
+     }
+    return null
   }
 }

@@ -8,8 +8,8 @@ export default class ReadBookIconBtn extends Component {
     return (
       <TouchableOpacity
         style={{
-          height: this.props.size * 2,
-          width: this.props.size * 2,
+          height:80,
+          width: 80,
         }}
         onPress={this.props.onPress}
         {...this.props}>
@@ -22,14 +22,14 @@ export default class ReadBookIconBtn extends Component {
             height: 40,
           }}>
           <Icon
-            name="md-play"
+            name="md-cart"
             color={this.props.colorIcon || '#121212'}
             style={{
               elevation: 2,
               opacity: this.props.iconOpacity || 0.5,
               textAlign: 'center',
             }}
-            size={this.props.size || 30}
+            size={30}
           />
         </View>
       </TouchableOpacity>

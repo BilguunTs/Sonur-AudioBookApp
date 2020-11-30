@@ -1,8 +1,7 @@
 import React from 'react';
-import {Image, View, TouchableOpacity, StyleSheet, Text,Pressable} from 'react-native';
+import {Image, View,StyleSheet, Text,Pressable} from 'react-native';
 import { iOSUIKit } from 'react-native-typography'
 import Animated,{
-
   useSharedValue,
  useDerivedValue,
  withSpring,
@@ -11,17 +10,10 @@ import Animated,{
 import {D, MAIN} from '../configs'
 import {BoxShadow} from '../modules'
 import PlayButton from './PlayButton'
-
+import StatusBar from  './LinearStatus'
 import {numberWithCommas} from '../utils'
 import Icon from 'react-native-vector-icons/Feather'
-
-const Elevation =({elevated, children})=>{
-  if(elevated){
-  return <BoxShadow setting={MAIN.shadowOpt}>{children}</BoxShadow>
-  }
-  return <>{children}</>
-}
-const FlatBookItem = ({
+const BookWithPlayerStatus = ({
   onPress,
   title = '',
   author = '',
@@ -29,9 +21,7 @@ const FlatBookItem = ({
   margin = 0,
   width = 122,
   duration=0,
-  skewY=0,
   about="",
-  elevated=true,
   price=0,
 }) => {
   const pressing = useSharedValue(false)
@@ -48,29 +38,28 @@ const FlatBookItem = ({
 
 const styleCont=useAnimatedStyle(()=>{
   return{
-    transform:[{skewY:`${skewY}deg`},{scale:scale.value}]
+    transform:[{scale:scale.value}]
   }
 })
-
 const handleNavigate=()=>{onPress()}
+const handleLongPress= ()=>{}
 return (
     <Pressable  
+    onLongPress={handleLongPress}
     android_ripple={{color:"#fff",radius:30}} 
     onPress={handleNavigate.bind(this)} 
     onPressIn={()=>pressing.value=true}
     onPressOut={()=>pressing.value=false}>
       <Animated.View style={[styleCont,styles.container]}>
         <View style={styles.left}>
-          <View>
-      <Elevation elevated={elevated}>
+          <BoxShadow setting={MAIN.shadowOpt}>
       <Pressable android_ripple onPress={onPress}>
       <Image
         style={{margin, width, ...styles.stretch}}
         source={{uri: img}}
         />
         </Pressable>
-        </Elevation>
-          </View>
+        </BoxShadow>
         </View>
         <View
           style={[styles.right]}>
@@ -79,37 +68,24 @@ return (
           <Text numberOfLines={1} style={[iOSUIKit.footnoteObject,{fontFamily:'Conforta',opacity:0.7}]}>{author}</Text>
             </View>
             <View style={[styles.body]}>
-          <Text numberOfLines={5} style={[iOSUIKit.callout,{fontFamily:'Conforta',opacity:0.7}]}>{about}</Text>
+            <BoxShadow setting={MAIN.shadow_Play_BTN}>
+          <PlayButton colorBtn='#9088d4' size={40}/>
+          </BoxShadow> 
           </View>
             <View style={[styles.footer]}>
+            <StatusBar duration={100} current={30}/>
               <View style={{flexDirection:"row",alignItems:'center'}}>
                 <Icon name='clock' size={14} style={{opacity:0.6,marginRight:3}}/>
          <Text numberOfLines={1} style={[iOSUIKit.footnoteObject,{fontFamily:'Conforta',opacity:0.7}]}>{duration}</Text>
               </View>
-              <View style={{flexDirection:"row",alignItems:'center'}}>
-          <Text numberOfLines={1} style={[iOSUIKit.footnoteEmphasized,{fontFamily:'Conforta',opacity:0.7}]}>{`${numberWithCommas(price)}₮`}</Text>
          </View>
-         </View>
-          {/* <BoxShadow setting={MAIN.shadow_Play_BTN}>
-          <PlayButton colorBtn='#35cb6f' size={40}/>
-          </BoxShadow> */}
-          {/* <View style={{position:"absolute",right:0, height:'100%',width:30,justifyContent:'center'}}>
-               <View style={{
-                 borderWidth:0.3, 
-                 height:40,width:40 ,
-                 borderTopLeftRadius:10,
-                 borderBottomLeftRadius:10
-                 }}>
-                  <Icon size={35} style={{opacity:0.6}} name="chevron-right"/>
-                </View>               
-          </View> */}
         </View>
       </Animated.View>
     </Pressable>
   );
 };
 
-export default FlatBookItem;
+export default BookWithPlayerStatus
 const styles = StyleSheet.create({
   container:{
    // backgroundColor:'#dce1ea',
@@ -131,10 +107,10 @@ const styles = StyleSheet.create({
     alignItems:'flex-start'
   },
   top:{flex:1},
-  body:{flex:2},
+  body:{flex:2, width:'100%', justifyContent:"center",alignItems:'center'},
   footer:{
     flex:1,
-    flexDirection:"row",
+
     width:"100%",
     justifyContent:"space-between"
   },
