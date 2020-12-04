@@ -6,14 +6,19 @@ export default class FloatingFooterActions extends Component {
       super(props)
       this.size=this.props.size||40;
   }
+  play=()=>{
+    const {navigation,item}=this.props
+    global.methods.setGplayer(item);
+    navigation.goBack()
+  }
   handlePress=()=>{
-    const {type,item,global} =this.props;
+    const {type} =this.props;
     switch(type){
       case "purchase":
         console.log("should open invoice dialog");
         break;
       case"play":
-        global.methods.setGplayer(item);
+        this.play()
         break;
     }
    

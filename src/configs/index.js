@@ -5,7 +5,11 @@ export const D = {
   HEIGHT: Dimensions.get('window').height,
 };
 export const color={
-  PRIMARY:"#9088d4"
+  PRIMARY:"#9088d4",
+  ripple:"rgba(144, 136, 212,0.3)"
+}
+export const Drag={
+  MAX_AT_FLUID:D.HEIGHT*0.6 
 }
 export const MAIN = {
   app_name: 'Сонур',

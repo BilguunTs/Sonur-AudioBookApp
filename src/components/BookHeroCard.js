@@ -7,7 +7,7 @@ import Animated,{
        useAnimatedStyle,
        useDerivedValue,
        withSpring} from 'react-native-reanimated'
-import {MAIN} from '../configs'
+import {MAIN,color} from '../configs'
 import {BoxShadow} from '../modules'
 const BookHeroCard = ({
   onPress,
@@ -43,7 +43,7 @@ const BookHeroCard = ({
   const Title=!contrast?material.body1:material.buttonWhite
   const FootNote=!contrast?material.caption:material.subheadingWhite
   if (animated){
-   return <Pressable style={{width:MAIN.book.width}} android_ripple={{color:"#9088d494"}}
+   return <Pressable style={{width:MAIN.book.width}} android_ripple={{color:color.ripple}}
                      onPressIn={()=>pressing.value=true} 
                      onPressOut={()=>pressing.value=false} 
                      onPress={handleOnPress}>

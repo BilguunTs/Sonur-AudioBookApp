@@ -1,28 +1,44 @@
 import React from 'react';
-import {TouchableOpacity,StyleSheet,View} from 'react-native';
+import {Pressable,View,StyleSheet} from 'react-native';
 import Animated, {
   useAnimatedStyle,
-  useAnimatedGestureHandler,
   useSharedValue,
+  useAnimatedGestureHandler,
   withSpring,
   interpolate,
   Extrapolate,
   } from 'react-native-reanimated';
 import {PanGestureHandler} from 'react-native-gesture-handler'
-import Icon from 'react-native-vector-icons/Ionicons';
 import FluidChapters from '../../screens/AudioPlayer/FluidChapters';
 import MainPlayer from '../../screens/AudioPlayer/MainPlayer';
 import Header from '../../screens/AudioPlayer/Header'
-import {withGlobalContext} from '../../context'
-import {D,MAIN,color}from '../../configs'
+import Icon from 'react-native-vector-icons/Ionicons';
+//import {StickyContainer} from './StickyContainer'
+//import {withGlobalContext} from '../../context'
+import {D,MAIN,Drag,color}from '../../configs'
 
 
 const WIDTH = D.WIDTH;
-const maxDrag=D.HEIGHT*0.6  
+const maxDrag=Drag.MAX_AT_FLUID  
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
 
-const StickyContainer = ({dragValue})=> {
+
+
+const CustomTabBar=({state, descriptors, navigation,...args})=> {
+  
+  const dragValue=useSharedValue(maxDrag)
+  const getText = (txt, focused) => {
+    const styleText = useAnimatedStyle(() => {
+      return {
+        color: '#9088d4',
+        textAlign: 'center',
+        opacity: withSpring(focused ? 1 : 0, {damping: 20, stiffness: 90}),
+        transform: [{scale: withSpring(focused ? 1 : 0.9)}],
+      };
+    });
+    return <Animated.Text style={[styleText,{fontFamily:"Conforta"}]}>{txt}</Animated.Text>;
+  };
   const styleShrink =useAnimatedStyle(()=>{
     const opacity=interpolate(dragValue.value,
       [0,maxDrag/2],
@@ -80,38 +96,27 @@ const StickyContainer = ({dragValue})=> {
       }
     }
   })
-  return (<View style={StyleSheet.absoluteFill}>
-    <PanGestureHandler onGestureEvent={handleEvent}>
-    <Animated.View style={styleGrabber}>
-      <Animated.View style={styleHeaderWrapper}>
-      <Header dragValue={dragValue} maxDrag={maxDrag}  leftAction={handleCollapse}/>
+  
+  const StickyContainer = ()=> {
+   return (<View style={StyleSheet.absoluteFill}>
+      <PanGestureHandler onGestureEvent={handleEvent}>
+      <Animated.View style={styleGrabber}>
+        <Animated.View style={styleHeaderWrapper}>
+        <Header dragValue={dragValue} maxDrag={maxDrag}  leftAction={handleCollapse}/>
+        </Animated.View>
       </Animated.View>
-    </Animated.View>
-    </PanGestureHandler>
-  <Animated.View style={[styleShrink]} >
-    <Animated.View style={[{flex:3,justifyContent:'center'}]}>
-      <MainPlayer  filename="testaudio.mp3" />
-    </Animated.View>
-    <Animated.View style={[{flex:1,alignItems:'center' }]}>
-      <FluidChapters />
-      </Animated.View> 
-   </Animated.View>
-  </View>
-  );
-}
-const CustomTabBar=({state, descriptors, navigation,...args})=> {
-  const dragValue=useSharedValue(maxDrag)
-  const getText = (txt, focused) => {
-    const styleText = useAnimatedStyle(() => {
-      return {
-        color: '#9088d4',
-        textAlign: 'center',
-        opacity: withSpring(focused ? 1 : 0, {damping: 20, stiffness: 90}),
-        transform: [{scale: withSpring(focused ? 1 : 0.9)}],
-      };
-    });
-    return <Animated.Text style={[styleText,{fontFamily:"Conforta"}]}>{txt}</Animated.Text>;
-  };
+      </PanGestureHandler>
+    <Animated.View style={[styleShrink]} >
+      <Animated.View style={[{flex:3,justifyContent:'center'}]}>
+        <MainPlayer  filename="testaudio.mp3" />
+      </Animated.View>
+      <Animated.View style={[{flex:1,alignItems:'center' }]}>
+        <FluidChapters />
+        </Animated.View> 
+     </Animated.View>
+    </View>
+    );
+  }
   const getIcon = (iconName, focused) => {
     let instance;
     const IconStyle = useAnimatedStyle(() => {
@@ -126,7 +131,7 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
             }),
           },
           {
-            translateY: withSpring(focused ? -2 : 10, {mass: 0.5}),
+            translateY: withSpring(focused ? -2 : 10, {mass: 0.1}),
           },
         ],
       };
@@ -247,7 +252,7 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
   })
   return (<Animated.View style={[containerStyle]}>
     <Animated.View style={[styleGplayerContainer]}>
-    <StickyContainer dragValue={dragValue} global={args.global}/>
+     {StickyContainer()}
     </Animated.View>
     <Animated.View style={[styleTabs]}>
       {state.routes.map((route, index) => {
@@ -279,6 +284,7 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
 
         return (
           <AnimatedTouchable
+            android_ripple={{borderless:true,color:color.ripple}}
             accessibilityRole="button"
             key={route.key}
             accessibilityStates={isFocused ? ['selected'] : []}
@@ -300,4 +306,4 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
   );
 }
 
-export default withGlobalContext(CustomTabBar);
+export default CustomTabBar
