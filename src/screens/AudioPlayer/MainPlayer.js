@@ -157,19 +157,19 @@ export default class PlayerScreen extends React.Component {
           justifyContent: 'center',
           backgroundColor: 'white',
         }}>
-         <Text style={[iOSUIKit.title3Object,{color: '#333', alignSelf: 'center'}]}>
+         <Text style={[iOSUIKit.title3Object,{color: '#333', alignSelf: 'center',fontFamily:"Conforta"}]}>
           {currentTimeString}/{durationString}
         </Text>
-         <ActionButton onPress={this.jumpPrev15Seconds} direction='left'/>  
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
             marginVertical: 15,
           }}>
+          <ActionButton onPress={this.jumpPrev15Seconds} direction='left'/>  
            <FluidButton playing={this.state.playState === 'playing'} onPress={this.handleAction}/>
-        </View>  
           <ActionButton onPress={this.jumpNext15Seconds} direction="right"/>
+        </View>        
         <View
           style={{
             //marginTop:35,

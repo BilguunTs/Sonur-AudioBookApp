@@ -4,39 +4,38 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
   useSharedValue, 
-  useDerivedValue
+  useDerivedValue,
+  interpolate,
+  Extrapolate
 } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {D, MAIN} from '../../configs';
+import {D, MAIN,color} from '../../configs';
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedButton = Animated.createAnimatedComponent(Pressable);
 export default function FluidPlayButton({playing = false, onPress,...rest}) {
   const touchValue = useSharedValue(0);
-  const pressing=useSharedValue(false)
   const isPlaying = useSharedValue(false);
   const scale = useDerivedValue(()=>{
     if(isPlaying.value){
-      return withSpring(0.8,MAIN.spring)  
+      return withSpring(0.8)  
     }
-    return withSpring(1,MAIN.spring)
+    return withSpring(1)
     
   })
   React.useEffect(() => {
     isPlaying.value = playing;
   }, [playing]);
   const buttonStyle = useAnimatedStyle(() => {
+    const borderRadius = interpolate(scale.value,[0.8,1],[0,150],Extrapolate.CLAMP)
     return {
       height: 200,
       width:200,
       zIndex: 2,
       transform: [
-        {
-          scale: scale.value,
-        },
-        {translateX: touchValue.value},
+        {scale: scale.value},
       ],
-      borderRadius: withSpring(isPlaying.value ? 1 : D.WIDTH / 2, MAIN.spring),
-      backgroundColor: '#bada55',
+      borderRadius:withSpring(borderRadius,{mass:0.1}),
+      backgroundColor: color.PRIMARY,
       justifyContent: 'center',
       alignItems: 'center',
     };

@@ -7,7 +7,7 @@ export default class FloatingFooterActions extends Component {
       this.size=this.props.size||40;
   }
   play=()=>{
-    const {navigation,item}=this.props
+    const {navigation,item,global}=this.props
     global.methods.setGplayer(item);
     navigation.goBack()
   }

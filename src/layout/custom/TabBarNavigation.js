@@ -3,6 +3,7 @@ import {Pressable,View,StyleSheet} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  useDerivedValue,
   useAnimatedGestureHandler,
   withSpring,
   interpolate,
@@ -14,9 +15,9 @@ import MainPlayer from '../../screens/AudioPlayer/MainPlayer';
 import Header from '../../screens/AudioPlayer/Header'
 import Icon from 'react-native-vector-icons/Ionicons';
 //import {StickyContainer} from './StickyContainer'
-//import {withGlobalContext} from '../../context'
+import {withGlobalContext} from '../../context'
 import {D,MAIN,Drag,color}from '../../configs'
-
+import NothingSvg from '../../svg/backtrees.svg'
 
 const WIDTH = D.WIDTH;
 const maxDrag=Drag.MAX_AT_FLUID  
@@ -25,9 +26,22 @@ const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
 
 
 
-const CustomTabBar=({state, descriptors, navigation,...args})=> {
-  
-  const dragValue=useSharedValue(maxDrag)
+const CustomTabBar=({state, descriptors, navigation,...props})=> {
+  const shouldOpen =useSharedValue(false)
+  const dragValue=useDerivedValue(()=>{
+   if(shouldOpen.value){
+     return withSpring(0,MAIN.spring)
+    }else{
+     return withSpring(maxDrag,MAIN.spring)
+   }
+  } )
+  React.useEffect(()=>{
+    if(props.global.stats.gplayer?.isActive){
+      shouldOpen.value=true
+    }else{
+      shouldOpen.value=false
+    }
+  },[props.global.stats.gplayer.isActive])
   const getText = (txt, focused) => {
     const styleText = useAnimatedStyle(() => {
       return {
@@ -52,7 +66,11 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
       [0,maxDrag],
       [0,maxDrag],
       Extrapolate.CLAMP)
-    const flex=interpolate(dragValue.value,[0,maxDrag],[3,0],Extrapolate.CLAMP)
+    const flex=interpolate(
+      dragValue.value,
+      [0,maxDrag],
+      [3,0],
+      Extrapolate.CLAMP)
     return {
       opacity,
       flex,
@@ -61,8 +79,16 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
     }
   })
   const styleHeaderWrapper =useAnimatedStyle(()=>{
-    const opacity = interpolate(dragValue.value,[0,maxDrag/2],[1,0],Extrapolate.CLAMP)
-    const width=interpolate(dragValue.value,[0,maxDrag+100],[D.WIDTH,0],Extrapolate.CLAMP)
+    const opacity = interpolate(
+      dragValue.value,
+      [0,maxDrag/2],
+      [1,0],
+      Extrapolate.CLAMP)
+    const width=interpolate(
+      dragValue.value,
+      [0,maxDrag+100],
+      [D.WIDTH,0],
+      Extrapolate.CLAMP)
     return {
       width,
       opacity,
@@ -70,8 +96,16 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
     }
   })
   const styleGrabber =useAnimatedStyle(()=>{
-    const borderRadius = interpolate(dragValue.value,[0,maxDrag],[0,MAIN.CIRCLE_SIZE/2],Extrapolate.CLAMP)
-    const bgOpacity=interpolate(dragValue.value,[0,maxDrag],[0,1],Extrapolate.CLAMP)
+    const borderRadius = interpolate(
+      dragValue.value,
+      [0,maxDrag],
+      [0,MAIN.CIRCLE_SIZE/2],
+      Extrapolate.CLAMP)
+    const bgOpacity=interpolate(
+      dragValue.value,
+      [0,maxDrag],
+      [0,1],
+      Extrapolate.CLAMP)
     return {
      flex:1,
      justifyContent:'center',
@@ -102,18 +136,25 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
       <PanGestureHandler onGestureEvent={handleEvent}>
       <Animated.View style={styleGrabber}>
         <Animated.View style={styleHeaderWrapper}>
-        <Header dragValue={dragValue} maxDrag={maxDrag}  leftAction={handleCollapse}/>
+        <Header text={props.global.stats.gplayer.title} shouldOpen={shouldOpen} 
+                dragValue={dragValue} 
+                maxDrag={maxDrag}  
+                leftAction={handleCollapse}/>
         </Animated.View>
       </Animated.View>
       </PanGestureHandler>
     <Animated.View style={[styleShrink]} >
       <Animated.View style={[{flex:3,justifyContent:'center'}]}>
+      {shouldOpen.value?
         <MainPlayer  filename="testaudio.mp3" />
+        :<NothingSvg   />
+      } 
       </Animated.View>
       <Animated.View style={[{flex:1,alignItems:'center' }]}>
-        <FluidChapters />
-        </Animated.View> 
+        {shouldOpen.value&&<FluidChapters />}
      </Animated.View>
+     </Animated.View> 
+   
     </View>
     );
   }
@@ -306,4 +347,4 @@ const CustomTabBar=({state, descriptors, navigation,...args})=> {
   );
 }
 
-export default CustomTabBar
+export default withGlobalContext(CustomTabBar)

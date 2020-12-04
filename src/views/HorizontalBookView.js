@@ -4,7 +4,7 @@ import BookCard from '../components/BookHeroCard';
 import {iOSUIKit} from 'react-native-typography';
 import Icon from 'react-native-vector-icons/Feather'
 import {withGlobalContext} from '../context'
-
+import {color} from '../configs'
  class HorizontalBookView extends Component {
   getItem = (data, index) => {
     return {
@@ -31,7 +31,7 @@ import {withGlobalContext} from '../context'
         <Pressable
             onPress={this.handleNavigate}  
             android_ripple={{
-              color:"#9088d4"
+              color:color.ripple
             }}>  
         <View style={{margin: 10,flexDirection:'row',alignItems:'center',alignContent:'space-between'}}>
           <Text style={[iOSUIKit.title3Emphasized,{fontFamily:"Conforta",flex:1}]}>
