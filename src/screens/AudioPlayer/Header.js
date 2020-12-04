@@ -1,11 +1,10 @@
 import React from 'react'
 import {View,Text} from 'react-native';
-import {iOSUIKit} from 'react-native-typography';
-import Animated ,{useAnimatedGestureHandler} from 'react-native-reanimated'
+import {material} from 'react-native-typography';
+import Animated from 'react-native-reanimated'
 import BackButton from '../../components/BackButton'
-import {PanGestureHandler} from 'react-native-gesture-handler'
-export default ({text,leftAction,hideleft=false})=>{
-  
+
+export default ({shouldOpen,text,leftAction,hideleft=false})=>{
     return  <Animated.View
     style={{
       alignItems: 'center',
@@ -19,10 +18,8 @@ export default ({text,leftAction,hideleft=false})=>{
         }
         </View>
         <View style={{flex:3,alignItems:'center',}}> 
-        <Text numberOfLines={1} style={[iOSUIKit.largeTitleEmphasized]}>{text||"no title"}</Text>
+        <Text numberOfLines={1} style={[material.headline]}>{text||"Хоосон"}</Text>
         </View>
-        <View style={{flex:1}}>
-
-        </View>
+        <View style={{flex:1}}/>
   </Animated.View>
 }

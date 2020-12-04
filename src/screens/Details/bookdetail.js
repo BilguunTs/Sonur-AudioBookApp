@@ -21,15 +21,9 @@ import FloatingFooterActions from '../../components/FloatingFooterActions'
 import {withGlobalContext} from '../../context'
 import LinearGradient from 'react-native-linear-gradient';
 export default withGlobalContext(({navigation, route,global}) => {
-  const navigateBack = () => {
-    navigation.goBack();
-  };
+ 
   const {isLocked,title, author, thumbnail} = route.params;
 
-  const handleOnPlay=()=>{
-    global.methods.setGplayer(route.params)
-  }
-  
   return (
     <SafeAreaView style={{flex: 1,backgroundColor:'#fff'}}>  
          <View style={style.header}>
@@ -78,7 +72,11 @@ export default withGlobalContext(({navigation, route,global}) => {
             <View style={{position:'absolute',bottom:0,width:D.WIDTH}}>
             <LinearGradient style={{width:"100%",alignItems:'center' }} colors={['rgba(255, 255, 255, 0.3)',  '#fff']}> 
               <View style={{marginBottom:10}}>
-              <FloatingFooterActions item={route.params} global={global} type={isLocked?"purchase":"play"}/>
+              <FloatingFooterActions 
+               navigation={navigation}
+               item={route.params} 
+               global={global} 
+               type={isLocked?"purchase":"play"}/>
               </View>
             </LinearGradient>
             </View>

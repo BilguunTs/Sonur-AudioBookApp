@@ -21,12 +21,13 @@ export default function FluidChapters() {
 
   const styleListContainer = useAnimatedStyle(() => {
     return {
+      zIndex:10,
       position: 'absolute',
       bottom: withSpring(toggleList.value ? 0 : 20, MAIN.spring),
       backgroundColor: '#d8d8d8',
       width: withSpring(toggleList.value ? D.WIDTH : D.WIDTH * 0.9),
       height: withSpring(
-        toggleList.value ? D.HEIGHT * 0.8 : D.HEIGHT / 9,
+        toggleList.value ? D.HEIGHT * 0.75 : D.HEIGHT / 9,
         MAIN.spring,
       ),
       borderTopLeftRadius: 25,
