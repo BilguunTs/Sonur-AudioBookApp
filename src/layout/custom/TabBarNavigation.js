@@ -20,28 +20,28 @@ import {D,MAIN,Drag,color}from '../../configs'
 import NothingSvg from '../../svg/backtrees.svg'
 
 const WIDTH = D.WIDTH;
-const maxDrag=Drag.MAX_AT_FLUID  
+const maxDrag=D.HEIGHT-MAIN.bottom_tab.HEIGHT
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
 
 
 
 const CustomTabBar=({state, descriptors, navigation,...props})=> {
-  const shouldOpen =useSharedValue(false)
-  const dragValue=useDerivedValue(()=>{
-   if(shouldOpen.value){
-     return withSpring(0,MAIN.spring)
-    }else{
-     return withSpring(maxDrag,MAIN.spring)
-   }
-  } )
+  const [currentID,setCurrentID]=React.useState(null)
+  const dragValue=useSharedValue(0);
+  const isToggled=useDerivedValue(()=>{
+      return dragValue.value===maxDrag
+  });
+  
   React.useEffect(()=>{
-    if(props.global.stats.gplayer?.isActive){
-      shouldOpen.value=true
+    const {gplayer} =props.global.stats
+    if(gplayer?.isActive&&gplayer.id!==currentID){
+      setCurrentID(gplayer.id)
+      dragValue.value= withSpring(0,MAIN.spring)
     }else{
-      shouldOpen.value=false
+      dragValue.value=withSpring(maxDrag,MAIN.spring)
     }
-  },[props.global.stats.gplayer.isActive])
+  },[props.global.stats.gplayer])
   const getText = (txt, focused) => {
     const styleText = useAnimatedStyle(() => {
       return {
@@ -51,7 +51,9 @@ const CustomTabBar=({state, descriptors, navigation,...props})=> {
         transform: [{scale: withSpring(focused ? 1 : 0.9)}],
       };
     });
-    return <Animated.Text style={[styleText,{fontFamily:"Conforta"}]}>{txt}</Animated.Text>;
+    return<Animated.Text style={[styleText,{fontSize:10,fontFamily:"Conforta"}]}>
+            {txt}
+          </Animated.Text>;
   };
   const styleShrink =useAnimatedStyle(()=>{
     const opacity=interpolate(dragValue.value,
@@ -114,16 +116,17 @@ const CustomTabBar=({state, descriptors, navigation,...props})=> {
     }
   })
   const handleCollapse=()=>dragValue.value=withSpring(maxDrag,MAIN.spring)
-
+  
   const handleEvent=useAnimatedGestureHandler({
     onStart:(_,c)=>{
       c.startY=dragValue.value
     },
     onActive:(e,ctx)=>{
       dragValue.value=ctx.startY+e.translationY
+    
     },
     onEnd:(e,ctx)=>{
-      if(e.translationY<maxDrag/2){
+      if(dragValue.value<maxDrag/2){
         dragValue.value=withSpring(0,MAIN.spring)
       }else{
         dragValue.value=withSpring(maxDrag,MAIN.spring)
@@ -136,7 +139,8 @@ const CustomTabBar=({state, descriptors, navigation,...props})=> {
       <PanGestureHandler onGestureEvent={handleEvent}>
       <Animated.View style={styleGrabber}>
         <Animated.View style={styleHeaderWrapper}>
-        <Header text={props.global.stats.gplayer.title} shouldOpen={shouldOpen} 
+        <Header text={props.global.stats.gplayer.title} 
+                isToggled={isToggled} 
                 dragValue={dragValue} 
                 maxDrag={maxDrag}  
                 leftAction={handleCollapse}/>
@@ -145,16 +149,15 @@ const CustomTabBar=({state, descriptors, navigation,...props})=> {
       </PanGestureHandler>
     <Animated.View style={[styleShrink]} >
       <Animated.View style={[{flex:3,justifyContent:'center'}]}>
-      {shouldOpen.value?
+      {isToggled.value?
         <MainPlayer  filename="testaudio.mp3" />
         :<NothingSvg   />
       } 
       </Animated.View>
-      <Animated.View style={[{flex:1,alignItems:'center' }]}>
-        {shouldOpen.value&&<FluidChapters />}
+        {isToggled.value&&<FluidChapters />}
+      <Animated.View style={[{flex:1 }]}>
      </Animated.View>
      </Animated.View> 
-   
     </View>
     );
   }
@@ -242,8 +245,8 @@ const CustomTabBar=({state, descriptors, navigation,...props})=> {
       [0,MAIN.CIRCLE_SIZE/2],
       Extrapolate.CLAMP)
     const bottom =interpolate(dragValue.value,
-      [0,D.HEIGHT*0.5],
-      [0,MAIN.bottom_tab.HEIGHT-(MAIN.CIRCLE_SIZE*0.5)],
+      [0,maxDrag],
+      [0,MAIN.bottom_tab.HEIGHT/2-height/2],
       Extrapolate.CLAMP)
     return {
       width,
@@ -253,7 +256,7 @@ const CustomTabBar=({state, descriptors, navigation,...props})=> {
       position:'absolute',
       left:WIDTH / 2 - width / 2,
       borderRadius,
-      elevation:15,
+      elevation:17,
       backgroundColor:"#fff",
     }
   })

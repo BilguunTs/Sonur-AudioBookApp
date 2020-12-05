@@ -4,14 +4,14 @@ import Animated, {
     useSharedValue,
     useAnimatedScrollHandler,
   } from 'react-native-reanimated';
-import {MAIN} from '../configs'
+import {MAIN,color} from '../configs'
 import Header from "../layout/Header"
 import {BackWrapper} from '../components/BackWrapper'
 import TestSvg from '../svg'
 
 const ScrollContainer =({children,headerType})=>{
-    const transY = useSharedValue(0);
     const isScrolling = useSharedValue(false);
+    const transY = useSharedValue(0);
     const scrollRef = useRef();
     const scrollHandler = useAnimatedScrollHandler({
       onScroll: (event) => {
@@ -31,18 +31,18 @@ const ScrollContainer =({children,headerType})=>{
                         Хайх..</Text>} />
       } 
     } 
-    return <SafeAreaView style={{flex: 1,backgroundColor:'#e8ebf2'}}> 
+    return <SafeAreaView style={{flex: 1,backgroundColor:color.BackGround}}> 
           {getHeader()}
             <Animated.ScrollView
               ref={scrollRef}
-              style={{backgroundColor: '#e8ebf2'}}
+              style={{backgroundColor:color.BackGround}}
               scrollEventThrottle={1}
               decelerationRate={0}
               snapToAlignment={'center'}
               onScroll={scrollHandler}
               showsVerticalScrollIndicator={false}>  
                 <BackWrapper Y={transY}>
-          <TestSvg />
+                 <TestSvg />
                 </BackWrapper>          
               {children}
             </Animated.ScrollView>

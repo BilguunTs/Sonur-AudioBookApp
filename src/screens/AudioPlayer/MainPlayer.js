@@ -4,7 +4,7 @@ import {View, Text, TouchableOpacity, Platform, Alert} from 'react-native';
 import Slider from '@react-native-community/slider';
 import Sound from 'react-native-sound';
 
-import {D} from '../../configs'
+import {D,color} from '../../configs'
 import FluidButton from './FluidPlayButton';
 import {iOSUIKit} from 'react-native-typography';
 import ActionButton from './ActionButton'
@@ -186,9 +186,11 @@ export default class PlayerScreen extends React.Component {
             onValueChange={this.onSliderEditing}
             value={this.state.playSeconds}
             maximumValue={this.state.duration}
-            maximumTrackTintColor="gray"
-            minimumTrackTintColor="#333"
-            thumbTintColor="#333"
+            maximumTrackTintColor={color.ripple}
+            minimumTrackTintColor={"orange"}
+            thumbTintColor={"orange"}
+            trackThickness={10}
+            thumbZise={10}
             style={{
               flex: 1,
               alignSelf: 'center',

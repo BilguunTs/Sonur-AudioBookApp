@@ -4,7 +4,7 @@ import {material} from 'react-native-typography';
 import Animated from 'react-native-reanimated'
 import BackButton from '../../components/BackButton'
 
-export default ({shouldOpen,text,leftAction,hideleft=false})=>{
+export default ({isToggled,text,leftAction,hideleft=false})=>{
     return  <Animated.View
     style={{
       alignItems: 'center',
@@ -18,7 +18,7 @@ export default ({shouldOpen,text,leftAction,hideleft=false})=>{
         }
         </View>
         <View style={{flex:3,alignItems:'center',}}> 
-        <Text numberOfLines={1} style={[material.headline]}>{text||"Хоосон"}</Text>
+        <Text numberOfLines={1} style={[material.headline,{fontFamily:"Conforta"}]}>{text||"Хоосон"}</Text>
         </View>
         <View style={{flex:1}}/>
   </Animated.View>

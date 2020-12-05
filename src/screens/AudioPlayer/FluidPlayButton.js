@@ -34,7 +34,7 @@ export default function FluidPlayButton({playing = false, onPress,...rest}) {
       transform: [
         {scale: scale.value},
       ],
-      borderRadius:withSpring(borderRadius,{mass:0.1}),
+      borderRadius:withSpring(borderRadius,MAIN.spring),
       backgroundColor: color.PRIMARY,
       justifyContent: 'center',
       alignItems: 'center',
@@ -46,8 +46,10 @@ export default function FluidPlayButton({playing = false, onPress,...rest}) {
   });
 
   return (
-      <AnimatedButton onPress={onPress} style={[buttonStyle]} >
+      <AnimatedButton android_ripple={{color:color.ripple,borderless:true}}
+                      onPress={onPress} style={[buttonStyle]} >
         <AnimatedIcon
+          color={'white'}
           name={playing ? 'md-pause' : 'md-play'}
           style={[styleIcon]}
           size={100}
