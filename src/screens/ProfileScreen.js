@@ -29,7 +29,7 @@ export default class Profile extends Component {
           <View style={[style.tabContainer,style.centered]}>
             <TabViews>
               <View tabLabel={{label: "Бүртгэл"}}></View>
-              <View tabLabel={{label: "Тохиргоо"}}></View>
+              <View tabLabel={{label: "Гишүүнчлэл"}}></View>
             </TabViews>
             
           </View>

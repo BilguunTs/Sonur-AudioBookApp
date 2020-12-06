@@ -1,19 +1,20 @@
 import React, {Component} from 'react';
-
+import Icon from 'react-native-vector-icons/Ionicons'
 import {
   StyleSheet,
   Text,
-  TouchableOpacity,
+  Pressable,
   View,
   ScrollView,
   Alert,
 } from 'react-native';
 import Sound from 'react-native-sound';
-
+import {color} from '../../configs'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
+    backgroundColor:"#f5f5f5"
   },
   scrollContainer: {},
   title: {
@@ -41,17 +42,19 @@ const styles = StyleSheet.create({
     padding: 10,
     alignSelf: 'stretch',
     alignItems: 'center',
-    borderTopWidth: 1,
+    borderTopWidth: 0.5,
     borderTopColor: 'rgb(180,180,180)',
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderBottomColor: 'rgb(230,230,230)',
   },
 });
 
 const Button = ({title, onPress}) => (
-  <TouchableOpacity onPress={onPress}>
-    <Text style={styles.button}>{title}</Text>
-  </TouchableOpacity>
+  <Pressable android_ripple={{borderless:true,color:color.ripple}}style={{margin:5}} onPress={onPress}>
+   <View style={{backgroundColor:color.ripple,borderRadius:15,padding:10}}>
+    <Icon size={30} name="md-play" color={color.PRIMARY}/>
+   </View>
+  </Pressable>
 );
 
 const Header = ({children, style}) => (
@@ -60,7 +63,7 @@ const Header = ({children, style}) => (
 
 const Feature = ({title, onPress, buttonLabel = 'PLAY', status}) => (
   <View style={styles.feature}>
-    <Header style={{flex: 1}}>{title}</Header>
+    <Header style={{flex: 1,fontFamily:"Conforta"}}>{title}</Header>
     {status ? (
       <Text style={{padding: 5}}>{resultIcons[status] || ''}</Text>
     ) : null}
@@ -91,6 +94,16 @@ const audioTests = [
     title: 'aac remote download',
     url:
       'https://raw.githubusercontent.com/zmxv/react-native-sound-demo/master/pew2.aac',
+  },
+  {
+    title: 'wav remote download',
+    url:
+      'https://raw.githubusercontent.com/zmxv/react-native-sound-demo/master/frog.wav',
+  },
+  {
+    title: 'wav remote download',
+    url:
+      'https://raw.githubusercontent.com/zmxv/react-native-sound-demo/master/frog.wav',
   },
   {
     title: 'wav remote download',
@@ -166,15 +179,14 @@ class MainView extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.scrollContainer}>
-          {audioTests.map((testInfo) => {
+          {audioTests.map((testInfo,i) => {
             return (
               <Feature
                 status={this.state.tests[testInfo.title]}
-                key={testInfo.title}
+                key={i}
                 title={testInfo.title}
                 onPress={() => {
                   return playSound(testInfo, this);
@@ -188,7 +200,7 @@ class MainView extends Component {
             onPress={this.stopSoundLooped}
           />
         </ScrollView>
-      </View>
+      
     );
   }
 }

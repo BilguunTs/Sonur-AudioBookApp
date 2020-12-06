@@ -2,12 +2,22 @@ import React, { Component} from 'react';
 import {Text, View, Pressable} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {iOSUIKit} from 'react-native-typography';
-import Animated, {useAnimatedStyle, withSpring} from 'react-native-reanimated';
+import Animated, {useAnimatedStyle,interpolate,Extrapolate,withSpring} from 'react-native-reanimated';
 import {D, MAIN} from '../configs';
 
+const MAX_DRAG=D.HEIGHT/2
 const HeaderWrapper = ({children, Y, relative,...rest}) => {
   const headerStyleSticky = useAnimatedStyle(() => {
-    const float = Y.value > 100;
+    const scale = interpolate(Y.value,
+      [0,MAX_DRAG],
+      [1,0.9],
+      Extrapolate.CLAMP)
+    const translateY = interpolate(Y.value,
+      [0,MAX_DRAG],
+      [0,10],
+      Extrapolate.CLAMP)
+    const colorAlpha = interpolate(scale,[1,0.9],[0,1],Extrapolate.CLAMP)
+    const elevation=interpolate(scale,[1,0.9],[0,8],Extrapolate.CLAMP) 
     return {
       justifyContent: 'space-between',
       flexDirection: 'row',
@@ -17,12 +27,13 @@ const HeaderWrapper = ({children, Y, relative,...rest}) => {
       zIndex: 10,
       position: 'absolute',
       top: 0,
+      elevation,
       padding: 20,
-      backgroundColor: float ? '#edf6f9' : 'transparent',
+      backgroundColor: `rgba(237, 246, 249, ${colorAlpha})`,
       borderRadius: 30,
       transform: [
-        {scale: withSpring(float ? 0.9 : 1)},
-        {translateY: withSpring(float ? 10 : 0)},
+        {scale:withSpring(scale)},
+        {translateY: withSpring(translateY)},
       ],
     };
   });
@@ -53,17 +64,24 @@ const HeaderWrapper = ({children, Y, relative,...rest}) => {
 };
 const LeftPlaceHolderWrapper = ({children, Y}) => {
   const primaryTitleStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(Y.value,[0,MAX_DRAG/2],[1,0],Extrapolate.CLAMP)
+    const translateY = interpolate(Y.value,
+      [0,MAX_DRAG/2],
+      [0,20],
+      Extrapolate.CLAMP)
     return {
-      transform: [{translateY: 1 - Y.value}],
-      opacity: withSpring(Y.value <= 10 ? 1 : 0, MAIN.spring),
+      transform: [{translateY:withSpring(translateY)}],
+      opacity,
     };
   });
   const secondaryTitleStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(Y.value,[0,MAX_DRAG],[0,1],Extrapolate.CLAMP)
+    const translateY = interpolate(Y.value,[0,MAX_DRAG/2],[20,0],Extrapolate.CLAMP)
     return {
       position: 'absolute',
       top: 0,
-      opacity: withSpring(Y.value <= 10 ? 0 : 1, MAIN.spring),
-      transform: [{translateY: withSpring(Y.value <= 10 ? 20 : 0)}],
+      opacity,
+      transform: [{translateY}],
     };
   });
   return (

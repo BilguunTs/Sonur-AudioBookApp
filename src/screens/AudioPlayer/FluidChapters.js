@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Pressable} from 'react-native';
+import { Text, Pressable,StyleSheet,View} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -11,73 +11,34 @@ import Animated, {
 import {D, MAIN,color} from '../../configs';
 import Icon from 'react-native-vector-icons/Feather';
 import ChapterList from './ChapterList';
-import {iOSUIKit} from 'react-native-typography'
+import {material} from 'react-native-typography'
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 export default function FluidChapters() {
   //  const [toggleList, setToggleList] = React.useState(false);
   const toggleList = useSharedValue(0);
-  const styleListContainer = useAnimatedStyle(() => {
-    const bottom = interpolate(toggleList.value,[0,1],[20,0],Extrapolate.CLAMP)
-    const width=interpolate(toggleList.value,[0,1],[D.WIDTH*0.9,D.WIDTH],Extrapolate.CLAMP) 
-    const height=interpolate(toggleList.value,[0,1],[D.HEIGHT/9,D.HEIGHT*0.75],Extrapolate.CLAMP) 
-    const borderR = interpolate(toggleList.value,[0,1],[25,0],Extrapolate.CLAMP)
-    const left =interpolate(toggleList.value,[0,1],[D.WIDTH/2-width/2,0],Extrapolate.CLAMP)
-    const elevation =interpolate(toggleList.value,[0,1],[0,10],Extrapolate.CLAMP)
-    return {
-      zIndex:10,
-      position: 'absolute',
-      bottom,
-      backgroundColor:'#f6f6f6',
-      width,
-      height,
-      left,
-      elevation,
-      borderTopLeftRadius: 25,
-      borderTopRightRadius: 25,
-      borderBottomLeftRadius: borderR,
-      borderBottomRightRadius:borderR,
-    };
-  });
-const styledExpandWrapper=useAnimatedStyle(()=>{
-  return {
-    position:"relative",
-    alignItems:'flex-end',
-    flexDirection:"row",
-    justifyContent:"space-between",
-    alignItems:'center',
-    marginLeft:15,
-  }
-})
-  const styleExpand = useAnimatedStyle(() => {
-      return {
-      height:D.HEIGHT/9,
-      width: '25%',
-      borderRadius: 30,
-      transform: [{scale:0.8}],
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor:"transparent"
-    };
-  });
+
   const styleIcon = useAnimatedStyle(() => {
     return {maxHeight: 50};
   });
   const handleToggleList = () => {
-    toggleList.value =withSpring(toggleList.value===1?0:1,MAIN.spring) 
+    toggleList.value =withSpring(toggleList.value===1?0:1,{mass:0.1}) 
   };
-  const styleLists = useAnimatedStyle(() => {
+
+ 
+  const modalStyle = useAnimatedStyle(() => {
     const translateY= interpolate(toggleList.value,
       [0,1],
       [D.HEIGHT/2,0],
       Extrapolate.CLAMP)
     return {
-       paddingHorizontal:5,
+      paddingHorizontal:5,
        transform: [
         {
           translateY,
         },
       ],
+      
       opacity:toggleList.value,
     };
   });
@@ -87,16 +48,40 @@ const styledExpandWrapper=useAnimatedStyle(()=>{
   const toggleVolumeMix =()=>{
     console.log("volume mix")
   }
+  const getChild=()=>{
+    return <ChapterList/>
+  }
+  const styleGrower=useAnimatedStyle(()=>{
+    const height=interpolate(toggleList.value,[0,1],[D.HEIGHT/9,D.HEIGHT*0.7],Extrapolate.CLAMP)
+    const width=interpolate(toggleList.value,[0,1],[D.WIDTH*0.9,D.WIDTH],Extrapolate.CLAMP)
+    const left = interpolate (toggleList.value,[0,1],[D.WIDTH/2-(D.WIDTH*0.9)/2,D.WIDTH/2-width/2],Extrapolate.CLAMP)
+    const bottom = interpolate (toggleList.value,[0,1],[20,0],Extrapolate.CLAMP)
+    const borderR = interpolate (toggleList.value,[0,1],[25,0],Extrapolate.CLAMP)
+    const zIndex = interpolate (toggleList.value,[0,1],[5,10],Extrapolate.CLAMP)
+    return {
+     height,
+     width,
+     left,
+     bottom,
+     zIndex,
+     borderBottomEndRadius:borderR,
+     borderBottomLeftRadius:borderR,
+     elevation:zIndex-5,
+    }
+  }) 
+  const disappearAble=useAnimatedStyle(()=>{
+    const zIndex = interpolate(toggleList.value,[0,1],[0,15],Extrapolate.CLAMP)
+    return{
+       opacity:toggleList.value,
+       zIndex,elevation:5
+    }})
   return (
-    <Animated.View  style={[styleListContainer]}>
-      <Animated.View style={[styledExpandWrapper]}>
-        <Text style={[iOSUIKit.body,{maxWidth:D.WIDTH*0.6,fontFamily:"Conforta"}]} numberOfLines={1}>
-          Current chapter
-        </Text>
-        <AnimatedPressable
+    <Animated.View  style={[style.listContainer,styleGrower]}>
+      <View style={[style.lists]}>
+        <Pressable
           android_ripple={{color:color.ripple,borderless:true}}
           onPress={toggleVolumeMix.bind(this)}
-          style={[styleExpand]}>
+          style={[style.buttonBase]}>
           <AnimatedIcon
             name="sliders"
             style={[styleIcon]}
@@ -105,11 +90,11 @@ const styledExpandWrapper=useAnimatedStyle(()=>{
             width="100%"
             color={'orange'}
           />
-        </AnimatedPressable>
-      <AnimatedPressable
+        </Pressable>
+        <Pressable
           android_ripple={{color:color.ripple,borderless:true}}
           onPress={handleToggleList.bind(this)}
-          style={[styleExpand]}>
+          style={[style.buttonBase]}>
           <AnimatedIcon
             animatedProps={animatedIconProps}
             style={[styleIcon]}
@@ -118,12 +103,66 @@ const styledExpandWrapper=useAnimatedStyle(()=>{
             width="100%"
             color={color.PRIMARY}
           />
-        </AnimatedPressable>
-            </Animated.View>
-        <Animated.ScrollView style={[styleLists]}>
-          <ChapterList  />
-        </Animated.ScrollView>
-      
+        </Pressable>
+        </View>
+       <Animated.View style={[style.listHeader,disappearAble]}>
+        <Text style={[material.title,
+          {maxWidth:D.WIDTH*0.6,
+          fontFamily:"Conforta"}]} numberOfLines={1}>
+          Current chapter
+        </Text>
+        <Pressable
+          android_ripple={{color:color.ripple,borderless:true}}
+          onPress={handleToggleList.bind(this)}
+          style={[style.buttonBase]}>
+          <AnimatedIcon
+            name="x"
+            style={[styleIcon]}
+            size={30}
+            height="100%"
+            width="100%"
+            color={"#212121"}
+          />
+        </Pressable>
+        </Animated.View>
+      <Animated.ScrollView style={[modalStyle]}>
+          {getChild()}
+       </Animated.ScrollView>
+       
     </Animated.View>
   );
 }
+const style = StyleSheet.create({
+  listContainer:{
+    position: 'absolute',
+    borderTopLeftRadius:25,
+    borderTopRightRadius:25,
+    backgroundColor:'#f6f6f6',    
+  },
+  listHeader:{
+   flexDirection:"row",
+   alignItems:'center',
+   marginLeft:10,
+   justifyContent:"space-between"
+  },
+  lists:{
+    width:D.WIDTH*0.9,
+    position:'absolute',
+    bottom:0,
+    borderRadius:14,
+    flexDirection:"row",
+    alignContent:'flex-end',
+    justifyContent:"space-between",
+    maxHeight:D.HEIGHT/9,
+    alignItems:'center',
+  },
+  buttonBase:{
+    height:D.HEIGHT/9,
+    width: '25%',
+    borderRadius: 30,
+    transform: [{scale:0.8}],
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor:"transparent"
+  }
+})

@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {View, VirtualizedList, Text, Pressable,Image} from 'react-native';
+import {View, VirtualizedList, Text, Pressable} from 'react-native';
 import BookCard from '../components/BookHeroCard';
-import {iOSUIKit} from 'react-native-typography';
+import {material, materialColors} from 'react-native-typography';
 import Icon from 'react-native-vector-icons/Feather'
 import {withGlobalContext} from '../context'
-import {color} from '../configs'
+import {color, MAIN} from '../configs'
  class HorizontalBookView extends Component {
   getItem = (data, index) => {
     return {
@@ -33,8 +33,8 @@ import {color} from '../configs'
             android_ripple={{
               color:color.ripple
             }}>  
-        <View style={{margin: 10,flexDirection:'row',alignItems:'center',alignContent:'space-between'}}>
-          <Text style={[iOSUIKit.title3Emphasized,{fontFamily:"Conforta",flex:1}]}>
+        <View style={{margin: 10, marginHorizontal:15,flexDirection:'row',alignItems:'center',alignContent:'space-between'}}>
+          <Text style={[material.title,{fontFamily:"Conforta",flex:1}]}>
             {this.props.grouptitle || 'Hэр өгөөгyй'}
           </Text>
           <Icon size={30} name={'arrow-right'} color={"#00000094"}/>
@@ -46,6 +46,7 @@ import {color} from '../configs'
           horizontal
           contentContainerStyle={{paddingHorizontal:10}}
           initialNumToRender={4}
+          snapToInterval={MAIN.book.width}
           showsHorizontalScrollIndicator={false}
           renderItem={({item}) => {
             return (

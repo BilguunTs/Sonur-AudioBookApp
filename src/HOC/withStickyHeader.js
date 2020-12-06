@@ -4,7 +4,7 @@ import Animated, {
     useSharedValue,
     useAnimatedScrollHandler,
   } from 'react-native-reanimated';
-import {MAIN,color} from '../configs'
+import {MAIN,color, D} from '../configs'
 import Header from "../layout/Header"
 import {BackWrapper} from '../components/BackWrapper'
 import TestSvg from '../svg'
@@ -34,6 +34,7 @@ const ScrollContainer =({children,headerType})=>{
     return <SafeAreaView style={{flex: 1,backgroundColor:color.BackGround}}> 
           {getHeader()}
             <Animated.ScrollView
+              snapToInterval={D.HEIGHT/2}
               ref={scrollRef}
               style={{backgroundColor:color.BackGround}}
               scrollEventThrottle={1}
