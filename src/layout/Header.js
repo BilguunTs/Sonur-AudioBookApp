@@ -1,23 +1,32 @@
-import React, { Component} from 'react';
+import React, {Component} from 'react';
 import {Text, View, Pressable} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {iOSUIKit} from 'react-native-typography';
-import Animated, {useAnimatedStyle,interpolate,Extrapolate,withSpring} from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  interpolate,
+  Extrapolate,
+  withSpring,
+} from 'react-native-reanimated';
 import {D, MAIN} from '../configs';
 
-const MAX_DRAG=D.HEIGHT/2
-const HeaderWrapper = ({children, Y, relative,...rest}) => {
+const MAX_DRAG = D.HEIGHT / 2;
+const HeaderWrapper = ({children, Y, relative, ...rest}) => {
   const headerStyleSticky = useAnimatedStyle(() => {
-    const scale = interpolate(Y.value,
-      [0,MAX_DRAG],
-      [1,0.9],
-      Extrapolate.CLAMP)
-    const translateY = interpolate(Y.value,
-      [0,MAX_DRAG],
-      [0,10],
-      Extrapolate.CLAMP)
-    const colorAlpha = interpolate(scale,[1,0.9],[0,1],Extrapolate.CLAMP)
-    const elevation=interpolate(scale,[1,0.9],[0,8],Extrapolate.CLAMP) 
+    const scale = interpolate(
+      Y.value,
+      [0, MAX_DRAG],
+      [1, 0.9],
+      Extrapolate.CLAMP,
+    );
+    const translateY = interpolate(
+      Y.value,
+      [0, MAX_DRAG],
+      [0, 10],
+      Extrapolate.CLAMP,
+    );
+    const colorAlpha = interpolate(scale, [1, 0.9], [0, 1], Extrapolate.CLAMP);
+    const elevation = interpolate(scale, [1, 0.9], [0, 3], Extrapolate.CLAMP);
     return {
       justifyContent: 'space-between',
       flexDirection: 'row',
@@ -32,7 +41,7 @@ const HeaderWrapper = ({children, Y, relative,...rest}) => {
       backgroundColor: `rgba(237, 246, 249, ${colorAlpha})`,
       borderRadius: 30,
       transform: [
-        {scale:withSpring(scale)},
+        {scale: withSpring(scale)},
         {translateY: withSpring(translateY)},
       ],
     };
@@ -48,35 +57,51 @@ const HeaderWrapper = ({children, Y, relative,...rest}) => {
       position: 'absolute',
       top: 0,
       padding: 20,
-      backgroundColor:  '#edf6f9', 
+      backgroundColor: '#edf6f9',
       borderRadius: 30,
-      transform: [
-        {scale:  0.9}, 
-        {translateY: 8}
-      ],
+      transform: [{scale: 0.9}, {translateY: 8}],
     };
   });
   return (
-    <Animated.View {...rest} style={[relative? headerStyleRelative:headerStyleSticky]}>
+    <Animated.View
+      {...rest}
+      style={[relative ? headerStyleRelative : headerStyleSticky]}>
       {children}
     </Animated.View>
   );
 };
 const LeftPlaceHolderWrapper = ({children, Y}) => {
   const primaryTitleStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(Y.value,[0,MAX_DRAG/2],[1,0],Extrapolate.CLAMP)
-    const translateY = interpolate(Y.value,
-      [0,MAX_DRAG/2],
-      [0,20],
-      Extrapolate.CLAMP)
+    const opacity = interpolate(
+      Y.value,
+      [0, MAX_DRAG / 2],
+      [1, 0],
+      Extrapolate.CLAMP,
+    );
+    const translateY = interpolate(
+      Y.value,
+      [0, MAX_DRAG / 2],
+      [0, 20],
+      Extrapolate.CLAMP,
+    );
     return {
-      transform: [{translateY:withSpring(translateY)}],
+      transform: [{translateY: withSpring(translateY)}],
       opacity,
     };
   });
   const secondaryTitleStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(Y.value,[0,MAX_DRAG],[0,1],Extrapolate.CLAMP)
-    const translateY = interpolate(Y.value,[0,MAX_DRAG/2],[20,0],Extrapolate.CLAMP)
+    const opacity = interpolate(
+      Y.value,
+      [0, MAX_DRAG],
+      [0, 1],
+      Extrapolate.CLAMP,
+    );
+    const translateY = interpolate(
+      Y.value,
+      [0, MAX_DRAG / 2],
+      [20, 0],
+      Extrapolate.CLAMP,
+    );
     return {
       position: 'absolute',
       top: 0,
@@ -86,7 +111,8 @@ const LeftPlaceHolderWrapper = ({children, Y}) => {
   });
   return (
     <View style={{flexDirection: 'column'}}>
-      <Animated.Text style={[primaryTitleStyle, iOSUIKit.title3,{fontFamily:"Conforta"}]}>
+      <Animated.Text
+        style={[primaryTitleStyle, iOSUIKit.title3, {fontFamily: 'Conforta'}]}>
         {MAIN.app_name}
       </Animated.Text>
       <Animated.View style={[secondaryTitleStyle]}>{children}</Animated.View>
@@ -95,10 +121,12 @@ const LeftPlaceHolderWrapper = ({children, Y}) => {
 };
 export default class Header extends Component {
   renderLeftAction = () => {
-    const {type, contrast,backAction=false,...rest} = this.props;
-    if (type === 'back'||backAction===true) {
+    const {type, contrast, backAction = false, ...rest} = this.props;
+    if (type === 'back' || backAction === true) {
       return (
-        <Pressable android_ripple={{borderless:true}} onPress={()=>rest.navigation.goBack()}>
+        <Pressable
+          android_ripple={{borderless: true}}
+          onPress={() => rest.navigation.goBack()}>
           <Ionicons
             name="md-arrow-back"
             style={{color: !contrast ? '#7400b8' : '#fff'}}
@@ -108,7 +136,7 @@ export default class Header extends Component {
       );
     }
     return (
-      <Pressable android_ripple={{borderless:true}}>
+      <Pressable android_ripple={{borderless: true}}>
         <Ionicons
           name="md-search-outline"
           size={35}
@@ -119,34 +147,46 @@ export default class Header extends Component {
   };
   getTitleVariation = () => {
     return !this.props.contrast ? (
-      <Text style={{color: '#7400b8', fontFamily:"Conforta",...iOSUIKit.title3}}>
+      <Text
+        style={{color: '#7400b8', fontFamily: 'Conforta', ...iOSUIKit.title3}}>
         {this.props.title}
       </Text>
     ) : (
-      <Text style={[iOSUIKit.title3White,{fontFamily:"Conforta"}]}>{this.props.title}</Text>
+      <Text style={[iOSUIKit.title3White, {fontFamily: 'Conforta'}]}>
+        {this.props.title}
+      </Text>
     );
   };
   render() {
-    const {contrast = false, transY=0, replace=false,...rest} = this.props;
-    if(rest.relative){
-      return <HeaderWrapper Y={transY} {...rest}>
-      {replace&& this.renderLeftAction()}
-      {replace&& this.props.title && this.getTitleVariation()}
-      { !replace&&this.props.title && this.getTitleVariation()}
-      {!replace && this.renderLeftAction()}
-      </HeaderWrapper>
+    const {contrast = false, transY = 0, replace = false, ...rest} = this.props;
+    if (rest.relative) {
+      return (
+        <HeaderWrapper Y={transY} {...rest}>
+          {replace && this.renderLeftAction()}
+          {replace && this.props.title && this.getTitleVariation()}
+          {!replace && this.props.title && this.getTitleVariation()}
+          {!replace && this.renderLeftAction()}
+        </HeaderWrapper>
+      );
     }
     return (
       <HeaderWrapper Y={transY} {...rest}>
-        {!replace&&<><LeftPlaceHolderWrapper Y={transY}>
-          {this.props.title && this.getTitleVariation()}
-        </LeftPlaceHolderWrapper>
-        {this.renderLeftAction()}
-        </>}
-        {replace&&<>{this.renderLeftAction()}
-        <LeftPlaceHolderWrapper Y={transY}>
-          {this.props.title && this.getTitleVariation()}
-        </LeftPlaceHolderWrapper></>}
+        {!replace && (
+          <>
+            <LeftPlaceHolderWrapper Y={transY}>
+              {this.props.title && this.getTitleVariation()}
+            </LeftPlaceHolderWrapper>
+            {this.renderLeftAction()}
+          </>
+        )}
+        {replace && (
+          <>
+            {this.renderLeftAction()}
+            <LeftPlaceHolderWrapper Y={transY}>
+              {this.props.title && this.getTitleVariation()}
+            </LeftPlaceHolderWrapper>
+          </>
+        )}
       </HeaderWrapper>
     );
   }
