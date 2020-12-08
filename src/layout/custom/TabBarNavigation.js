@@ -6,6 +6,7 @@ import Animated, {
   useDerivedValue,
   useAnimatedGestureHandler,
   withSpring,
+  runOnJS,
   interpolate,
   Extrapolate,
 } from 'react-native-reanimated';
@@ -16,30 +17,27 @@ import Header from '../../screens/AudioPlayer/Header';
 import Icon from 'react-native-vector-icons/Ionicons';
 //import {StickyContainer} from './StickyContainer'
 import {withGlobalContext} from '../../context';
-import {D, MAIN, Drag, color} from '../../configs';
+import {D, MAIN, maxDrag, color} from '../../configs';
 import NothingSvg from '../../svg/backtrees.svg';
 
 const WIDTH = D.WIDTH;
-const maxDrag = D.HEIGHT - MAIN.bottom_tab.HEIGHT;
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
 
 const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
-  const [currentID, setCurrentID] = React.useState(null);
-  const dragValue = useSharedValue(0);
+  const {dragValue} = props.global;
   const isToggled = useDerivedValue(() => {
-    return dragValue.value === maxDrag;
-  }, [currentID, dragValue]);
+    // if (dragValue.value === 0) {
+    //   console.log('istoggled is true');
+    //   runOnJS(props.global.methods.toggleGplayer)(true);
+    //   return true;
+    // } else if (dragValue.value === maxDrag) {
+    //   console.log('istoggled is false');
+    //   runOnJS(props.global.methods.toggleGplayer)(false);
+    //   return false;
+    // }
+  }, [dragValue]);
 
-  React.useEffect(() => {
-    const {gplayer} = props.global.stats;
-    if (gplayer?.isActive && gplayer.id !== currentID) {
-      setCurrentID(gplayer.id);
-      dragValue.value = withSpring(0, MAIN.spring);
-    } else {
-      dragValue.value = withSpring(maxDrag, MAIN.spring);
-    }
-  }, [props.global.stats.gplayer]);
   const getText = (txt, focused) => {
     const styleText = useAnimatedStyle(() => {
       return {
@@ -164,13 +162,9 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
         </PanGestureHandler>
         <Animated.View style={[styleShrink]}>
           <Animated.View style={[{flex: 3, justifyContent: 'center'}]}>
-            {isToggled.value ? (
-              <MainPlayer filename="testaudio.mp3" />
-            ) : (
-              <NothingSvg />
-            )}
+            <MainPlayer filename="testaudio.mp3" />
           </Animated.View>
-          {isToggled.value && <FluidChapters />}
+          <FluidChapters />
           <Animated.View style={[{flex: 1}]}></Animated.View>
         </Animated.View>
       </View>

@@ -1,12 +1,14 @@
 import React, {createContext, Component} from 'react';
-import {View, StyleSheet} from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedGestureHandler,
-} from 'react-native-reanimated';
+//import {View, StyleSheet} from 'react-native';
+
 import {GLOBAL_VALUE, single_values} from './states';
-import {checkInternetConnectivity} from './check';
+//import {checkInternetConnectivity} from './check';
+import NetInfo from '@react-native-community/netinfo';
+import Toast from 'react-native-toast-message';
+import {maxDrag} from '../configs';
+import {useSharedValue, withSpring} from 'react-native-reanimated';
 export const Contextulize = createContext();
+
 const dummydata = [
   {
     id: '1',
@@ -73,34 +75,40 @@ const dummyuser = {
     4: {title: 'Dudeest'},
   },
 };
-
-export class ContextProvider extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {...GLOBAL_VALUE};
-  }
-  componentDidMount() {
-    checkInternetConnectivity();
-    if (this.state.books.new_books.length === 0) {
-      this.init();
-    }
-  }
-  init = () => {
+export const ContextProvider = (props) => {
+  const globalDrag = useSharedValue(maxDrag);
+  const [state, setState] = React.useState(GLOBAL_VALUE);
+  React.useEffect(() => {
+    //checkConnection();
+    init();
+  }, []);
+  const init = () => {
     //let user = Object.assign(single_values.user,{...dummyuser,isAuth:true})
     //this.setUser(user)
-    this.initBooks();
+    initBooks();
   };
-  componentWillUnmount() {
-    console.log('unmounting');
-  }
-  setUser = (obj) => {
-    this.setState({user: obj});
+  // componentWillUnmount() {}
+  const checkConnection = () => {
+    NetInfo.addEventListener((net) => {
+      if (!net.isConnected) {
+        setState({...state, offline: true});
+      } else {
+        setState({...state, offline: false});
+      }
+    });
   };
-  setGplayer = (obj) => {
+  const setUser = (obj) => {
+    setState({user: obj});
+  };
+  const setGplayer = (obj) => {
     let instance = Object.assign(GLOBAL_VALUE.gplayer, {...obj});
-    this.setState({gplayer: {...instance, isActive: true}});
+    setState({
+      ...state,
+      gplayer: {...instance, isActive: true, isToggled: true},
+    });
+    globalDrag.value = withSpring(0);
   };
-  initBooks = async () => {
+  const initBooks = async () => {
     if (dummydata === undefined || dummyuser === undefined) return;
     const userbooks = dummyuser.purchased;
     try {
@@ -114,32 +122,38 @@ export class ContextProvider extends Component {
         }
         fixedBooks.push({...instance});
       }
-      this.setNewBooks(fixedBooks);
+      setNewBooks(fixedBooks);
     } catch (e) {
       console.log(e);
     }
   };
-  setNewBooks = (books) => {
-    if (books === undefined) return;
-    this.setState({books: {...this.state.books, new_books: books}});
+  const toggleGplayer = (bool) => {
+    setState({
+      gplayer: {
+        ...state.gplayer,
+        isToggled: bool,
+      },
+    });
   };
-  render() {
-    return (
-      <Contextulize.Provider
-        value={{
-          stats: this.state,
-          methods: this._getMethods(),
-        }}>
-        {this.props.children}
-      </Contextulize.Provider>
-    );
-  }
-  _getMethods() {
-    return {
-      setGplayer: (o) => this.setGplayer(o),
-    };
-  }
-}
+  const setNewBooks = (books) => {
+    if (books === undefined) return;
+    setState({...state, books: {...state.books, new_books: books}});
+  };
+
+  return (
+    <Contextulize.Provider
+      value={{
+        stats: state,
+        dragValue: globalDrag,
+        methods: {
+          setGplayer: (o) => setGplayer(o),
+          toggleGplayer: (b) => toggleGplayer(b),
+        },
+      }}>
+      {props.children}
+    </Contextulize.Provider>
+  );
+};
 
 export function withGlobalContext(Component) {
   return class WrapperComponent extends React.Component {
