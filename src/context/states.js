@@ -13,6 +13,7 @@ export const single_values = {
     thumbnail: {
       src: '',
     },
+    audioFile: '',
     count_chapter: 0,
     duration: '',
     page_num: 0,
@@ -52,12 +53,11 @@ export const GLOBAL_VALUE = {
     cart: {},
     reading: {},
   },
-  downloads: {
-    lists: [],
-  },
+  downloads: {},
   books: {
     new_books: [],
     top_books: [],
   },
   offline: false,
+  dowloading: false,
 };
