@@ -16,7 +16,7 @@ const ScreenOne = () => {
   const navigation=useNavigation()
   return ( <> 
     <FeaturedList navigation={navigation} grouptitle="Шинэ ном" />
-      <View style={{height:D.HEIGHT/5}}/>
+      <View style={{height:D.HEIGHT/4}}/>
     </>
   );
 };

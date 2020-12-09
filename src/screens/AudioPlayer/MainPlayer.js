@@ -4,10 +4,10 @@ import {View, Text, TouchableOpacity, Platform, Alert} from 'react-native';
 import Slider from '@react-native-community/slider';
 import Sound from 'react-native-sound';
 
-import {D} from '../../configs'
+import {D, color} from '../../configs';
 import FluidButton from './FluidPlayButton';
 import {iOSUIKit} from 'react-native-typography';
-import ActionButton from './ActionButton'
+import ActionButton from './ActionButton';
 
 export default class PlayerScreen extends React.Component {
   static navigationOptions = (props) => ({
@@ -25,7 +25,7 @@ export default class PlayerScreen extends React.Component {
   }
 
   componentDidMount() {
-   // this.play();
+    // this.play();
 
     this.timeout = setInterval(() => {
       if (
@@ -148,16 +148,20 @@ export default class PlayerScreen extends React.Component {
   render() {
     const currentTimeString = this.getAudioTimeString(this.state.playSeconds);
     const durationString = this.getAudioTimeString(this.state.duration);
-    
+
     return (
       <View
         style={{
           width: '100%',
-         flex:0.8,
+          flex: 0.8,
           justifyContent: 'center',
           backgroundColor: 'white',
         }}>
-         <Text style={[iOSUIKit.title3Object,{color: '#333', alignSelf: 'center',fontFamily:"Conforta"}]}>
+        <Text
+          style={[
+            iOSUIKit.title3Object,
+            {color: '#333', alignSelf: 'center', fontFamily: 'Conforta'},
+          ]}>
           {currentTimeString}/{durationString}
         </Text>
         <View
@@ -166,16 +170,18 @@ export default class PlayerScreen extends React.Component {
             justifyContent: 'center',
             marginVertical: 15,
           }}>
-          <ActionButton onPress={this.jumpPrev15Seconds} direction='left'/>  
-           <FluidButton playing={this.state.playState === 'playing'} onPress={this.handleAction}/>
-          <ActionButton onPress={this.jumpNext15Seconds} direction="right"/>
-        </View>        
+          <ActionButton onPress={this.jumpPrev15Seconds} direction="left" />
+          <FluidButton
+            playing={this.state.playState === 'playing'}
+            onPress={this.handleAction}
+          />
+          <ActionButton onPress={this.jumpNext15Seconds} direction="right" />
+        </View>
         <View
           style={{
             //marginTop:35,
             marginHorizontal: 15,
             flexDirection: 'row',
-            
           }}>
           <Slider
             onTouchStart={this.onSliderEditStart}
@@ -186,9 +192,11 @@ export default class PlayerScreen extends React.Component {
             onValueChange={this.onSliderEditing}
             value={this.state.playSeconds}
             maximumValue={this.state.duration}
-            maximumTrackTintColor="gray"
-            minimumTrackTintColor="#333"
-            thumbTintColor="#333"
+            maximumTrackTintColor={color.ripple}
+            minimumTrackTintColor={'orange'}
+            thumbTintColor={'orange'}
+            trackThickness={10}
+            thumbZise={10}
             style={{
               flex: 1,
               alignSelf: 'center',

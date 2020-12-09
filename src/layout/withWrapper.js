@@ -2,16 +2,14 @@ import React, {useCallback, useState} from 'react';
 import {View, Pressable, Text} from 'react-native';
 
 export const WrapTextContent = (props) => {
-  const [textShown, setTextShown] = useState(false); //To show ur remaining Text
-  const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
+  const [textShown, setTextShown] = useState(false);
+  const [lengthMore, setLengthMore] = useState(false);
   const toggleNumberOfLines = () => {
-    //To toggle the show text or hide it
     setTextShown(!textShown);
   };
 
   const onTextLayout = useCallback((e) => {
-    setLengthMore(e.nativeEvent.lines.length >= 4); //to check the text is more than 4 lines or not
-    // console.log(e.nativeEvent);
+    setLengthMore(e.nativeEvent.lines.length >= 4);
   }, []);
 
   return (

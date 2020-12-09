@@ -1,26 +1,33 @@
 import React from 'react'
-import LinearGradient from 'react-native-linear-gradient'
-import Animated, {useAnimatedStyle, withSpring} from 'react-native-reanimated';
-import {D} from '../configs'
+import Animated, {useAnimatedStyle, interpolate,Extrapolate,withSpring} from 'react-native-reanimated';
+//import LinearGradient from 'react-native-linear-gradient'
+import {D,MAIN} from '../configs'
 export const BackWrapper = ({Y, children}) => {
     const styleContainer = useAnimatedStyle(() => {
-      const Value = 350 - Y.value * 2;
+      const borderRadius =withSpring(interpolate(Y.value,[0,D.HEIGHT/2],[D.WIDTH/2,0],Extrapolate.CLAMP))
+      const translateY =withSpring(interpolate(Y.value,
+        [0,D.HEIGHT/2],
+        [0,1-D.HEIGHT/2],
+        Extrapolate.CLAMP),MAIN.spring)
       return {
         backgroundColor: '#70689799',
-        minHeight:150,
-        borderBottomLeftRadius: withSpring(Value, {damping: 20, stiffness: 90}),
-        borderBottomRightRadius: withSpring(Value, {damping: 20, stiffness: 90}),
+        borderBottomLeftRadius:borderRadius,
+        borderBottomRightRadius:borderRadius,
         transform: [
-          {translateY: withSpring(1 - Y.value, {damping: 20, stiffness: 90})},
+          {translateY}
         ],
-        maxHeight:450
       };
     });
     const styleChildren = useAnimatedStyle(() => {
+      const translateY =withSpring(interpolate(
+        Y.value,
+        [0,D.HEIGHT/3],
+        [0,1-D.HEIGHT],
+        Extrapolate.CLAMP),MAIN.spring)
       return {
         marginTop: 100,
         transform: [
-          {translateY: withSpring(1 - Y.value * 2, {damping: 20, stiffness: 90})},
+          {translateY},
         ],
       };
     });
