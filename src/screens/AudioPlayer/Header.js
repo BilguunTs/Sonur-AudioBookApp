@@ -14,14 +14,17 @@ export default ({isToggled, text, leftAction, hideleft = false}) => {
       <View style={{flex: 1, alignItems: 'center'}}>
         {hideleft === false && (
           <View style={{maxHeight: 40}}>
-            <BackButton onPress={leftAction} />
+            <BackButton borderless onPress={leftAction} />
           </View>
         )}
       </View>
       <View style={{flex: 3, alignItems: 'center'}}>
         <Text
-          numberOfLines={1}
-          style={[material.headline, {fontFamily: 'Conforta'}]}>
+          numberOfLines={2}
+          style={[
+            material.headline,
+            {fontFamily: 'Conforta', textAlign: 'center'},
+          ]}>
           {text || 'Хоосон'}
         </Text>
       </View>

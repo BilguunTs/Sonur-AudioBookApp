@@ -21,7 +21,14 @@ import FloatingFooterActions from '../../components/FloatingFooterActions';
 import {withGlobalContext} from '../../context';
 import LinearGradient from 'react-native-linear-gradient';
 export default withGlobalContext(({navigation, route, global}) => {
-  const {isLocked, title, author, thumbnail, about} = route.params;
+  const {
+    isLocked,
+    title,
+    author,
+    thumbnail,
+    about,
+    isDownloaded = false,
+  } = route.params;
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -79,6 +86,7 @@ export default withGlobalContext(({navigation, route, global}) => {
               navigation={navigation}
               item={route.params}
               global={global}
+              isDownloaded={isDownloaded}
               type={isLocked ? 'purchase' : 'play'}
             />
           </View>

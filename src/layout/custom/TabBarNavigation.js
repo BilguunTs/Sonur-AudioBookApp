@@ -162,7 +162,7 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
         </PanGestureHandler>
         <Animated.View style={[styleShrink]}>
           <Animated.View style={[{flex: 3, justifyContent: 'center'}]}>
-            <MainPlayer filename="testaudio.mp3" />
+            <MainPlayer filepath={props.global.stats.gplayer.audioFile} />
           </Animated.View>
           <FluidChapters />
           <Animated.View style={[{flex: 1}]}></Animated.View>

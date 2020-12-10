@@ -6,13 +6,16 @@ export default class FloatingFooterActions extends Component {
     super(props);
     this.size = this.props.size || 40;
   }
-  downloadFirst = () => {
-    const {global, item} = this.props;
-    global.methods.downloadBook(item);
-    // const {navigation,item,global}=this.props
-    // global.methods.setGplayer(item);
-    // navigation.goBack()
+  PlayIfDownload = () => {
+    const {global, isDownloaded, item, navigation} = this.props;
+    if (isDownloaded) {
+      global.methods.setGplayer(item);
+      navigation.goBack();
+    } else {
+      global.methods.downloadBook(item);
+    }
   };
+
   handlePress = () => {
     const {type} = this.props;
     switch (type) {
@@ -20,7 +23,7 @@ export default class FloatingFooterActions extends Component {
         console.log('should open invoice dialog');
         break;
       case 'play':
-        this.downloadFirst();
+        this.PlayIfDownload();
         break;
     }
   };
