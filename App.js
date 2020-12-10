@@ -4,10 +4,7 @@ import {AppNavigator as Main} from './src/routes';
 import {ContextProvider} from './src/context';
 import Toast, {BaseToast} from 'react-native-toast-message';
 const toastConfig = {
-  success: () => {},
-  error: () => {},
-  info: () => {},
-  netInfo: ({text1, text2, ...rest}) => {
+  netOff: ({text1, text2, ...rest}) => {
     return (
       <BaseToast
         {...rest}
@@ -24,14 +21,31 @@ const toastConfig = {
       />
     );
   },
+  netOn: ({text1, text2, ...rest}) => {
+    return (
+      <BaseToast
+        {...rest}
+        leadingIcon={require('./assets/img/wifi-on.png')}
+        style={{
+          borderLeftColor: 'green',
+          width: '100%',
+          elevation: 15,
+          borderRadius: 0,
+        }}
+        contentContainerStyle={{paddingHorizontal: 15}}
+        text1={text1}
+        text2={text2}
+      />
+    );
+  },
 };
 
 const AppSonur = () => (
   <>
-    <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
     <ContextProvider>
       <Main />
     </ContextProvider>
+    <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
   </>
 );
 

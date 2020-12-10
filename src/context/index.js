@@ -1,27 +1,82 @@
-import React, {createContext, Component} from 'react';
+import React, {createContext, useState} from 'react';
 //import {View, StyleSheet} from 'react-native';
 
 import {GLOBAL_VALUE, single_values} from './states';
 //import {checkInternetConnectivity} from './check';
 import firestore from '@react-native-firebase/firestore';
-import NetInfo from '@react-native-community/netinfo';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Toast from 'react-native-toast-message';
 import RNFetchBlob from 'rn-fetch-blob';
 import {maxDrag} from '../configs';
 import {useSharedValue, withSpring} from 'react-native-reanimated';
 import {getCachePath} from '../utils';
 export const Contextulize = createContext();
+// let isONLINE = null;
+// NetInfo.addEventListener((net) => {
+//   isONLINE = net.isConnected;
+// });
+class ConnectionInfoSubscriptionWrapper extends React.Component {
+  _subscription = null;
+  state = {
+    connectionInfo: {},
+  };
+  componentDidMount() {
+    this._subscription = NetInfo.addEventListener(
+      this._handleConnectionInfoChange,
+    );
+  }
+  componentWillUnmount() {
+    this._subscription && this._subscription();
+  }
+  _handleConnectionInfoChange = (connectionInfo) => {
+    this.setState(() => ({
+      connectionInfo: connectionInfo,
+    }));
+  };
+  render() {
+    const childrenWithProps = React.Children.map(
+      this.props.children,
+      (child) => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child, {
+            connectionInfo: this.state.connectionInfo,
+          });
+        }
+        return child;
+      },
+    );
+    return <>{childrenWithProps}</>;
+  }
+}
 
-export const ContextProvider = (props) => {
+const Provider = ({connectionInfo, ...props}) => {
   const globalDrag = useSharedValue(maxDrag);
-  const [state, setState] = React.useState(GLOBAL_VALUE);
+
+  const [state, setState] = useState(GLOBAL_VALUE);
   React.useEffect(() => {
-    //checkConnection();
-    init();
-  }, []);
-  const init = () => {
+    if (connectionInfo !== undefined) {
+      if (connectionInfo.isConnected) {
+        Toast.show({
+          text1: '😃 Онлайн горим',
+          text2: 'Тавтай морил',
+          type: 'netOn',
+          topOffset: 0,
+        });
+      } else if (!connectionInfo.isConnected) {
+        Toast.show({
+          text1: '😪 офлайн горим',
+          text2: 'wifi асааж онлайн горимд шилжинэ',
+          type: 'netOff',
+          topOffset: 0,
+        });
+      }
+    }
+
+    //init();
     checkDowload();
-    //fetchBooks();
+  }, [connectionInfo]);
+  const init = () => {
+    fetchBooks();
   };
   const checkDowload = async () => {
     const {fs} = RNFetchBlob;
@@ -42,19 +97,6 @@ export const ContextProvider = (props) => {
     } catch (e) {
       console.log(e);
     }
-    // fs.ls(getCachePath().main)
-    //   .then((bookDirs) => {
-    //     for (let i of Object.keys(bookDirs)) {
-    //       let _path = getCachePath(bookDirs[i]);
-    //       fs.ls(_path.dir).then((files) => {
-    //         console.log(files);
-    //         // fs.readFile(_path.info, 'base64').then((res) => {
-    //         //   console.log(res);
-    //         // });
-    //       });
-    //     }
-    //   })
-    //   .catch((e) => console.log(e));
   };
   const downloadBook = (book) => {
     if (book === undefined) {
@@ -87,17 +129,7 @@ export const ContextProvider = (props) => {
         console.log(e);
       });
   };
-  const FetchBookDetail = () => {};
-  // componentWillUnmount() {}
-  const checkConnection = () => {
-    NetInfo.addEventListener((net) => {
-      if (!net.isConnected) {
-        setState({...state, offline: true});
-      } else {
-        setState({...state, offline: false});
-      }
-    });
-  };
+
   const setUser = (obj) => {
     setState({user: obj});
   };
@@ -154,7 +186,11 @@ export const ContextProvider = (props) => {
     </Contextulize.Provider>
   );
 };
-
+export const ContextProvider = ({children}) => (
+  <ConnectionInfoSubscriptionWrapper>
+    <Provider>{children}</Provider>
+  </ConnectionInfoSubscriptionWrapper>
+);
 export function withGlobalContext(Component) {
   return class WrapperComponent extends React.Component {
     render() {
