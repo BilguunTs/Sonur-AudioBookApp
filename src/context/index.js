@@ -49,7 +49,7 @@ class ConnectionInfoSubscriptionWrapper extends React.Component {
   }
 }
 
-const Provider = ({connectionInfo, ...props}) => {
+const Context = ({connectionInfo, ...props}) => {
   const globalDrag = useSharedValue(maxDrag);
 
   const [state, setState] = useState(GLOBAL_VALUE);
@@ -62,6 +62,7 @@ const Provider = ({connectionInfo, ...props}) => {
           type: 'netOn',
           topOffset: 0,
         });
+        init();
       } else if (!connectionInfo.isConnected) {
         Toast.show({
           text1: '😪 офлайн горим',
@@ -71,8 +72,6 @@ const Provider = ({connectionInfo, ...props}) => {
         });
       }
     }
-
-    //init();
     checkDowload();
   }, [connectionInfo]);
   const init = () => {
@@ -176,6 +175,7 @@ const Provider = ({connectionInfo, ...props}) => {
       value={{
         stats: state,
         dragValue: globalDrag,
+        isOnline: connectionInfo.isConnected || false,
         methods: {
           setGplayer: (o) => setGplayer(o),
           toggleGplayer: (b) => toggleGplayer(b),
@@ -188,7 +188,7 @@ const Provider = ({connectionInfo, ...props}) => {
 };
 export const ContextProvider = ({children}) => (
   <ConnectionInfoSubscriptionWrapper>
-    <Provider>{children}</Provider>
+    <Context>{children}</Context>
   </ConnectionInfoSubscriptionWrapper>
 );
 export function withGlobalContext(Component) {

@@ -21,6 +21,8 @@
     "@react-navigation/bottom-tabs": "^5.8.0",
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",
+    "lottie-ios": "3.1.8",
+    "lottie-react-native": "^3.5.0",
     "proxy-polyfill": "^0.3.2",
     "react": "16.13.1",
     "react-native": "0.63.1",

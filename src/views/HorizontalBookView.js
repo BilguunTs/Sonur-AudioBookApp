@@ -4,6 +4,7 @@ import BookCard from '../components/BookHeroCard';
 import {material, materialColors} from 'react-native-typography';
 import Icon from 'react-native-vector-icons/Feather';
 import {withGlobalContext} from '../context';
+import LottieView from 'lottie-react-native';
 import {color, MAIN} from '../configs';
 class HorizontalBookView extends Component {
   getItem = (data, index) => {
@@ -28,7 +29,15 @@ class HorizontalBookView extends Component {
     });
   };
   render() {
-    const {stats} = this.props.global;
+    const {stats, isOnline} = this.props.global;
+    if (!isOnline) {
+      return (
+        <View>
+          <Text>go to downloads</Text>
+        </View>
+      );
+    }
+
     return (
       <View style={{marginBottom: 1}}>
         <Pressable

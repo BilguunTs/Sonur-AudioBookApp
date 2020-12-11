@@ -16,6 +16,10 @@ target 'Reanimated2Playground' do
 
   pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
 
+  pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
+
+  pod 'lottie-ios', :path => '../node_modules/lottie-ios'
+
   target 'Reanimated2PlaygroundTests' do
     inherit! :complete
     # Pods for testing
