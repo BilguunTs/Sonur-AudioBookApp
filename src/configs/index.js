@@ -1,5 +1,4 @@
 import {Dimensions} from 'react-native';
-
 export const D = {
   WIDTH: Dimensions.get('window').width,
   HEIGHT: Dimensions.get('window').height,
@@ -58,4 +57,5 @@ export const MAIN = {
     style: {marginVertical: 10},
   },
 };
+
 export const maxDrag = D.HEIGHT - MAIN.bottom_tab.HEIGHT;

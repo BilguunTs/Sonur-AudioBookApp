@@ -2,7 +2,7 @@ import React from 'react';
 import {Pressable, View, StyleSheet} from 'react-native';
 import Animated, {
   useAnimatedStyle,
-  useSharedValue,
+  useAnimatedProps,
   useDerivedValue,
   useAnimatedGestureHandler,
   withSpring,
@@ -16,14 +16,14 @@ import MainPlayer from '../../screens/AudioPlayer/MainPlayer';
 import Header from '../../screens/AudioPlayer/Header';
 import Icon from 'react-native-vector-icons/Ionicons';
 //import {StickyContainer} from './StickyContainer'
+import LottieView from 'lottie-react-native';
 import {withGlobalContext} from '../../context';
 import {D, MAIN, maxDrag, color} from '../../configs';
-import NothingSvg from '../../svg/backtrees.svg';
 
 const WIDTH = D.WIDTH;
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
-
+const ALottieView = Animated.createAnimatedComponent(LottieView);
 const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
   const {dragValue} = props.global;
   const isToggled = useDerivedValue(() => {
@@ -37,6 +37,9 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
     //   return false;
     // }
   }, [dragValue]);
+  const isActive = useDerivedValue(() => {
+    return props.global.stats.gplayer.isActive;
+  }, [props.global.stats.gplayer]);
 
   const getText = (txt, focused) => {
     const styleText = useAnimatedStyle(() => {
@@ -143,12 +146,35 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
       }
     },
   });
+  const styleLottie = useAnimatedStyle(() => {
+    const scale = interpolate(
+      dragValue.value,
+      [0, 1],
+      [0, 1.3],
+      Extrapolate.CLAMP,
+    );
+    return {
+      opacity: dragValue.value < maxDrag * 0.9 ? withSpring(0) : withSpring(1),
+      transform: [{scale}],
+      maxHeight: MAIN.CIRCLE_SIZE,
+      maxHeight: MAIN.CIRCLE_SIZE,
+    };
+  });
 
   const StickyContainer = () => {
     return (
       <View style={StyleSheet.absoluteFill}>
         <PanGestureHandler onGestureEvent={handleEvent}>
           <Animated.View style={styleGrabber}>
+            <ALottieView
+              autoPlay
+              loop
+              speed={0.2}
+              source={require('../../animation/ripplewave.json')}
+              style={styleLottie}
+              colorFilters={[{keypath: 'button', color: color.PRIMARY}]}
+              resizeMode="cover"
+            />
             <Animated.View style={styleHeaderWrapper}>
               <Header
                 text={props.global.stats.gplayer.title}
@@ -162,7 +188,7 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
         </PanGestureHandler>
         <Animated.View style={[styleShrink]}>
           <Animated.View style={[{flex: 3, justifyContent: 'center'}]}>
-            <MainPlayer filename="testaudio.mp3" />
+            <MainPlayer filepath={props.global.stats.gplayer.audioFile} />
           </Animated.View>
           <FluidChapters />
           <Animated.View style={[{flex: 1}]}></Animated.View>
@@ -273,7 +299,7 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
       position: 'absolute',
       left: WIDTH / 2 - width / 2,
       borderRadius,
-      elevation: 17,
+      elevation: 13,
       backgroundColor: '#fff',
     };
   });

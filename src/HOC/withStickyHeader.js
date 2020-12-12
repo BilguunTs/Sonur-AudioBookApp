@@ -8,7 +8,6 @@ import {MAIN, color, D} from '../configs';
 import Header from '../layout/Header';
 import {BackWrapper} from '../components/BackWrapper';
 import TestSvg from '../svg';
-
 const ScrollContainer = ({children, headerType}) => {
   const isScrolling = useSharedValue(false);
   const transY = useSharedValue(0);

@@ -32,6 +32,7 @@ const HeaderWrapper = ({children, Y, relative, ...rest}) => {
       flexDirection: 'row',
       alignItems: 'center',
       flexGrow: 1,
+      height: 60,
       width: D.WIDTH,
       zIndex: 10,
       position: 'absolute',
@@ -39,7 +40,7 @@ const HeaderWrapper = ({children, Y, relative, ...rest}) => {
       elevation,
       padding: 20,
       backgroundColor: `rgba(237, 246, 249, ${colorAlpha})`,
-      borderRadius: 30,
+      borderRadius: 15,
       transform: [
         {scale: withSpring(scale)},
         {translateY: withSpring(translateY)},
