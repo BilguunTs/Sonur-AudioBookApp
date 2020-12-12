@@ -5,7 +5,8 @@ import {material, materialColors} from 'react-native-typography';
 import Icon from 'react-native-vector-icons/Feather';
 import {withGlobalContext} from '../context';
 import LottieView from 'lottie-react-native';
-import {color, MAIN} from '../configs';
+import {getCachePath} from '../utils';
+import {color, MAIN, D} from '../configs';
 class HorizontalBookView extends Component {
   getItem = (data, index) => {
     return {
@@ -21,7 +22,21 @@ class HorizontalBookView extends Component {
   };
 
   handlePress = (data) => {
-    this.props.navigation.navigate('BookDetail', {...data});
+    const {downloads} = this.props.global;
+    const key = data.title.replace(/\s/g, '');
+    const isDownloaded = downloads[key] !== undefined;
+    if (isDownloaded) {
+      const {thumbnail, ...rest} = data;
+      const _path = getCachePath(key);
+      this.props.navigation.navigate('BookDetail', {
+        audioFile: _path.audio,
+        thumbnail: 'file://' + _path.img,
+        isDownloaded,
+        ...rest,
+      });
+    } else {
+      this.props.navigation.navigate('BookDetail', {isDownloaded, ...data});
+    }
   };
   handleNavigate = () => {
     this.props.navigation.navigate('BookLists', {
@@ -32,8 +47,35 @@ class HorizontalBookView extends Component {
     const {stats, isOnline} = this.props.global;
     if (!isOnline) {
       return (
-        <View>
-          <Text>go to downloads</Text>
+        <View
+          style={{
+            height: D.HEIGHT / 3,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Pressable
+            android_ripple={{color: color.ripple}}
+            style={{
+              backgroundColor: '#f6f6f6',
+              elevation: 5,
+              alignItems: 'center',
+              padding: 10,
+              borderRadius: 10,
+              flexDirection: 'row',
+            }}
+            onPress={() => {
+              this.props.navigation.navigate('BookShelf');
+            }}>
+            <Icon
+              name="download"
+              size={25}
+              color={color.PRIMARY}
+              style={{marginRight: 5}}
+            />
+            <Text style={[material.button, {fontFamily: 'Conforta'}]}>
+              Татсан
+            </Text>
+          </Pressable>
         </View>
       );
     }

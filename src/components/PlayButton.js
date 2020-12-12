@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {TouchableOpacity, Text, View} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+//import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Feather';
 import {iOSUIKit} from 'react-native-typography';
-import {color} from '../configs'
-export default class ReadBookIconBtn extends Component {  
+import {color} from '../configs';
+export default class ReadBookIconBtn extends Component {
   render() {
     return (
       <TouchableOpacity
@@ -17,16 +18,17 @@ export default class ReadBookIconBtn extends Component {
           style={{
             flex: 1,
             justifyContent: 'center',
-            backgroundColor: this.props.colorBtn || color.PRIMARY,
+            backgroundColor: this.props.colorBtn || color.BackGround,
             borderRadius: 30,
+            elevation: 10,
             height: 40,
           }}>
           <Icon
-            name="md-play"
-            color={this.props.colorIcon || '#121212'}
+            name={this.props.downloadMode ? 'download' : 'play'}
+            color={this.props.colorIcon || color.PRIMARY}
             style={{
               elevation: 2,
-              opacity: this.props.iconOpacity || 0.5,
+              opacity: this.props.iconOpacity || 1,
               textAlign: 'center',
             }}
             size={this.props.size || 30}

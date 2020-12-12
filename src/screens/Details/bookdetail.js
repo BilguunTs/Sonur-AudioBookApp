@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -27,9 +27,17 @@ export default withGlobalContext(({navigation, route, global}) => {
     author,
     thumbnail,
     about,
-    isDownloaded = false,
+    isDownloaded,
   } = route.params;
-
+  const [downloaded, setDownloaded] = useState(isDownloaded);
+  React.useEffect(() => {
+    if (global.download.isloading === false && global.downloads !== {}) {
+      let key = title.replace(/\s/g, '');
+      if (global.downloads[key] !== undefined) {
+        setDownloaded(true);
+      }
+    }
+  }, [global.download.isloading, global.downloads]);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <View style={style.header}>
@@ -86,7 +94,7 @@ export default withGlobalContext(({navigation, route, global}) => {
               navigation={navigation}
               item={route.params}
               global={global}
-              isDownloaded={isDownloaded}
+              isDownloaded={downloaded}
               type={isLocked ? 'purchase' : 'play'}
             />
           </View>

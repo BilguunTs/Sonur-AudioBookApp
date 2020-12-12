@@ -10,14 +10,14 @@ import RFB from 'rn-fetch-blob';
 const DowloadedBookList = ({navigation, global}) => {
   const [lists, setLists] = React.useState([]);
   React.useEffect(() => {
-    let obj = global.stats.downloads;
+    let obj = global.downloads;
     let isEmpty = Object.keys(obj).length === 0 && obj.constructor === Object;
     if (!isEmpty) {
       init();
     }
-  }, [global.stats.downloads]);
+  }, [global.downloads]);
   const init = async () => {
-    const downloads = global.stats.downloads;
+    const downloads = global.downloads;
     let data = [];
     let instances = {};
     try {
@@ -42,9 +42,9 @@ const DowloadedBookList = ({navigation, global}) => {
       <BookItem
         onPress={() =>
           navigation.navigate('BookDetail', {
-            isDownloaded: true,
             thumbnail: img,
             ...rest,
+            isDownloaded: true,
           })
         }
         img={img}
