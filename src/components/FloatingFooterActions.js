@@ -1,43 +1,6 @@
-import React, {Component, useEffect} from 'react';
-import {Text, View, ActivityIndicator} from 'react-native';
+import React, {Component} from 'react';
 import PlayAction from './PlayButton';
-import Modal, {
-  ScaleAnimation,
-  ModalContent,
-  ModalTitle,
-} from 'react-native-modals';
-import LottieView from 'lottie-react-native';
 import PurchaseBtn from './PurchaseBtn';
-import {color} from '../configs';
-const ProgressView = () => {
-  return (
-    <>
-      <View
-        style={{
-          alignItems: 'center',
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}>
-        <ActivityIndicator
-          size="small"
-          color={color.PRIMARY}
-          style={{marginRight: 5}}
-        />
-        <Text style={{textAlign: 'center', fontFamily: 'Conforta'}}>
-          татаж байна
-        </Text>
-      </View>
-      <LottieView
-        resizeMode="cover"
-        autoPlay
-        loop
-        source={require('../animation/waitinpegeon.json')}
-        onAnimationFinish={() => console.log('finished')}
-        style={{height: '100%', width: '100%'}}
-      />
-    </>
-  );
-};
 
 export default class FloatingFooterActions extends Component {
   constructor(props) {
@@ -57,9 +20,6 @@ export default class FloatingFooterActions extends Component {
       global.methods.downloadBook(item);
     }
   };
-  componentWillUnmount() {
-    this.modal.dismiss();
-  }
   handlePress = () => {
     const {type} = this.props;
     switch (type) {
@@ -86,19 +46,6 @@ export default class FloatingFooterActions extends Component {
     }
   };
   render() {
-    return (
-      <>
-        {this.getActions()}
-        <Modal
-          modalAnimation={new ScaleAnimation()}
-          visible={this.props.global.download.isloading}
-          ref={(ref) => (this.modal = ref)}>
-          <ModalContent style={{maxHeight: 300}}>
-            <ProgressView />
-            {this.props.global.download.isloading && <ProgressView />}
-          </ModalContent>
-        </Modal>
-      </>
-    );
+    return <>{this.getActions()}</>;
   }
 }
