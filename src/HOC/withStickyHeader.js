@@ -3,11 +3,14 @@ import {SafeAreaView, Text, View} from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
+  useAnimatedStyle,
 } from 'react-native-reanimated';
+import {material} from 'react-native-typography';
 import {MAIN, color, D} from '../configs';
 import Header from '../layout/Header';
 import {BackWrapper} from '../components/BackWrapper';
-import TestSvg from '../svg';
+import SonurFox from '../svg/sonurfox.svg';
+import SonurLogo from '../svg/logowithletter.svg';
 const ScrollContainer = ({children, headerType}) => {
   const isScrolling = useSharedValue(false);
   const transY = useSharedValue(0);
@@ -33,11 +36,23 @@ const ScrollContainer = ({children, headerType}) => {
       );
     }
   };
+  const styleBoard = useAnimatedStyle(() => {
+    return {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transform: [{translateX: transY.value}],
+      borderTopLeftRadius: 20,
+      marginBottom: 20,
+      borderBottomLeftRadius: 20,
+    };
+  });
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: color.BackGround}}>
       {getHeader()}
       <Animated.ScrollView
-        snapToInterval={D.HEIGHT / 2}
+        snapToInterval={D.HEIGHT / 3}
         ref={scrollRef}
         style={{backgroundColor: color.BackGround}}
         scrollEventThrottle={1}
@@ -46,7 +61,22 @@ const ScrollContainer = ({children, headerType}) => {
         onScroll={scrollHandler}
         showsVerticalScrollIndicator={false}>
         <BackWrapper Y={transY}>
-          <TestSvg />
+          <View
+            style={{
+              flex: 1,
+
+              flexDirection: 'row',
+            }}>
+            <SonurFox height={160} />
+            <Animated.View style={styleBoard}>
+              <Text style={[material.headline, {fontFamily: 'Conforta'}]}>
+                Сайн уу
+              </Text>
+              <Text style={[material.body2, {fontFamily: 'Conforta'}]}>
+                Bill bilguun
+              </Text>
+            </Animated.View>
+          </View>
         </BackWrapper>
         {children}
       </Animated.ScrollView>

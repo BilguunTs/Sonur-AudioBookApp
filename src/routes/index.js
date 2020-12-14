@@ -11,7 +11,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import BookShelfScreen from '../screens/BookShelf';
 import CustomTabBar from '../layout/custom/TabBarNavigation';
 import BookLists from '../screens/BookLists';
-
+import AuthScreen from '../screens/Authentication';
 import {withGlobalContext} from '../context';
 const Root = createStackNavigator();
 const BottomNavigator = createBottomTabNavigator();
@@ -57,13 +57,14 @@ const RootNavigator = () => (
   </Root.Navigator>
 );
 const MainRoot = (_props) => {
-  return (
-    <>
-      <NavigationContainer>
-        <RootNavigator {..._props} />
-      </NavigationContainer>
-    </>
-  );
+  return <AuthScreen />;
+  // return (
+  //   <>
+  //     <NavigationContainer>
+  //       <RootNavigator {..._props} />
+  //     </NavigationContainer>
+  //   </>
+  // );
 };
 
 export const AppNavigator = withGlobalContext(MainRoot);

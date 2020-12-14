@@ -5,6 +5,7 @@ export const D = {
 };
 export const color = {
   PRIMARY: '#9088d4',
+  SECONDARY: '#FAEDCB',
   ripple: 'rgba(144, 136, 212,0.3)',
   BackGround: '#e8ebf2',
 };

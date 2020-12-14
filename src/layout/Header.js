@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, Pressable} from 'react-native';
+import {Text, View, Image, Pressable} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {iOSUIKit} from 'react-native-typography';
 import Animated, {
@@ -8,9 +8,10 @@ import Animated, {
   Extrapolate,
   withSpring,
 } from 'react-native-reanimated';
+import SonurLogo from '../svg/logowithletter.png';
 import {D, MAIN} from '../configs';
 
-const MAX_DRAG = D.HEIGHT / 2;
+const MAX_DRAG = D.HEIGHT / 3;
 const HeaderWrapper = ({children, Y, relative, ...rest}) => {
   const headerStyleSticky = useAnimatedStyle(() => {
     const scale = interpolate(
@@ -36,9 +37,9 @@ const HeaderWrapper = ({children, Y, relative, ...rest}) => {
       width: D.WIDTH,
       zIndex: 10,
       position: 'absolute',
-      top: 0,
+      top: 10,
       elevation,
-      padding: 20,
+      padding: 10,
       backgroundColor: `rgba(237, 246, 249, ${colorAlpha})`,
       borderRadius: 15,
       transform: [
@@ -105,17 +106,16 @@ const LeftPlaceHolderWrapper = ({children, Y}) => {
     );
     return {
       position: 'absolute',
-      top: 0,
+      top: 20,
       opacity,
       transform: [{translateY}],
     };
   });
   return (
     <View style={{flexDirection: 'column'}}>
-      <Animated.Text
-        style={[primaryTitleStyle, iOSUIKit.title3, {fontFamily: 'Conforta'}]}>
-        {MAIN.app_name}
-      </Animated.Text>
+      <Animated.View style={[primaryTitleStyle]}>
+        <Image source={SonurLogo} style={{height: 60, width: 75}} />
+      </Animated.View>
       <Animated.View style={[secondaryTitleStyle]}>{children}</Animated.View>
     </View>
   );

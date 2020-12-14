@@ -6,16 +6,11 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 //import LinearGradient from 'react-native-linear-gradient'
-import {D, MAIN} from '../configs';
+import {D, MAIN, color} from '../configs';
 export const BackWrapper = ({Y, children}) => {
   const styleContainer = useAnimatedStyle(() => {
     const borderRadius = withSpring(
-      interpolate(
-        Y.value,
-        [0, D.HEIGHT / 2],
-        [D.WIDTH / 2, 0],
-        Extrapolate.CLAMP,
-      ),
+      interpolate(Y.value, [0, D.HEIGHT / 2], [30, 0], Extrapolate.CLAMP),
     );
     const translateY = withSpring(
       interpolate(
@@ -27,11 +22,13 @@ export const BackWrapper = ({Y, children}) => {
       MAIN.spring,
     );
     return {
-      //backgroundColor: '#212121',
-      backgroundColor: '#70689799',
+      backgroundColor: '#E0D5CF',
+      // backgroundColor: '#70689799',
       borderBottomLeftRadius: borderRadius,
       borderBottomRightRadius: borderRadius,
       transform: [{translateY}],
+      height: D.HEIGHT * 0.4,
+      marginBottom: 100,
     };
   });
   const styleChildren = useAnimatedStyle(() => {
@@ -45,8 +42,10 @@ export const BackWrapper = ({Y, children}) => {
       MAIN.spring,
     );
     return {
+      flex: 1,
+
       marginTop: 100,
-      transform: [{translateY}],
+      //transform: [{translateY}],
     };
   });
   return (
