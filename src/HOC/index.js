@@ -1,3 +1,3 @@
-import withHeader from './withStickyHeader'
-
-export {withHeader}
+import withHeader from './withStickyHeader';
+import withConnectionInfoSubscription from './NetConnectionCheker';
+export {withHeader, withConnectionInfoSubscription};

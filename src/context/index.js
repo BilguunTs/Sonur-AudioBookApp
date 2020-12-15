@@ -1,64 +1,17 @@
-import React, {createContext, useState} from 'react';
+import React, {createContext, useState, useEffect} from 'react';
 //import {View, StyleSheet} from 'react-native';
-
-import {GLOBAL_VALUE, single_values} from './states';
-//import {checkInternetConnectivity} from './check';
+import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
-import Toast from 'react-native-toast-message';
 import RNFetchBlob from 'rn-fetch-blob';
-import {maxDrag} from '../configs';
+import {withConnectionInfoSubscription} from '../HOC';
 import {useSharedValue, withSpring} from 'react-native-reanimated';
+import AuthScreen from '../screens/Authentication';
+import {GLOBAL_VALUE, single_values} from './states';
+
+import {maxDrag} from '../configs';
 import {getCachePath} from '../utils';
+
 export const Contextulize = createContext();
-
-class ConnectionInfoSubscriptionWrapper extends React.Component {
-  _subscription = null;
-  state = {
-    connectionInfo: {isConnected: null},
-  };
-  componentDidMount() {
-    this._subscription = NetInfo.addEventListener(
-      this._handleConnectionInfoChange,
-    );
-  }
-  componentDidUpdate(_preProps, preState) {
-    if (this.state.connectionInfo !== preState.connectionInfo) {
-      let isConnected = this.state.connectionInfo.isConnected;
-      Toast.show({
-        text1: isConnected ? '😃 онлайн горим' : '😪 офлайн горим',
-        text2: isConnected
-          ? 'Тавтай морил'
-          : 'wifi асааж онлайн горимд шилжинэ',
-        type: isConnected ? 'netOn' : 'netOff',
-        topOffset: 0,
-      });
-    }
-  }
-  componentWillUnmount() {
-    this._subscription && this._subscription();
-  }
-  _handleConnectionInfoChange = (connectionInfo) => {
-    this.setState(() => ({
-      connectionInfo: connectionInfo,
-    }));
-  };
-
-  render() {
-    const childrenWithProps = React.Children.map(
-      this.props.children,
-      (child) => {
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, {
-            connectionInfo: this.state.connectionInfo,
-          });
-        }
-        return child;
-      },
-    );
-    return <>{childrenWithProps}</>;
-  }
-}
 
 const Context = ({connectionInfo, ...props}) => {
   const globalDrag = useSharedValue(maxDrag);
@@ -72,7 +25,7 @@ const Context = ({connectionInfo, ...props}) => {
     installed: false,
   });
   const [state, setState] = useState(GLOBAL_VALUE);
-  React.useEffect(() => {
+  useEffect(() => {
     init();
   }, [download.isloading]);
   const init = () => {
@@ -199,10 +152,31 @@ const Context = ({connectionInfo, ...props}) => {
     </Contextulize.Provider>
   );
 };
-export const ContextProvider = ({children}) => (
-  <ConnectionInfoSubscriptionWrapper>
-    <Context>{children}</Context>
-  </ConnectionInfoSubscriptionWrapper>
+export const ContextProvider = withConnectionInfoSubscription(
+  ({children, ...rest}) => {
+    const [initializing, setInitializing] = useState(true);
+    const [user, setUser] = useState(GLOBAL_VALUE.user);
+
+    // Handle user state changes
+    function onAuthStateChanged(user) {
+      setUser(user);
+      if (initializing) setInitializing(false);
+    }
+
+    useEffect(() => {
+      const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+      return subscriber;
+    }, []);
+
+    if (initializing) return null;
+
+    if (!user) {
+      console.log('no user found');
+      return <AuthScreen />;
+    }
+
+    return <Context {...rest}>{children}</Context>;
+  },
 );
 export function withGlobalContext(Component) {
   return class WrapperComponent extends React.Component {

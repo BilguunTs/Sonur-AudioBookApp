@@ -34,6 +34,7 @@
     "react-native-screens": "^2.10.1",
     "react-native-scrollable-tab-view": "^1.0.0",
     "react-native-snap-carousel": "^4.0.0-beta.6",
+    "react-native-social-buttons": "^1.2.0",
     "react-native-sound": "^0.11.0",
     "react-native-svg": "^12.1.0",
     "react-native-svg-transformer": "^0.14.3",
