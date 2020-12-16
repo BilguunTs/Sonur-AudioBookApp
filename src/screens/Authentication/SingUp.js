@@ -52,14 +52,14 @@ export default class SignIn extends Component {
           value={this.state.username}
           onChangeText={(username) => this.setState({username})}
           label="Email"
-          placeholder="Имэйл хаяг"
+          placeholder="📧 Имэйл хаяг"
           style={styles.input}
         />
         <TextInput
           value={this.state.password}
           onChangeText={(password) => this.setState({password})}
           label="Password"
-          placeholder="Нууц үг"
+          placeholder="🔑 Нууц үг"
           secureTextEntry={true}
           style={styles.input}
         />
@@ -67,42 +67,43 @@ export default class SignIn extends Component {
           value={this.state.password}
           onChangeText={(password) => this.setState({password})}
           label="Password"
-          placeholder="Нууц үг давтах"
+          placeholder="🔑 Нууц үг давтах"
           secureTextEntry={true}
           style={styles.input}
         />
         <Button
           title={'Батлах'}
-          style={{width: 270}}
+          style={{width: 270, elevation: 1}}
           onPress={this.onLogin.bind(this)}
         />
         <View
           style={{
             borderTopColor: 'lightgray',
             borderTopWidth: 1,
-            marginVertical: 30,
+            marginVertical: 10,
             width: 250,
             alignItems: 'center',
           }}></View>
         <View style={{marginBottom: 30, alignItems: 'center'}}>
+          <GoogleSocialButton
+            buttonViewStyle={styles.socialBtn}
+            buttonText={'Google-ээр нэвтрэх'}
+          />
+          <FacebookSocialButton
+            buttonText={'Facebook-ээр нэвтрэх'}
+            buttonViewStyle={styles.socialBtn}
+          />
           <Button
             style={{
               width: 270,
               backgroundColor: 'transparent',
               elevation: 0,
+              marginTop: 10,
               borderWidth: 1,
             }}
-            title="Имэйл ээр нэвтрэх"
+            title="Имэйл-ээр нэвтрэх"
             white={false}
             onPress={() => this.props.setPage(1)}
-          />
-          <GoogleSocialButton
-            buttonViewStyle={styles.socialBtn}
-            buttonText={'Google ээр нэвтрэх'}
-          />
-          <FacebookSocialButton
-            buttonText={'Facebook ээр нэвтрэх'}
-            buttonViewStyle={styles.socialBtn}
           />
         </View>
       </ScrollView>
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     fontSize: 14,
     borderWidth: 1,
-    borderColor: color.PRIMARY,
+    borderColor: color.ripple,
     fontFamily: 'Conforta',
     backgroundColor: '#f6f6f6',
     marginBottom: 10,
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
   socialBtn: {
     width: 270,
     borderRadius: 10,
-    elevation: 3,
+    elevation: 1,
   },
   inputext: {
     width: 270,

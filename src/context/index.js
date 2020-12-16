@@ -13,7 +13,7 @@ import {getCachePath} from '../utils';
 
 export const Contextulize = createContext();
 
-const Context = ({connectionInfo, ...props}) => {
+const Context = ({connectionInfo, user, ...props}) => {
   const globalDrag = useSharedValue(maxDrag);
   const AnimatedDownloadProgress = useSharedValue(0);
   const [downloads, setDownloads] = useState({});
@@ -137,6 +137,7 @@ const Context = ({connectionInfo, ...props}) => {
     <Contextulize.Provider
       value={{
         stats: state,
+        user,
         ADP: AnimatedDownloadProgress,
         dragValue: globalDrag,
         downloads,
@@ -159,23 +160,29 @@ export const ContextProvider = withConnectionInfoSubscription(
 
     // Handle user state changes
     function onAuthStateChanged(user) {
-      setUser(user);
+      let User = GLOBAL_VALUE.user;
+      if (user !== undefined || user === {}) {
+        User.isAuth = true;
+        global.user = User._user;
+      }
+      setUser(User);
       if (initializing) setInitializing(false);
     }
-
     useEffect(() => {
       const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
       return subscriber;
     }, []);
 
     if (initializing) return null;
-
-    if (!user) {
-      console.log('no user found');
+    if (!user.isAuth) {
       return <AuthScreen />;
     }
 
-    return <Context {...rest}>{children}</Context>;
+    return (
+      <Context user={user} {...rest}>
+        {children}
+      </Context>
+    );
   },
 );
 export function withGlobalContext(Component) {

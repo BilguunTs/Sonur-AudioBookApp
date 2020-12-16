@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Pressable, Text, BackHandler} from 'react-native';
+import {View, Pressable, Text, BackHandler, Alert} from 'react-native';
 import Animated, {
   useDerivedValue,
   withSpring,
@@ -21,7 +21,25 @@ export default () => {
     setPage(val);
   };
   const handleBackButtonClick = () => {
-    if (page === 0) return BackHandler.exitApp();
+    if (page === 0) {
+      Alert.alert(
+        'Та гарах гэж үү ?',
+        '😕',
+        [
+          {
+            text: 'Үгүй',
+            onPress: () => {},
+            style: 'cancel',
+          },
+          {
+            text: 'Тийм',
+            onPress: () => BackHandler.exitApp(),
+            style: 'default',
+          },
+        ],
+        {cancelable: false},
+      );
+    }
     setPage(0);
     return true;
   };
@@ -38,14 +56,16 @@ export default () => {
       [0, -D.HEIGHT, -D.HEIGHT],
       Extrapolate.CLAMP,
     );
-
+    const opacity = interpolate(
+      progress.value,
+      [0, 1, 2],
+      [1, 0, 0],
+      Extrapolate.CLAMP,
+    );
     return {
       height,
       transform: [{translateY}],
-      opacity:
-        progress.value === 0
-          ? withSpring(1, MAIN.spring)
-          : withSpring(0, MAIN.spring),
+      opacity,
     };
   });
   const styleSignIn = useAnimatedStyle(() => {
@@ -55,12 +75,14 @@ export default () => {
       [0, D.HEIGHT, 0],
       Extrapolate.CLAMP,
     );
+    const opacity = interpolate(
+      progress.value,
+      [0, 1, 2],
+      [0, 1, 0],
+      Extrapolate.CLAMP,
+    );
     return {
-      opacity:
-        progress.value === 1
-          ? withSpring(1, MAIN.spring)
-          : withSpring(0, MAIN.spring),
-
+      opacity,
       height,
       // transform: [{translateY}],
     };
@@ -72,12 +94,15 @@ export default () => {
       [0, 0, D.HEIGHT],
       Extrapolate.CLAMP,
     );
+    const opacity = interpolate(
+      progress.value,
+      [0, 1, 2],
+      [0, 0, 1],
+      Extrapolate.CLAMP,
+    );
     return {
       height,
-      opacity:
-        progress.value === 2
-          ? withSpring(1, MAIN.spring)
-          : withSpring(0, MAIN.spring),
+      opacity,
     };
   });
   useEffect(() => {

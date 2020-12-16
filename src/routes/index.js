@@ -57,14 +57,13 @@ const RootNavigator = () => (
   </Root.Navigator>
 );
 const MainRoot = (_props) => {
-  return <AuthScreen />;
-  // return (
-  //   <>
-  //     <NavigationContainer>
-  //       <RootNavigator {..._props} />
-  //     </NavigationContainer>
-  //   </>
-  // );
+  return (
+    <>
+      <NavigationContainer>
+        <RootNavigator {..._props} />
+      </NavigationContainer>
+    </>
+  );
 };
 
 export const AppNavigator = withGlobalContext(MainRoot);

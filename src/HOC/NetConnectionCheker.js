@@ -54,7 +54,7 @@ export default (Rcomponent) => {
     render() {
       return (
         <NetChecker>
-          <Rcomponent />
+          <Rcomponent>{this.props.children}</Rcomponent>
         </NetChecker>
       );
     }

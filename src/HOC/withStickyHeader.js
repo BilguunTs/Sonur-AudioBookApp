@@ -64,7 +64,6 @@ const ScrollContainer = ({children, headerType}) => {
           <View
             style={{
               flex: 1,
-
               flexDirection: 'row',
             }}>
             <SonurFox height={160} />
@@ -73,7 +72,7 @@ const ScrollContainer = ({children, headerType}) => {
                 Сайн уу
               </Text>
               <Text style={[material.body2, {fontFamily: 'Conforta'}]}>
-                Bill bilguun
+                {global.user?.email}
               </Text>
             </Animated.View>
           </View>
