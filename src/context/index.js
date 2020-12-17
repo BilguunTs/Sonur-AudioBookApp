@@ -1,5 +1,5 @@
 import React, {createContext, useState, useEffect} from 'react';
-//import {View, StyleSheet} from 'react-native';
+import {View, ActivityIndicator} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -159,12 +159,19 @@ export const ContextProvider = withConnectionInfoSubscription(
     const [user, setUser] = useState(GLOBAL_VALUE.user);
 
     // Handle user state changes
+    const startLoad = () => {
+      setInitializing(true);
+    };
     function onAuthStateChanged(user) {
-      let User = GLOBAL_VALUE.user;
-      if (user !== undefined || user === {}) {
-        User.isAuth = true;
-        global.user = User._user;
+      if (user === null) {
+        setUser({isAuth: false});
+        return initializing ? setInitializing(false) : null;
       }
+      let User = Object.assign(GLOBAL_VALUE.user, {
+        ...user._user,
+        isAuth: true,
+      });
+      global.user = User;
       setUser(User);
       if (initializing) setInitializing(false);
     }
@@ -173,9 +180,14 @@ export const ContextProvider = withConnectionInfoSubscription(
       return subscriber;
     }, []);
 
-    if (initializing) return null;
+    if (initializing)
+      return (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <ActivityIndicator size="large" />
+        </View>
+      );
     if (!user.isAuth) {
-      return <AuthScreen />;
+      return <AuthScreen startLoad={startLoad} />;
     }
 
     return (

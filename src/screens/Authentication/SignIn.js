@@ -26,7 +26,7 @@ import MainLogo from '../../svg/logowithletter.svg';
 import Button from '../../components/Button';
 
 const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-const SingInForm = ({onSubmit = function () {}}) => {
+const SingInForm = ({onSubmit = function () {}, startLoad}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState({
@@ -41,6 +41,7 @@ const SingInForm = ({onSubmit = function () {}}) => {
   }, [formAt]);
 
   const onLogin = () => {
+    startLoad();
     auth()
       .signInWithEmailAndPassword(email, password)
       .then((r) => {
@@ -165,7 +166,7 @@ export default class SignIn extends Component {
     return (
       <View style={styles.container}>
         <MainLogo />
-        <SingInForm />
+        <SingInForm startLoad={this.props.startLoad} />
         <View
           style={{
             borderTopColor: 'lightgray',

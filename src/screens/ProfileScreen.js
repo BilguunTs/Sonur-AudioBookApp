@@ -1,10 +1,43 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, Image, ScrollView} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 import {iOSUIKit} from 'react-native-typography';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Modal, {
+  ModalTitle,
+  ModalContent,
+  ModalButton,
+  ModalFooter,
+} from 'react-native-modals';
+import auth from '@react-native-firebase/auth';
 import TabViews from '../views/TabViews';
 const URI =
   'https://image.freepik.com/free-vector/cute-girl-gaming-holding-joystick-cartoon-icon-illustration-people-technology-icon-concept-isolated-flat-cartoon-style_138676-2169.jpg';
 export default class Profile extends Component {
+  state = {
+    loading: false,
+    exitAlert: false,
+  };
+  componentWillUnmount() {
+    this.setState({exitAlert: false, loading: false});
+  }
+  SignOut = () => {
+    this.setState({loading: true, exitAlert: false});
+    auth()
+      .signOut()
+      .then(() => {
+        this.setState({loading: false, exitAlert: false});
+      })
+      .catch((e) => {
+        this.setState({loading: false, exitAlert: false});
+      });
+  };
   render() {
     return (
       <View style={style.container}>
@@ -19,8 +52,13 @@ export default class Profile extends Component {
             </View>
           </View>
           <View style={[style.centered, style.flex1]}>
-            <Text style={[iOSUIKit.title3]}>3</Text>
-            <Text style={[style.text]}>уншиж байгаа</Text>
+            <Pressable
+              onPress={() => this.setState({exitAlert: true})}
+              android_ripple={{borderless: true}}
+              style={{alignItems: 'center', padding: 5}}>
+              <Icon name="exit-to-app" color="gray" size={30} />
+              <Text style={[style.text]}>Гарах</Text>
+            </Pressable>
           </View>
         </View>
         <View style={[style.body]}>
@@ -42,6 +80,45 @@ export default class Profile extends Component {
             </TabViews>
           </View>
         </View>
+        <Modal
+          visible={this.state.exitAlert}
+          onTouchOutside={() => {
+            this.setState({exitAlert: false});
+          }}
+          modalTitle={
+            <ModalTitle
+              textStyle={{textAlign: 'left', fontFamily: 'Conforta'}}
+              hasTitleBar={false}
+              title="Гарах"
+            />
+          }
+          footer={
+            <ModalFooter bordered={false}>
+              <ModalButton
+                text="Үгүй"
+                textStyle={{color: 'gray', fontFamily: 'Conforta'}}
+                onPress={() => this.setState({exitAlert: false})}
+              />
+              <ModalButton
+                textStyle={{color: '#c21e56', fontFamily: 'Conforta'}}
+                text="Тийм"
+                onPress={this.SignOut.bind(this)}
+              />
+            </ModalFooter>
+          }>
+          <ModalContent style={{width: 300}}>
+            {this.state.loading === false && (
+              <Text style={{fontFamily: 'Conforta'}}>
+                Энэ бүртгэлээс гарах уу?
+              </Text>
+            )}
+          </ModalContent>
+        </Modal>
+        {this.state.loading && (
+          <View style={StyleSheet.absoluteFill}>
+            <ActivityIndicator />
+          </View>
+        )}
       </View>
     );
   }

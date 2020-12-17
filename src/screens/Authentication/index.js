@@ -12,7 +12,7 @@ import BackgroundSvg from '../../svg/loginbackground.svg';
 import {material} from 'react-native-typography';
 import SignIn from './SignIn';
 import SignUp from './SingUp';
-export default () => {
+export default (props) => {
   const [page, setPage] = useState(0);
   const progress = useDerivedValue(() => {
     return withSpring(page, MAIN.spring);
@@ -161,11 +161,11 @@ export default () => {
         </View>
       </Animated.View>
       <Animated.View style={styleSignIn}>
-        <SignIn setPage={setPage} />
+        <SignIn startLoad={props.startLoad} setPage={setPage} />
       </Animated.View>
 
       <Animated.View style={styleSignUp}>
-        <SignUp setPage={setPage} />
+        <SignUp startLoad={props.startLoad} setPage={setPage} />
       </Animated.View>
     </View>
   );

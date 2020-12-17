@@ -2,19 +2,19 @@ import React from 'react';
 import {Pressable, View, StyleSheet} from 'react-native';
 import Animated, {
   useAnimatedStyle,
-  useAnimatedProps,
   useDerivedValue,
   useAnimatedGestureHandler,
   withSpring,
-  runOnJS,
   interpolate,
   Extrapolate,
+  Easing,
+  withTiming,
 } from 'react-native-reanimated';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import FluidChapters from '../../screens/AudioPlayer/FluidChapters';
 import MainPlayer from '../../screens/AudioPlayer/MainPlayer';
 import Header from '../../screens/AudioPlayer/Header';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 //import {StickyContainer} from './StickyContainer'
 import LottieView from 'lottie-react-native';
 import {withGlobalContext} from '../../context';
@@ -136,13 +136,20 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
       c.startY = dragValue.value;
     },
     onActive: (e, ctx) => {
-      dragValue.value = ctx.startY + e.translationY;
+      let final = e.translationY + 0.4 * e.velocityY;
+      dragValue.value = withSpring(ctx.startY + final, {damping: 500});
     },
     onEnd: (e, ctx) => {
       if (dragValue.value < maxDrag / 2) {
-        dragValue.value = withSpring(0, MAIN.spring);
+        dragValue.value = withTiming(0, {
+          duration: 300,
+          easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+        });
       } else {
-        dragValue.value = withSpring(maxDrag, MAIN.spring);
+        dragValue.value = withTiming(maxDrag, {
+          duration: 300,
+          easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+        });
       }
     },
   });
@@ -218,38 +225,22 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
     switch (iconName) {
       case 'Home':
         instance = (
-          <AnimatedIcon
-            name={focused ? 'md-book' : 'md-book-outline'}
-            size={25}
-            style={[IconStyle]}
-          />
+          <AnimatedIcon name={'book-open'} size={25} style={[IconStyle]} />
         );
         break;
       case 'BookShelf':
         instance = (
-          <AnimatedIcon
-            name={focused ? 'md-albums' : 'md-albums-outline'}
-            size={25}
-            style={[IconStyle]}
-          />
+          <AnimatedIcon name={'bookshelf'} size={25} style={[IconStyle]} />
         );
         break;
       case 'Profile':
         instance = (
-          <AnimatedIcon
-            name={focused ? 'md-person' : 'md-person-outline'}
-            size={25}
-            style={[IconStyle]}
-          />
+          <AnimatedIcon name={'account'} size={25} style={[IconStyle]} />
         );
         break;
       case 'Settings':
         instance = (
-          <AnimatedIcon
-            name={focused ? 'md-settings' : 'md-settings-outline'}
-            size={25}
-            style={[IconStyle]}
-          />
+          <AnimatedIcon name={'toolbox'} size={25} style={[IconStyle]} />
         );
         break;
       default:
