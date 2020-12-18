@@ -15,11 +15,14 @@ import {iOSUIKit} from 'react-native-typography';
 //import ReviewBtn from '../../components/ReadBookIconBtn';
 //import ListenBtn from '../../components/ListenBookIconBtn';
 //import PlayBtn from '../../components/PlayButton';
+import ProgressView from '../../components/ProgressLottie';
 import Rating from '../../components/RatingStars';
+import Modal, {ModalContent, ModalTitle} from 'react-native-modals';
 import Icon from 'react-native-vector-icons/Feather';
 import FloatingFooterActions from '../../components/FloatingFooterActions';
 import {withGlobalContext} from '../../context';
 import LinearGradient from 'react-native-linear-gradient';
+import Toast from 'react-native-toast-message';
 export default withGlobalContext(({navigation, route, global}) => {
   const {
     isLocked,
@@ -30,14 +33,32 @@ export default withGlobalContext(({navigation, route, global}) => {
     isDownloaded,
   } = route.params;
   const [downloaded, setDownloaded] = useState(isDownloaded);
+  const [isVisible, setVisible] = useState(false);
   React.useEffect(() => {
     if (global.download.isloading === false && global.downloads !== {}) {
-      let key = title.replace(/\s/g, '');
+      const key = title.replace(/\s/g, '');
       if (global.downloads[key] !== undefined) {
         setDownloaded(true);
+        setVisible(false);
       }
+    } else if (global.download.isloading) {
+      setVisible(true);
     }
   }, [global.download.isloading, global.downloads]);
+  const onDismiss = () => {
+    if (!downloaded) {
+      return Toast.show({
+        type: 'error',
+        text1: '😥 Уучлаарай',
+        text2: 'татаж чадсангүй',
+      });
+    }
+    Toast.show({
+      type: 'success',
+      text1: '🎉 Амжилттай татлаа',
+      text2: `${title}`,
+    });
+  };
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <View style={style.header}>
@@ -100,6 +121,18 @@ export default withGlobalContext(({navigation, route, global}) => {
           </View>
         </LinearGradient>
       </View>
+      <Modal
+        rounded
+        onHardwareBackPress={() => {
+          setVisible(false);
+          return true;
+        }}
+        onDismiss={onDismiss.bind(this)}
+        visible={isVisible}>
+        <ModalContent style={{maxHeight: 300}}>
+          <ProgressView />
+        </ModalContent>
+      </Modal>
     </SafeAreaView>
   );
 });

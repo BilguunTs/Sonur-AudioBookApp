@@ -1,66 +1,20 @@
-import React, {createContext, useState} from 'react';
-//import {View, StyleSheet} from 'react-native';
-
-import {GLOBAL_VALUE, single_values} from './states';
-//import {checkInternetConnectivity} from './check';
+import React, {createContext, useState, useEffect} from 'react';
+import {View, ActivityIndicator, StyleSheet} from 'react-native';
+import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
-import Toast from 'react-native-toast-message';
 import RNFetchBlob from 'rn-fetch-blob';
-import {maxDrag} from '../configs';
+import Toast from 'react-native-toast-message';
+import {withConnectionInfoSubscription} from '../HOC';
 import {useSharedValue, withSpring} from 'react-native-reanimated';
+import AuthScreen from '../screens/Authentication';
+import {GLOBAL_VALUE, single_values} from './states';
+
+import {maxDrag, color} from '../configs';
 import {getCachePath} from '../utils';
+
 export const Contextulize = createContext();
 
-class ConnectionInfoSubscriptionWrapper extends React.Component {
-  _subscription = null;
-  state = {
-    connectionInfo: {isConnected: null},
-  };
-  componentDidMount() {
-    this._subscription = NetInfo.addEventListener(
-      this._handleConnectionInfoChange,
-    );
-  }
-  componentDidUpdate(_preProps, preState) {
-    if (this.state.connectionInfo !== preState.connectionInfo) {
-      let isConnected = this.state.connectionInfo.isConnected;
-      Toast.show({
-        text1: isConnected ? '😃 онлайн горим' : '😪 офлайн горим',
-        text2: isConnected
-          ? 'Тавтай морил'
-          : 'wifi асааж онлайн горимд шилжинэ',
-        type: isConnected ? 'netOn' : 'netOff',
-        topOffset: 0,
-      });
-    }
-  }
-  componentWillUnmount() {
-    this._subscription && this._subscription();
-  }
-  _handleConnectionInfoChange = (connectionInfo) => {
-    this.setState(() => ({
-      connectionInfo: connectionInfo,
-    }));
-  };
-
-  render() {
-    const childrenWithProps = React.Children.map(
-      this.props.children,
-      (child) => {
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, {
-            connectionInfo: this.state.connectionInfo,
-          });
-        }
-        return child;
-      },
-    );
-    return <>{childrenWithProps}</>;
-  }
-}
-
-const Context = ({connectionInfo, ...props}) => {
+const Context = ({connectionInfo, user, startLoad, ...props}) => {
   const globalDrag = useSharedValue(maxDrag);
   const AnimatedDownloadProgress = useSharedValue(0);
   const [downloads, setDownloads] = useState({});
@@ -72,12 +26,15 @@ const Context = ({connectionInfo, ...props}) => {
     installed: false,
   });
   const [state, setState] = useState(GLOBAL_VALUE);
-  React.useEffect(() => {
+  useEffect(() => {
     init();
-  }, [download.isloading]);
+  }, [download.isloading, user]);
   const init = () => {
     if (download.isloading === false) {
       checkDowload();
+    }
+    if (user !== null) {
+      fetchUserData(user.uid);
     }
     fetchBooks();
   };
@@ -137,7 +94,20 @@ const Context = ({connectionInfo, ...props}) => {
         console.log(e);
       });
   };
-
+  const fetchUserData = async (userID) => {
+    try {
+      const response = await firestore()
+        .collection('Users')
+        .where('id', '==', userID)
+        .get();
+      for (const o in response.docs) {
+        const bookID =
+          response.docs[o]._data?.purchased._documentPath._parts[1];
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const setUser = (obj) => {
     setState({user: obj});
   };
@@ -184,6 +154,7 @@ const Context = ({connectionInfo, ...props}) => {
     <Contextulize.Provider
       value={{
         stats: state,
+        user,
         ADP: AnimatedDownloadProgress,
         dragValue: globalDrag,
         downloads,
@@ -193,16 +164,104 @@ const Context = ({connectionInfo, ...props}) => {
           setGplayer: (o) => setGplayer(o),
           toggleGplayer: (b) => toggleGplayer(b),
           downloadBook: (b) => downloadBook(b),
+          startGlobalLoad: () => startLoad(),
         },
       }}>
       {props.children}
     </Contextulize.Provider>
   );
 };
-export const ContextProvider = ({children}) => (
-  <ConnectionInfoSubscriptionWrapper>
-    <Context>{children}</Context>
-  </ConnectionInfoSubscriptionWrapper>
+export const ContextProvider = withConnectionInfoSubscription(
+  ({children, ...rest}) => {
+    const [initializing, setInitializing] = useState(true);
+    const [user, setUser] = useState(GLOBAL_VALUE.user);
+
+    // Handle user state changes
+    const startLoad = () => {
+      setInitializing(true);
+    };
+    const createNewUserData = async (user) => {
+      const userdata = {...user};
+      try {
+        const res = await firestore()
+          .collection('Users')
+          .add({...userdata});
+        console.log(res);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    const onAuthStateChanged = async (res) => {
+      if (res === null) {
+        setUser({isAuth: false});
+        Toast.show({
+          type: 'info',
+          text1: 'Шууд нэвтрэх',
+          text2:
+            'хэрэв та facebook эсвэл google ийн бүртгэлтэй бол шууд нэвтэрч болно',
+        });
+        return initializing ? setInitializing(false) : null;
+      }
+      if (rest.connectionInfo.isConnected !== true) {
+        const User = Object.assign(GLOBAL_VALUE.user, {
+          ...res._user,
+          isAuth: true,
+        });
+        global.user = User;
+        setUser(User);
+        return setInitializing(false);
+      }
+      try {
+        const User = Object.assign(GLOBAL_VALUE.user, {
+          ...res._user,
+          isAuth: true,
+        });
+        global.user = User;
+        setUser(User);
+        Toast.show({
+          type: 'success',
+          props: {elevation: 10},
+          text1: 'Сайн уу',
+          text2: 'Та амжилттай нэвтэрлээ',
+          visibilityTime: 1000,
+        });
+        if (initializing) setInitializing(false);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    useEffect(() => {
+      const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+      return subscriber;
+    }, []);
+    getLoadingView = () => {
+      if (initializing)
+        return (
+          <View style={[StyleSheet.absoluteFill, {backgroundColor: '#fff'}]}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <ActivityIndicator color={color.PRIMARY} size="large" />
+            </View>
+          </View>
+        );
+    };
+
+    return (
+      <>
+        {!user.isAuth && <AuthScreen startLoad={startLoad} />}
+        {user.isAuth && (
+          <Context user={user} startLoad={startLoad} {...rest}>
+            {children}
+          </Context>
+        )}
+        {getLoadingView()}
+      </>
+    );
+  },
 );
 export function withGlobalContext(Component) {
   return class WrapperComponent extends React.Component {

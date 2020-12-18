@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect} from 'react';
 
 import {View} from 'react-native';
 import FeaturedList from '../views/HorizontalBookView';
@@ -14,11 +14,12 @@ import {useNavigation} from '@react-navigation/native';
 
 const ScreenOne = () => {
   const navigation = useNavigation();
+
   return (
-    <>
+    <View style={{height: D.HEIGHT}}>
       <FeaturedList navigation={navigation} grouptitle="Шинэ ном" />
       <View style={{height: D.HEIGHT / 4}} />
-    </>
+    </View>
   );
 };
 const HomeScreen = withHeader()(ScreenOne);
