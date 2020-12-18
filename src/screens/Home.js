@@ -14,9 +14,7 @@ import {useNavigation} from '@react-navigation/native';
 
 const ScreenOne = () => {
   const navigation = useNavigation();
-  useEffect(() => {
-    console.log(global.user);
-  }, [global]);
+
   return (
     <View style={{height: D.HEIGHT}}>
       <FeaturedList navigation={navigation} grouptitle="Шинэ ном" />

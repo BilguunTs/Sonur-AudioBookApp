@@ -1,19 +1,20 @@
 import React, {createContext, useState, useEffect} from 'react';
-import {View, ActivityIndicator} from 'react-native';
+import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import RNFetchBlob from 'rn-fetch-blob';
+import Toast from 'react-native-toast-message';
 import {withConnectionInfoSubscription} from '../HOC';
 import {useSharedValue, withSpring} from 'react-native-reanimated';
 import AuthScreen from '../screens/Authentication';
 import {GLOBAL_VALUE, single_values} from './states';
 
-import {maxDrag} from '../configs';
+import {maxDrag, color} from '../configs';
 import {getCachePath} from '../utils';
 
 export const Contextulize = createContext();
 
-const Context = ({connectionInfo, user, ...props}) => {
+const Context = ({connectionInfo, user, startLoad, ...props}) => {
   const globalDrag = useSharedValue(maxDrag);
   const AnimatedDownloadProgress = useSharedValue(0);
   const [downloads, setDownloads] = useState({});
@@ -27,10 +28,13 @@ const Context = ({connectionInfo, user, ...props}) => {
   const [state, setState] = useState(GLOBAL_VALUE);
   useEffect(() => {
     init();
-  }, [download.isloading]);
+  }, [download.isloading, user]);
   const init = () => {
     if (download.isloading === false) {
       checkDowload();
+    }
+    if (user !== null) {
+      fetchUserData(user.uid);
     }
     fetchBooks();
   };
@@ -90,7 +94,20 @@ const Context = ({connectionInfo, user, ...props}) => {
         console.log(e);
       });
   };
-
+  const fetchUserData = async (userID) => {
+    try {
+      const response = await firestore()
+        .collection('Users')
+        .where('id', '==', userID)
+        .get();
+      for (const o in response.docs) {
+        const bookID =
+          response.docs[o]._data?.purchased._documentPath._parts[1];
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const setUser = (obj) => {
     setState({user: obj});
   };
@@ -147,6 +164,7 @@ const Context = ({connectionInfo, user, ...props}) => {
           setGplayer: (o) => setGplayer(o),
           toggleGplayer: (b) => toggleGplayer(b),
           downloadBook: (b) => downloadBook(b),
+          startGlobalLoad: () => startLoad(),
         },
       }}>
       {props.children}
@@ -162,38 +180,86 @@ export const ContextProvider = withConnectionInfoSubscription(
     const startLoad = () => {
       setInitializing(true);
     };
-    function onAuthStateChanged(user) {
-      if (user === null) {
+    const createNewUserData = async (user) => {
+      const userdata = {...user};
+      try {
+        const res = await firestore()
+          .collection('Users')
+          .add({...userdata});
+        console.log(res);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    const onAuthStateChanged = async (res) => {
+      if (res === null) {
         setUser({isAuth: false});
+        Toast.show({
+          type: 'info',
+          text1: 'Шууд нэвтрэх',
+          text2:
+            'хэрэв та facebook эсвэл google ийн бүртгэлтэй бол шууд нэвтэрч болно',
+        });
         return initializing ? setInitializing(false) : null;
       }
-      let User = Object.assign(GLOBAL_VALUE.user, {
-        ...user._user,
-        isAuth: true,
-      });
-      global.user = User;
-      setUser(User);
-      if (initializing) setInitializing(false);
-    }
+      if (rest.connectionInfo.isConnected !== true) {
+        const User = Object.assign(GLOBAL_VALUE.user, {
+          ...res._user,
+          isAuth: true,
+        });
+        global.user = User;
+        setUser(User);
+        return setInitializing(false);
+      }
+      try {
+        const User = Object.assign(GLOBAL_VALUE.user, {
+          ...res._user,
+          isAuth: true,
+        });
+        global.user = User;
+        setUser(User);
+        Toast.show({
+          type: 'success',
+          props: {elevation: 10},
+          text1: 'Сайн уу',
+          text2: 'Та амжилттай нэвтэрлээ',
+          visibilityTime: 1000,
+        });
+        if (initializing) setInitializing(false);
+      } catch (e) {
+        console.log(e);
+      }
+    };
     useEffect(() => {
       const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
       return subscriber;
     }, []);
-
-    if (initializing)
-      return (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <ActivityIndicator size="large" />
-        </View>
-      );
-    if (!user.isAuth) {
-      return <AuthScreen startLoad={startLoad} />;
-    }
+    getLoadingView = () => {
+      if (initializing)
+        return (
+          <View style={[StyleSheet.absoluteFill, {backgroundColor: '#fff'}]}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <ActivityIndicator color={color.PRIMARY} size="large" />
+            </View>
+          </View>
+        );
+    };
 
     return (
-      <Context user={user} {...rest}>
-        {children}
-      </Context>
+      <>
+        {!user.isAuth && <AuthScreen startLoad={startLoad} />}
+        {user.isAuth && (
+          <Context user={user} startLoad={startLoad} {...rest}>
+            {children}
+          </Context>
+        )}
+        {getLoadingView()}
+      </>
     );
   },
 );

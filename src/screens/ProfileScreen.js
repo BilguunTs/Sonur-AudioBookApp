@@ -1,12 +1,5 @@
 import React, {Component} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  Pressable,
-  ActivityIndicator,
-} from 'react-native';
+import {Text, View, StyleSheet, Image, Pressable} from 'react-native';
 import {iOSUIKit} from 'react-native-typography';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal, {
@@ -17,26 +10,24 @@ import Modal, {
 } from 'react-native-modals';
 import auth from '@react-native-firebase/auth';
 import TabViews from '../views/TabViews';
+import {withGlobalContext} from '../context';
 const URI =
   'https://image.freepik.com/free-vector/cute-girl-gaming-holding-joystick-cartoon-icon-illustration-people-technology-icon-concept-isolated-flat-cartoon-style_138676-2169.jpg';
-export default class Profile extends Component {
+class Profile extends Component {
   state = {
-    loading: false,
     exitAlert: false,
   };
   componentWillUnmount() {
-    this.setState({exitAlert: false, loading: false});
+    this.setState({exitAlert: false});
   }
-  SignOut = () => {
-    this.setState({loading: true, exitAlert: false});
-    auth()
-      .signOut()
-      .then(() => {
-        this.setState({loading: false, exitAlert: false});
-      })
-      .catch((e) => {
-        this.setState({loading: false, exitAlert: false});
-      });
+  signOut = async () => {
+    try {
+      this.setState({exitAlert: false});
+      this.props.global.methods.startGlobalLoad();
+      const result = await auth().signOut();
+    } catch (e) {
+      console.log(e);
+    }
   };
   render() {
     return (
@@ -102,28 +93,21 @@ export default class Profile extends Component {
               <ModalButton
                 textStyle={{color: '#c21e56', fontFamily: 'Conforta'}}
                 text="Тийм"
-                onPress={this.SignOut.bind(this)}
+                onPress={this.signOut.bind(this)}
               />
             </ModalFooter>
           }>
           <ModalContent style={{width: 300}}>
-            {this.state.loading === false && (
-              <Text style={{fontFamily: 'Conforta'}}>
-                Энэ бүртгэлээс гарах уу?
-              </Text>
-            )}
+            <Text style={{fontFamily: 'Conforta'}}>
+              Энэ бүртгэлээс гарах уу?
+            </Text>
           </ModalContent>
         </Modal>
-        {this.state.loading && (
-          <View style={StyleSheet.absoluteFill}>
-            <ActivityIndicator />
-          </View>
-        )}
       </View>
     );
   }
 }
-
+export default withGlobalContext(Profile);
 const style = StyleSheet.create({
   container: {
     flex: 1,
