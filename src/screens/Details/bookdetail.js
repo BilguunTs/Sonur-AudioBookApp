@@ -25,6 +25,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-toast-message';
 export default withGlobalContext(({navigation, route, global}) => {
   const {
+    id,
     isLocked,
     title,
     author,
@@ -36,7 +37,7 @@ export default withGlobalContext(({navigation, route, global}) => {
   const [isVisible, setVisible] = useState(false);
   React.useEffect(() => {
     if (global.download.isloading === false && global.downloads !== {}) {
-      const key = title.replace(/\s/g, '');
+      const key = id;
       if (global.downloads[key] !== undefined) {
         setDownloaded(true);
         setVisible(false);

@@ -14,7 +14,7 @@ import {getCachePath} from '../utils';
 
 export const Contextulize = createContext();
 
-const Context = ({connectionInfo, user, startLoad, ...props}) => {
+const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
   const globalDrag = useSharedValue(maxDrag);
   const AnimatedDownloadProgress = useSharedValue(0);
   const [downloads, setDownloads] = useState({});
@@ -33,9 +33,6 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
     if (download.isloading === false) {
       checkDowload();
     }
-    if (user !== null) {
-      fetchUserData(user.uid);
-    }
     fetchBooks();
   };
   const checkDowload = async () => {
@@ -45,6 +42,7 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
       let exist = await fs.exists(getCachePath().main);
       if (exist) {
         let bookDirs = await fs.ls(getCachePath().main);
+
         for (let i of Object.keys(bookDirs)) {
           if (bookDirs[i] !== undefined) {
             downloaded[bookDirs[i]] = bookDirs[i];
@@ -62,8 +60,8 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
     if (book === undefined) {
       throw new Error('url can not be empty');
     }
-    const {thumbnail, title, audioFile, ...rest} = book;
-    const _path = getCachePath(title);
+    const {thumbnail, title, audioFile, id, ...rest} = book;
+    const _path = getCachePath(id);
     const book_infos = JSON.stringify({title, ...rest});
     setDownload({...download, isloading: true});
     RNFetchBlob.config({
@@ -75,7 +73,7 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
       .progress({interval: 250}, (received, total) => {
         let progress = received / total;
         global.ADP = progress;
-        setDownload({...download, received, total, progress});
+        //setDownload({...download, received, total, progress});
       })
       .then(async () => {
         try {
@@ -94,23 +92,7 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
         console.log(e);
       });
   };
-  const fetchUserData = async (userID) => {
-    try {
-      const response = await firestore()
-        .collection('Users')
-        .where('id', '==', userID)
-        .get();
-      for (const o in response.docs) {
-        const bookID =
-          response.docs[o]._data?.purchased._documentPath._parts[1];
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  const setUser = (obj) => {
-    setState({user: obj});
-  };
+
   const setGplayer = (obj) => {
     let instance = Object.assign(GLOBAL_VALUE.gplayer, {...obj});
     setState({
@@ -125,9 +107,11 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
     let newBooks = [];
     try {
       const response = await firestore().collection('books').get();
+
       for (let o of response.docs) {
         let instance = await Object.assign(single_values.book, {
           ...o.data(),
+          id: o.id,
           isLocked: false,
         });
         newBooks.push(instance);
@@ -191,6 +175,28 @@ export const ContextProvider = withConnectionInfoSubscription(
         console.log(e);
       }
     };
+    const fetchUserData = async (incoming_user) => {
+      try {
+        let purchased = {};
+        let user = Object.assign(GLOBAL_VALUE.user, {
+          ...incoming_user,
+          isAuth: true,
+        });
+        const response = await firestore()
+          .collection('Users')
+          .where('id', '==', incoming_user.uid)
+          .get();
+        for (const o in response.docs) {
+          const userdata = response.docs[o].data();
+          const bookID = userdata.purchased.id;
+          purchased[bookID] = bookID;
+        }
+        user.purchased = purchased;
+        return user;
+      } catch (e) {
+        console.log(e);
+      }
+    };
     const onAuthStateChanged = async (res) => {
       if (res === null) {
         setUser({isAuth: false});
@@ -202,22 +208,22 @@ export const ContextProvider = withConnectionInfoSubscription(
         });
         return initializing ? setInitializing(false) : null;
       }
-      if (rest.connectionInfo.isConnected !== true) {
-        const User = Object.assign(GLOBAL_VALUE.user, {
-          ...res._user,
-          isAuth: true,
-        });
-        global.user = User;
-        setUser(User);
-        return setInitializing(false);
-      }
+      // if (rest.connectionInfo.isConnected !== true) {
+      //   const User = Object.assign(GLOBAL_VALUE.user, {
+      //     ...res._user,
+      //     isAuth: true,
+      //   });
+      //   global.user = User;
+      //   setUser(User);
+      //   return setInitializing(false);
+      // }
       try {
-        const User = Object.assign(GLOBAL_VALUE.user, {
-          ...res._user,
-          isAuth: true,
-        });
-        global.user = User;
-        setUser(User);
+        const User = await fetchUserData(res._user);
+        if (User !== undefined || User !== {}) {
+          global.user = User;
+          setUser(User);
+        }
+
         Toast.show({
           type: 'success',
           props: {elevation: 10},
@@ -254,7 +260,11 @@ export const ContextProvider = withConnectionInfoSubscription(
       <>
         {!user.isAuth && <AuthScreen startLoad={startLoad} />}
         {user.isAuth && (
-          <Context user={user} startLoad={startLoad} {...rest}>
+          <Context
+            user={user}
+            setUser={setUser}
+            startLoad={startLoad}
+            {...rest}>
             {children}
           </Context>
         )}

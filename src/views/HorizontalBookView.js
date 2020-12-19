@@ -9,6 +9,9 @@ import {getCachePath} from '../utils';
 import {color, MAIN, D} from '../configs';
 class HorizontalBookView extends Component {
   getItem = (data, index) => {
+    const {user} = this.props.global;
+    const key = data[index].id;
+    const isLocked = user.purchased[key] !== undefined;
     return {
       id: data[index].id,
       title: data[index].title,
@@ -17,13 +20,14 @@ class HorizontalBookView extends Component {
       author: data[index].author,
       thumbnail: data[index].thumbnail,
       about: data[index].about,
+      isLocked,
       audioFile: data[index].audioFile,
     };
   };
 
   handlePress = (data) => {
     const {downloads} = this.props.global;
-    const key = data.title.replace(/\s/g, '');
+    const key = data.id;
     const isDownloaded = downloads[key] !== undefined;
     if (isDownloaded) {
       const {thumbnail, ...rest} = data;
@@ -116,6 +120,7 @@ class HorizontalBookView extends Component {
                     price={item.price}
                     id={item.id}
                     animated
+                    isLocked={item.isLocked}
                     onPress={this.handlePress.bind(this, item)}
                     title={item.title}
                     author={item.author}
