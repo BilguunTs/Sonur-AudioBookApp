@@ -103,19 +103,14 @@ const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
   };
 
   const fetchBooks = async () => {
-    if (state.books.new_books.length > 0) return;
+    //if (state.books.new_books.length > 0) return;
     let newBooks = [];
     try {
       const response = await firestore().collection('books').get();
-
-      for (let o of response.docs) {
-        let instance = await Object.assign(single_values.book, {
-          ...o.data(),
-          id: o.id,
-          isLocked: false,
-        });
-        newBooks.push(instance);
+      for (const o of response.docs) {
+        newBooks.push({id: o.id, ...o.data()});
       }
+      console.log(newBooks);
       setNewBooks(newBooks);
     } catch (e) {
       console.log(e);
@@ -155,10 +150,42 @@ const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
     </Contextulize.Provider>
   );
 };
+const AuthContext = ({children, ...props}) => {
+  const [user, setUser] = useState(GLOBAL_VALUE.user);
+  useEffect(() => {
+    if (props.incomingUser.uid) {
+      const subscriber = firestore()
+        .collection('Users')
+        .doc(props.incomingUser.uid)
+        .onSnapshot((snapshot) => updateUser(snapshot));
+      return () => subscriber();
+    }
+  }, [props.incomingUser]);
+  const updateUser = (document) => {
+    if (document === undefined) return;
+    let user = props.incomingUser;
+    const purchased = {};
+    const userdata = document.data();
+    const newPurchased = userdata.purchased;
+    if (newPurchased !== undefined && newPurchased !== {}) {
+      for (const bookRef of newPurchased) {
+        purchased[bookRef.id] = bookRef.id;
+      }
+    }
+    user.purchased = purchased;
+    global.user = user;
+    setUser(user);
+  };
+  return (
+    <Context user={user} {...props}>
+      {children}
+    </Context>
+  );
+};
 export const ContextProvider = withConnectionInfoSubscription(
   ({children, ...rest}) => {
     const [initializing, setInitializing] = useState(true);
-    const [user, setUser] = useState(GLOBAL_VALUE.user);
+    const [incomingUser, setIncomingUser] = useState(null);
 
     // Handle user state changes
     const startLoad = () => {
@@ -170,60 +197,19 @@ export const ContextProvider = withConnectionInfoSubscription(
         const res = await firestore()
           .collection('Users')
           .add({...userdata});
-        console.log(res);
       } catch (e) {
         console.log(e);
       }
     };
-    const fetchUserData = async (incoming_user) => {
-      try {
-        let purchased = {};
-        let user = Object.assign(GLOBAL_VALUE.user, {
-          ...incoming_user,
-          isAuth: true,
-        });
-        const response = await firestore()
-          .collection('Users')
-          .where('id', '==', incoming_user.uid)
-          .get();
-        for (const o in response.docs) {
-          const userdata = response.docs[o].data();
-          const bookID = userdata.purchased.id;
-          purchased[bookID] = bookID;
-        }
-        user.purchased = purchased;
-        return user;
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    const onAuthStateChanged = async (res) => {
+    const onAuthStateChanged = (res) => {
       if (res === null) {
-        setUser({isAuth: false});
         Toast.show({
           type: 'info',
           text1: 'Шууд нэвтрэх',
           text2:
             'хэрэв та facebook эсвэл google ийн бүртгэлтэй бол шууд нэвтэрч болно',
         });
-        return initializing ? setInitializing(false) : null;
-      }
-      // if (rest.connectionInfo.isConnected !== true) {
-      //   const User = Object.assign(GLOBAL_VALUE.user, {
-      //     ...res._user,
-      //     isAuth: true,
-      //   });
-      //   global.user = User;
-      //   setUser(User);
-      //   return setInitializing(false);
-      // }
-      try {
-        const User = await fetchUserData(res._user);
-        if (User !== undefined || User !== {}) {
-          global.user = User;
-          setUser(User);
-        }
-
+      } else if (res !== null) {
         Toast.show({
           type: 'success',
           props: {elevation: 10},
@@ -231,10 +217,9 @@ export const ContextProvider = withConnectionInfoSubscription(
           text2: 'Та амжилттай нэвтэрлээ',
           visibilityTime: 1000,
         });
-        if (initializing) setInitializing(false);
-      } catch (e) {
-        console.log(e);
       }
+      setIncomingUser(res);
+      if (initializing) setInitializing(false);
     };
     useEffect(() => {
       const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -258,15 +243,14 @@ export const ContextProvider = withConnectionInfoSubscription(
 
     return (
       <>
-        {!user.isAuth && <AuthScreen startLoad={startLoad} />}
-        {user.isAuth && (
-          <Context
-            user={user}
-            setUser={setUser}
+        {incomingUser === null && <AuthScreen startLoad={startLoad} />}
+        {incomingUser !== null && (
+          <AuthContext
+            incomingUser={incomingUser}
             startLoad={startLoad}
             {...rest}>
             {children}
-          </Context>
+          </AuthContext>
         )}
         {getLoadingView()}
       </>

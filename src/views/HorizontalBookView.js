@@ -11,7 +11,8 @@ class HorizontalBookView extends Component {
   getItem = (data, index) => {
     const {user} = this.props.global;
     const key = data[index].id;
-    const isLocked = user.purchased[key] !== undefined;
+    const isLocked = user.purchased[key] === undefined;
+
     return {
       id: data[index].id,
       title: data[index].title,

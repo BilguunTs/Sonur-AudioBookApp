@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PlayAction from './PlayButton';
 import PurchaseBtn from './PurchaseBtn';
-
+import InvoiceModal from '../views/InvoiceModa';
 export default class FloatingFooterActions extends Component {
   constructor(props) {
     super(props);
@@ -9,6 +9,7 @@ export default class FloatingFooterActions extends Component {
     this.state = {
       showModal: false,
       progress: 0,
+      showInvoice: false,
     };
   }
   PlayIfDownloaded = () => {
@@ -24,7 +25,7 @@ export default class FloatingFooterActions extends Component {
     const {type} = this.props;
     switch (type) {
       case 'purchase':
-        console.log('should open invoice dialog');
+        this.setState({showInvoice: true});
         break;
       case 'play':
         this.PlayIfDownloaded();
@@ -46,6 +47,19 @@ export default class FloatingFooterActions extends Component {
     }
   };
   render() {
-    return <>{this.getActions()}</>;
+    return (
+      <>
+        {this.getActions()}
+        <InvoiceModal
+          visible={this.state.showInvoice}
+          targetItem={this.props.item}
+          onSwipeOut={() => this.setState({showInvoice: false})}
+          onSubmit={() => {
+            console.log('trying to buy?');
+          }}
+          onTouchOutside={() => this.setState({showInvoice: false})}
+        />
+      </>
+    );
   }
 }
