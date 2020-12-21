@@ -4,15 +4,12 @@ import BookCard from '../components/BookHeroCard';
 import {material, materialColors} from 'react-native-typography';
 import Icon from 'react-native-vector-icons/Feather';
 import {withGlobalContext} from '../context';
-import LottieView from 'lottie-react-native';
+//import LottieView from 'lottie-react-native';
 import {getCachePath} from '../utils';
 import {color, MAIN, D} from '../configs';
 class HorizontalBookView extends Component {
   getItem = (data, index) => {
-    const {user} = this.props.global;
-    const key = data[index].id;
-    const isLocked = user.purchased[key] === undefined;
-
+    console.log(data[index].isLocked);
     return {
       id: data[index].id,
       title: data[index].title,
@@ -21,7 +18,7 @@ class HorizontalBookView extends Component {
       author: data[index].author,
       thumbnail: data[index].thumbnail,
       about: data[index].about,
-      isLocked,
+      isLocked: data[index].isLocked,
       audioFile: data[index].audioFile,
     };
   };
@@ -49,7 +46,7 @@ class HorizontalBookView extends Component {
     });
   };
   render() {
-    const {stats, isOnline} = this.props.global;
+    const {isOnline, newBooks} = this.props.global;
     if (!isOnline) {
       return (
         <View
@@ -106,9 +103,9 @@ class HorizontalBookView extends Component {
             <Icon size={30} name={'arrow-right'} color={'#00000094'} />
           </View>
         </Pressable>
-        {stats.books.new_books.length !== 0 && (
+        {newBooks.length !== 0 && (
           <VirtualizedList
-            data={stats?.books.new_books}
+            data={newBooks}
             horizontal
             contentContainerStyle={{paddingHorizontal: 10}}
             initialNumToRender={4}
@@ -131,7 +128,7 @@ class HorizontalBookView extends Component {
               );
             }}
             keyExtractor={(item) => item.id}
-            getItemCount={() => stats?.books.new_books.length}
+            getItemCount={() => newBooks.length}
             getItem={this.getItem.bind(this)}
           />
         )}

@@ -13,7 +13,7 @@ import {withGlobalContext} from '../context';
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 const VerticalBooks = ({navigation, params, ...props}) => {
   const direction = useSharedValue(0);
-  const {stats} = props.global;
+  const {newBooks} = props.global;
   const skewY = useDerivedValue(() => {
     if (direction.value === 1) {
       return withSpring(Math.PI / 18);
@@ -47,7 +47,7 @@ const VerticalBooks = ({navigation, params, ...props}) => {
   const handleFetchMore = () => {};
   return (
     <AnimatedFlatList
-      data={stats?.books.new_books}
+      data={newBooks}
       onScroll={scrollHandler}
       onEndReachedThreshold={0.4}
       onEndReached={handleFetchMore.bind(this)}

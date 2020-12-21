@@ -34,7 +34,7 @@ export default class FloatingFooterActions extends Component {
     }
   };
   addToPurchased = async () => {
-    const {global, item, navigation} = this.props;
+    const {global, item} = this.props;
     const db = firestore();
     try {
       const user = await db.collection('Users').doc(global.user.uid);
@@ -48,7 +48,6 @@ export default class FloatingFooterActions extends Component {
           text1: 'Амжилттай нээгдлээ',
           text2: 'танд амжилт хүсье',
         });
-        navigation.navigate('Home');
       });
     } catch (e) {
       console.log(e);

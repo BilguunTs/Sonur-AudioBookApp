@@ -14,10 +14,16 @@ import {getCachePath} from '../utils';
 
 export const Contextulize = createContext();
 
-const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
+const Context = ({
+  connectionInfo,
+  user,
+  newBooks,
+  setUser,
+  startLoad,
+  ...props
+}) => {
   const globalDrag = useSharedValue(maxDrag);
   const AnimatedDownloadProgress = useSharedValue(0);
-  const [gUser, setGUser] = useState(user);
   const [downloads, setDownloads] = useState({});
   const [download, setDownload] = useState({
     isloading: false,
@@ -28,15 +34,10 @@ const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
   });
   const [state, setState] = useState(GLOBAL_VALUE);
   useEffect(() => {
-    setGUser(user);
-    init();
-  }, [download.isloading, user]);
-  const init = () => {
     if (download.isloading === false) {
       checkDowload();
     }
-    fetchBooks();
-  };
+  }, [download.isloading]);
   const checkDowload = async () => {
     const {fs} = RNFetchBlob;
     try {
@@ -104,19 +105,6 @@ const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
     globalDrag.value = withSpring(0);
   };
 
-  const fetchBooks = async () => {
-    //if (state.books.new_books.length > 0) return;
-    let newBooks = [];
-    try {
-      const response = await firestore().collection('books').get();
-      for (const o of response.docs) {
-        newBooks.push({id: o.id, ...o.data()});
-      }
-      setNewBooks(newBooks);
-    } catch (e) {
-      console.log(e);
-    }
-  };
   const toggleGplayer = (bool) => {
     setState({
       gplayer: {
@@ -125,20 +113,17 @@ const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
       },
     });
   };
-  const setNewBooks = (books) => {
-    if (books === undefined) return;
-    setState({...state, books: {...state.books, new_books: books}});
-  };
 
   return (
     <Contextulize.Provider
       value={{
         stats: state,
-        user: gUser,
+        user,
         ADP: AnimatedDownloadProgress,
         dragValue: globalDrag,
         downloads,
         download,
+        newBooks,
         isOnline: connectionInfo.isConnected || false,
         methods: {
           setGplayer: (o) => setGplayer(o),
@@ -151,17 +136,43 @@ const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
     </Contextulize.Provider>
   );
 };
-const AuthContext = ({children, ...props}) => {
+const GrandContext = ({children, ...props}) => {
   const [user, setUser] = useState(GLOBAL_VALUE.user);
+  const [newBooks, setNewBooks] = useState([]);
   useEffect(() => {
     if (props.incomingUser.uid) {
       const subscriber = firestore()
         .collection('Users')
         .doc(props.incomingUser.uid)
-        .onSnapshot((snapshot) => updateUser(snapshot));
+        .onSnapshot((snapshot) => {
+          update(snapshot);
+        });
       return () => subscriber();
     }
   }, [props.incomingUser]);
+  const update = async (snapshot) => {
+    try {
+      const updatedUser = await updateUser(snapshot);
+      fetchBooksForThisUser(updatedUser);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const fetchBooksForThisUser = async (user) => {
+    if (user === undefined) return;
+    let newBooks = [];
+    try {
+      const response = await firestore().collection('books').get();
+      for (const o of response.docs) {
+        let isLocked = user.purchased[o.id] === undefined;
+        newBooks.push({id: o.id, isLocked, ...o.data()});
+      }
+      setNewBooks(newBooks);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const updateUser = (document) => {
     if (document === undefined) return;
     let user = props.incomingUser;
@@ -176,9 +187,10 @@ const AuthContext = ({children, ...props}) => {
     user.purchased = purchased;
     global.user = user;
     setUser(user);
+    return user;
   };
   return (
-    <Context user={user} {...props}>
+    <Context user={user} newBooks={newBooks} {...props}>
       {children}
     </Context>
   );
@@ -246,12 +258,12 @@ export const ContextProvider = withConnectionInfoSubscription(
       <>
         {incomingUser === null && <AuthScreen startLoad={startLoad} />}
         {incomingUser !== null && (
-          <AuthContext
+          <GrandContext
             incomingUser={incomingUser}
             startLoad={startLoad}
             {...rest}>
             {children}
-          </AuthContext>
+          </GrandContext>
         )}
         {getLoadingView()}
       </>
