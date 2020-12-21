@@ -34,8 +34,12 @@ export default withGlobalContext(({navigation, route, global}) => {
     isDownloaded,
   } = route.params;
   const [downloaded, setDownloaded] = useState(isDownloaded);
+  const [locked, setLocked] = useState(isLocked);
   const [isVisible, setVisible] = useState(false);
   React.useEffect(() => {
+    if (global.user.purchased[id] !== undefined) {
+      setLocked(false);
+    }
     if (global.download.isloading === false && global.downloads !== {}) {
       const key = id;
       if (global.downloads[key] !== undefined) {
@@ -45,7 +49,7 @@ export default withGlobalContext(({navigation, route, global}) => {
     } else if (global.download.isloading) {
       setVisible(true);
     }
-  }, [global.download.isloading, global.downloads]);
+  }, [global.user.purchased, global.download.isloading, global.downloads]);
   const onDismiss = () => {
     if (!downloaded) {
       return Toast.show({
@@ -60,6 +64,7 @@ export default withGlobalContext(({navigation, route, global}) => {
       text2: `${title}`,
     });
   };
+  console.log(global.user.purchased);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <View style={style.header}>
@@ -117,7 +122,7 @@ export default withGlobalContext(({navigation, route, global}) => {
               item={route.params}
               global={global}
               isDownloaded={downloaded}
-              type={isLocked ? 'purchase' : 'play'}
+              type={locked ? 'purchase' : 'play'}
             />
           </View>
         </LinearGradient>

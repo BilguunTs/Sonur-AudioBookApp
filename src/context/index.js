@@ -17,6 +17,7 @@ export const Contextulize = createContext();
 const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
   const globalDrag = useSharedValue(maxDrag);
   const AnimatedDownloadProgress = useSharedValue(0);
+  const [gUser, setGUser] = useState(user);
   const [downloads, setDownloads] = useState({});
   const [download, setDownload] = useState({
     isloading: false,
@@ -27,6 +28,7 @@ const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
   });
   const [state, setState] = useState(GLOBAL_VALUE);
   useEffect(() => {
+    setGUser(user);
     init();
   }, [download.isloading, user]);
   const init = () => {
@@ -110,7 +112,6 @@ const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
       for (const o of response.docs) {
         newBooks.push({id: o.id, ...o.data()});
       }
-      console.log(newBooks);
       setNewBooks(newBooks);
     } catch (e) {
       console.log(e);
@@ -133,7 +134,7 @@ const Context = ({connectionInfo, user, setUser, startLoad, ...props}) => {
     <Contextulize.Provider
       value={{
         stats: state,
-        user,
+        user: gUser,
         ADP: AnimatedDownloadProgress,
         dragValue: globalDrag,
         downloads,
