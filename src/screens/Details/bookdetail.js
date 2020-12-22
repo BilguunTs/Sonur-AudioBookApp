@@ -64,7 +64,6 @@ export default withGlobalContext(({navigation, route, global}) => {
       text2: `${title}`,
     });
   };
-  console.log(global.user.purchased);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <View style={style.header}>

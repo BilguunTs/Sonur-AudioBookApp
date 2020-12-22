@@ -65,8 +65,8 @@ export default class FloatingFooterActions extends Component {
     }
   };
   getActions = () => {
-    const {type, isDownloaded} = this.props;
-    if (type === 'purchase') {
+    const {type, isDownloaded = false} = this.props;
+    if (type === 'purchase' && !isDownloaded) {
       return <PurchaseBtn onPress={this.handlePress} />;
     } else if (type === 'play') {
       return (

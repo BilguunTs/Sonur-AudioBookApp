@@ -201,8 +201,13 @@ export const ContextProvider = withConnectionInfoSubscription(
     const [incomingUser, setIncomingUser] = useState(null);
 
     // Handle user state changes
-    const startLoad = () => {
-      setInitializing(true);
+    const startLoad = (bool) => {
+      console.log(bool === true ? 'loading' : 'will stop load');
+      if (bool === undefined) {
+        setInitializing(true);
+      } else {
+        setInitializing(bool);
+      }
     };
     const createNewUserData = async (user) => {
       const userdata = {...user};

@@ -1,4 +1,5 @@
 import React, {Component, useState, useRef} from 'react';
+import auth from '@react-native-firebase/auth';
 import {
   Text,
   Alert,
@@ -8,11 +9,6 @@ import {
   Keyboard,
   TextInput,
 } from 'react-native';
-import auth from '@react-native-firebase/auth';
-import {
-  GoogleSocialButton,
-  FacebookSocialButton,
-} from 'react-native-social-buttons';
 import Animated, {
   useAnimatedStyle,
   interpolate,
@@ -20,6 +16,7 @@ import Animated, {
   useDerivedValue,
   withSpring,
 } from 'react-native-reanimated';
+import OuthButtons from './OAuth';
 import {color, MAIN} from '../../configs';
 import Icon from 'react-native-vector-icons/Feather';
 import MainLogo from '../../svg/logowithletter.svg';
@@ -175,14 +172,7 @@ export default class SignIn extends Component {
             width: 250,
             alignItems: 'center',
           }}></View>
-        <GoogleSocialButton
-          buttonViewStyle={styles.socialBtn}
-          buttonText={'Google-ээр нэвтрэх'}
-        />
-        <FacebookSocialButton
-          buttonText={'Facebook-ээр нэвтрэх'}
-          buttonViewStyle={styles.socialBtn}
-        />
+        <OuthButtons />
         <Button
           style={{
             width: 270,
@@ -219,11 +209,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f6f6f6',
     color: color.PRIMARY,
     marginBottom: 10,
-  },
-  socialBtn: {
-    width: 270,
-    borderRadius: 10,
-    elevation: 1,
   },
   inputext: {
     width: 240,

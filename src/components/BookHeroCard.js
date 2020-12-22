@@ -18,8 +18,8 @@ import Animated, {
 import {MAIN, color} from '../configs';
 import {BoxShadow} from '../modules';
 const BookHeroCard = ({
-  onPress,
-  isLocked,
+  onPress = function () {},
+  isLocked = true,
   title = '',
   author = '',
   img,

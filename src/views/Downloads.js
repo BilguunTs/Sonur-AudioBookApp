@@ -28,6 +28,7 @@ const DowloadedBookList = ({navigation, global}) => {
           audioFile: _path.audio,
           img: 'file://' + _path.img,
           ...JSON.parse(args),
+          isLocked: false,
         };
         data.push(instances);
       }
