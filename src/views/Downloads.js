@@ -41,6 +41,9 @@ const DowloadedBookList = ({navigation, global}) => {
     const {img, ...rest} = item;
     return (
       <BookItem
+        onPressPlay={() => {
+          global.methods.setGplayer(item);
+        }}
         onPress={() =>
           navigation.navigate('BookDetail', {
             thumbnail: img,

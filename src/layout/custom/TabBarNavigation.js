@@ -1,5 +1,5 @@
 import React from 'react';
-import {Pressable, View, StyleSheet, Alert} from 'react-native';
+import {Pressable, View, StyleSheet, ToastAndroid, Alert} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useDerivedValue,
@@ -10,7 +10,6 @@ import Animated, {
   Extrapolate,
   Easing,
   withTiming,
-  runOnJS,
 } from 'react-native-reanimated';
 import {
   PanGestureHandler,
@@ -30,8 +29,10 @@ const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
 const ALottieView = Animated.createAnimatedComponent(LottieView);
 const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
-  const {dragValue} = props.global;
+  const {dragValue, GplayerIsActive, methods} = props.global;
+
   const tapRef = React.useRef();
+  // const [_update, setUpdate] = React.useState(false);
   const isToggled = useDerivedValue(() => {
     // if (dragValue.value === 0) {
     //   console.log('istoggled is true');
@@ -43,10 +44,9 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
     //   return false;
     // }
   }, [dragValue]);
-  const isActive = useDerivedValue(() => {
-    return props.global.stats.gplayer.isActive;
-  }, [props.global.stats.gplayer]);
-
+  // React.useEffect(() => {
+  //   setUpdate(stats.gplayer.isActive);
+  // }, [stats.gplayer]);
   const pressing = useSharedValue(0);
   const getText = (txt, focused) => {
     const styleText = useAnimatedStyle(() => {
@@ -137,7 +137,7 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
   });
   const handleCollapse = () =>
     (dragValue.value = withSpring(maxDrag, MAIN.spring));
-  const handleClear = () => {};
+
   const handleEvent = useAnimatedGestureHandler({
     onStart: (_, c) => {
       c.startY = dragValue.value;
@@ -194,8 +194,13 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
                 isToggled={isToggled}
                 dragValue={dragValue}
                 maxDrag={maxDrag}
-                leftAction={handleCollapse}
-                rightAction={handleClear}
+                onLeftAction={handleCollapse}
+                onRightAction={() => {
+                  methods.clearGplayer();
+                  setTimeout(() => {
+                    navigation.navigate('BookShelf');
+                  }, 1000);
+                }}
               />
             </Animated.View>
           </Animated.View>
@@ -372,15 +377,34 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
   return (
     <>
       <Animated.View style={[containerStyle]}>
-        <LongPressGestureHandler
-          ref={tapRef}
-          maxDurationMs={1000}
-          onHandlerStateChange={handlTapEvent}>
-          <Animated.View style={[styleGplayerContainer, tapStyle]}>
-            {StickyContainer()}
-          </Animated.View>
-        </LongPressGestureHandler>
+        {GplayerIsActive.value === 1 && (
+          <LongPressGestureHandler
+            ref={tapRef}
+            maxDurationMs={1000}
+            onHandlerStateChange={handlTapEvent}>
+            <Animated.View style={[styleGplayerContainer, tapStyle]}>
+              {StickyContainer()}
+            </Animated.View>
+          </LongPressGestureHandler>
+        )}
         <Animated.View style={[styleTabs]}>
+          {GplayerIsActive.value === 0 && (
+            <Pressable
+              onPress={() => {
+                ToastAndroid.show('Хоосон 😗', 1000);
+              }}
+              onLongPress={() => {
+                Alert.alert(
+                  '▶ Сонур тоглуулагч',
+                  '👋 Таны татсан ном энэ хэсэгт тоглуулагдах болно 😀',
+                  [{text: 'Ok', onPress: () => {}}],
+                  {cancelable: false},
+                );
+              }}
+              style={styled.circle}
+              android_ripple={{borderless: true, color: color.ripple}}
+            />
+          )}
           {state.routes.map((route, index) => {
             const {options} = descriptors[route.key];
             const label =
@@ -435,5 +459,18 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
     </>
   );
 };
-
+const styled = StyleSheet.create({
+  circle: {
+    position: 'absolute',
+    width: MAIN.CIRCLE_SIZE * 0.4,
+    height: MAIN.CIRCLE_SIZE * 0.4,
+    borderRadius: (MAIN.CIRCLE_SIZE * 0.4) / 2,
+    bottom: MAIN.bottom_tab.HEIGHT / 2 - (MAIN.CIRCLE_SIZE * 0.4) / 2,
+    zIndex: 8,
+    borderColor: color.PRIMARY,
+    borderWidth: 1,
+    backgroundColor: color.ripple,
+    left: WIDTH / 2 - (MAIN.CIRCLE_SIZE * 0.4) / 2,
+  },
+});
 export default withGlobalContext(CustomTabBar);

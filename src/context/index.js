@@ -9,7 +9,7 @@ import {useSharedValue, withSpring} from 'react-native-reanimated';
 import AuthScreen from '../screens/Authentication';
 import {GLOBAL_VALUE, single_values} from './states';
 
-import {maxDrag, color} from '../configs';
+import {maxDrag, color, MAIN} from '../configs';
 import {getCachePath} from '../utils';
 
 export const Contextulize = createContext();
@@ -23,6 +23,7 @@ const Context = ({
   ...props
 }) => {
   const globalDrag = useSharedValue(maxDrag);
+  const GplayerIsActive = useSharedValue(0);
   const AnimatedDownloadProgress = useSharedValue(0);
   const [downloads, setDownloads] = useState({});
   const [download, setDownload] = useState({
@@ -102,9 +103,15 @@ const Context = ({
       ...state,
       gplayer: {...instance, isActive: true, isToggled: true},
     });
-    globalDrag.value = withSpring(0);
+    GplayerIsActive.value = 1;
+    globalDrag.value = withSpring(0, MAIN.spring);
   };
-
+  const clearGplayer = (callback = function () {}) => {
+    setState({...state, gplayer: GLOBAL_VALUE.gplayer});
+    globalDrag.value = withSpring(maxDrag, MAIN.spring);
+    GplayerIsActive.value = 0;
+    callback();
+  };
   const toggleGplayer = (bool) => {
     setState({
       gplayer: {
@@ -121,12 +128,14 @@ const Context = ({
         user,
         ADP: AnimatedDownloadProgress,
         dragValue: globalDrag,
+        GplayerIsActive,
         downloads,
         download,
         newBooks,
         isOnline: connectionInfo.isConnected || false,
         methods: {
           setGplayer: (o) => setGplayer(o),
+          clearGplayer: () => clearGplayer(),
           toggleGplayer: (b) => toggleGplayer(b),
           downloadBook: (b) => downloadBook(b),
           startGlobalLoad: () => startLoad(),

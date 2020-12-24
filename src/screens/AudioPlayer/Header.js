@@ -8,13 +8,13 @@ import BackButton from '../../components/BackButton';
 export default ({
   isToggled,
   text,
-  leftAction = function () {},
-  rightAction = function () {},
+  onLeftAction = function () {},
+  onRightAction = function () {},
   hideleft = false,
 }) => {
   const handleClear = () => {
     Alert.alert(
-      '☝',
+      'Хаах',
       'тоглуулагчийг хаах уу?',
       [
         {
@@ -22,7 +22,7 @@ export default ({
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        {text: 'Тийм', onPress: () => rightAction()},
+        {text: 'Тийм', onPress: () => onRightAction()},
       ],
       {cancelable: false},
     );
@@ -36,7 +36,7 @@ export default ({
       <View style={{flex: 1, alignItems: 'center'}}>
         {hideleft === false && (
           <View style={{maxHeight: 40}}>
-            <BackButton borderless onPress={leftAction} />
+            <BackButton borderless onPress={onLeftAction} />
           </View>
         )}
       </View>
