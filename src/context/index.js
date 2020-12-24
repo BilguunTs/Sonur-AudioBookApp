@@ -195,6 +195,7 @@ const GrandContext = ({children, ...props}) => {
     }
     user.purchased = purchased;
     global.user = user;
+
     setUser(user);
     return user;
   };
@@ -218,16 +219,7 @@ export const ContextProvider = withConnectionInfoSubscription(
         setInitializing(bool);
       }
     };
-    const createNewUserData = async (user) => {
-      const userdata = {...user};
-      try {
-        const res = await firestore()
-          .collection('Users')
-          .add({...userdata});
-      } catch (e) {
-        console.log(e);
-      }
-    };
+
     const onAuthStateChanged = (res) => {
       if (res === null) {
         Toast.show({

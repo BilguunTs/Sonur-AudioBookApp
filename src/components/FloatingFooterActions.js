@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PlayAction from './PlayButton';
 import PurchaseBtn from './PurchaseBtn';
 import firestore from '@react-native-firebase/firestore';
-import InvoiceModal from '../views/InvoiceModa';
+import InvoiceModal from '../views/InvoiceModal';
 import Toast from 'react-native-toast-message';
 export default class FloatingFooterActions extends Component {
   constructor(props) {

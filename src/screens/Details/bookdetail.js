@@ -96,10 +96,10 @@ export default withGlobalContext(({navigation, route, global}) => {
           <View style={style.midSection}>
             <View style={style.info}>
               <View style={[style.infoItem, style.center]}>
-                <Rating rate={4} />
+                <Rating rate={0} />
               </View>
               <View style={[style.infoItem, style.center]}>
-                <Text style={style.text}>{'124 хуудас'}</Text>
+                <Text style={style.text}>{'0 хуудас'}</Text>
               </View>
             </View>
             <View style={style.about}>

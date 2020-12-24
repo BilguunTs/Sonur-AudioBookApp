@@ -130,7 +130,7 @@ export default class Header extends Component {
           onPress={() => rest.navigation.goBack()}>
           <Ionicons
             name="md-arrow-back"
-            style={{color: !contrast ? '#7400b8' : '#fff'}}
+            style={{color: !contrast ? '#212121' : '#fff', opacity: 0.6}}
             size={35}
           />
         </Pressable>

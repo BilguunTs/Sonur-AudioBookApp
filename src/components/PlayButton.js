@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {TouchableOpacity, Text, View} from 'react-native';
 //import Icon from 'react-native-vector-icons/Ionicons';
-import Icon from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {iOSUIKit} from 'react-native-typography';
 import {color} from '../configs';
 export default class ReadBookIconBtn extends Component {
@@ -24,7 +24,7 @@ export default class ReadBookIconBtn extends Component {
             height: 40,
           }}>
           <Icon
-            name={this.props.downloadMode ? 'download' : 'play'}
+            name={this.props.downloadMode ? 'md-download' : 'md-play'}
             color={this.props.colorIcon || color.PRIMARY}
             style={{
               elevation: 2,
