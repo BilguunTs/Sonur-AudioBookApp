@@ -10,6 +10,7 @@ import Modal, {
 } from 'react-native-modals';
 import auth from '@react-native-firebase/auth';
 import TabViews from '../views/TabViews';
+import {ProfileView, SubscriptionView} from '../views/Profileviews';
 import {withGlobalContext} from '../context';
 class Profile extends Component {
   state = {
@@ -22,7 +23,7 @@ class Profile extends Component {
     try {
       this.setState({exitAlert: false});
       this.props.global.methods.startGlobalLoad();
-      const result = await auth().signOut();
+      await auth().signOut();
     } catch (e) {
       console.log(e);
     }
@@ -67,8 +68,12 @@ class Profile extends Component {
           </View>
           <View style={[style.tabContainer, style.centered]}>
             <TabViews>
-              <View tabLabel={{label: 'Бүртгэл'}}></View>
-              <View tabLabel={{label: 'Гишүүнчлэл'}}></View>
+              <View tabLabel={{label: 'Бүртгэл'}}>
+                <ProfileView />
+              </View>
+              <View tabLabel={{label: 'Гишүүнчлэл'}}>
+                <SubscriptionView />
+              </View>
             </TabViews>
           </View>
         </View>
