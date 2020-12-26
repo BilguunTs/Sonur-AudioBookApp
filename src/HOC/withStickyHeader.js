@@ -11,10 +11,19 @@ import {MAIN, color, D} from '../configs';
 import Header from '../layout/Header';
 import {BackWrapper} from '../components/BackWrapper';
 import SonurFox from '../svg/sonurfox.svg';
+import moment from 'moment';
 import {withGlobalContext} from '../context';
 //import SonurLogo from '../svg/logowithletter.svg';
 const UserStats = withGlobalContext(({global}) => {
   const navigation = useNavigation();
+  // let timeInSeconds = moment(
+  //   global.user.metadata.lastSignInTime,
+  //   'HH:mm:ss: A',
+  // ).diff(moment().startOf('day'), 'seconds');
+
+  //moment.parseZone(global.user.metadata.lastSignInTime)
+  //let lastLogin = new Date(Date.now() - timeInSeconds * 1000);
+  //let lastLogInMin = moment(lastLogin, 'HH:mm').minutes();
   return (
     <Pressable
       android_ripple={{color: color.ripple, borderless: true}}
