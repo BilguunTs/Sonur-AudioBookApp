@@ -28,6 +28,7 @@ const DowloadedBookList = ({navigation, global}) => {
           audioFile: _path.audio,
           img: 'file://' + _path.img,
           ...JSON.parse(args),
+          isLocked: false,
         };
         data.push(instances);
       }
@@ -40,6 +41,9 @@ const DowloadedBookList = ({navigation, global}) => {
     const {img, ...rest} = item;
     return (
       <BookItem
+        onPressPlay={() => {
+          global.methods.setGplayer(item);
+        }}
         onPress={() =>
           navigation.navigate('BookDetail', {
             thumbnail: img,

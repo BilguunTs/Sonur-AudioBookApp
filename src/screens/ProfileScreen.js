@@ -10,9 +10,8 @@ import Modal, {
 } from 'react-native-modals';
 import auth from '@react-native-firebase/auth';
 import TabViews from '../views/TabViews';
+import {ProfileView, SubscriptionView} from '../views/Profileviews';
 import {withGlobalContext} from '../context';
-const URI =
-  'https://image.freepik.com/free-vector/cute-girl-gaming-holding-joystick-cartoon-icon-illustration-people-technology-icon-concept-isolated-flat-cartoon-style_138676-2169.jpg';
 class Profile extends Component {
   state = {
     exitAlert: false,
@@ -24,7 +23,7 @@ class Profile extends Component {
     try {
       this.setState({exitAlert: false});
       this.props.global.methods.startGlobalLoad();
-      const result = await auth().signOut();
+      await auth().signOut();
     } catch (e) {
       console.log(e);
     }
@@ -34,12 +33,15 @@ class Profile extends Component {
       <View style={style.container}>
         <View style={[style.header]}>
           <View style={[style.centered, style.flex1]}>
-            <Text style={[iOSUIKit.title3]}>10</Text>
+            <Text style={[iOSUIKit.title3]}>0</Text>
             <Text style={[style.text]}>дуусгасан</Text>
           </View>
           <View style={[style.centered, style.flex1]}>
             <View style={[style.avatarContainer, style.centered]}>
-              <Image style={[style.avatar]} source={{uri: URI}} />
+              <Image
+                style={[style.avatar]}
+                source={require('../../assets/img/avatar.png')}
+              />
             </View>
           </View>
           <View style={[style.centered, style.flex1]}>
@@ -66,8 +68,12 @@ class Profile extends Component {
           </View>
           <View style={[style.tabContainer, style.centered]}>
             <TabViews>
-              <View tabLabel={{label: 'Бүртгэл'}}></View>
-              <View tabLabel={{label: 'Гишүүнчлэл'}}></View>
+              <View tabLabel={{label: 'Бүртгэл'}}>
+                <ProfileView />
+              </View>
+              <View tabLabel={{label: 'Гишүүнчлэл'}}>
+                <SubscriptionView />
+              </View>
             </TabViews>
           </View>
         </View>
@@ -133,9 +139,10 @@ const style = StyleSheet.create({
     flex: 1,
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 65,
+    height: 65,
+    borderRadius: 30,
+    opacity: 0.5,
   },
   avatarContainer: {
     width: '100%',

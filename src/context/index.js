@@ -9,13 +9,21 @@ import {useSharedValue, withSpring} from 'react-native-reanimated';
 import AuthScreen from '../screens/Authentication';
 import {GLOBAL_VALUE, single_values} from './states';
 
-import {maxDrag, color} from '../configs';
+import {maxDrag, color, MAIN} from '../configs';
 import {getCachePath} from '../utils';
 
 export const Contextulize = createContext();
 
-const Context = ({connectionInfo, user, startLoad, ...props}) => {
+const Context = ({
+  connectionInfo,
+  user,
+  newBooks,
+  setUser,
+  startLoad,
+  ...props
+}) => {
   const globalDrag = useSharedValue(maxDrag);
+  const GplayerIsActive = useSharedValue(0);
   const AnimatedDownloadProgress = useSharedValue(0);
   const [downloads, setDownloads] = useState({});
   const [download, setDownload] = useState({
@@ -27,17 +35,10 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
   });
   const [state, setState] = useState(GLOBAL_VALUE);
   useEffect(() => {
-    init();
-  }, [download.isloading, user]);
-  const init = () => {
     if (download.isloading === false) {
       checkDowload();
     }
-    if (user !== null) {
-      fetchUserData(user.uid);
-    }
-    fetchBooks();
-  };
+  }, [download.isloading]);
   const checkDowload = async () => {
     const {fs} = RNFetchBlob;
     try {
@@ -45,6 +46,7 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
       let exist = await fs.exists(getCachePath().main);
       if (exist) {
         let bookDirs = await fs.ls(getCachePath().main);
+
         for (let i of Object.keys(bookDirs)) {
           if (bookDirs[i] !== undefined) {
             downloaded[bookDirs[i]] = bookDirs[i];
@@ -62,8 +64,8 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
     if (book === undefined) {
       throw new Error('url can not be empty');
     }
-    const {thumbnail, title, audioFile, ...rest} = book;
-    const _path = getCachePath(title);
+    const {thumbnail, title, audioFile, id, ...rest} = book;
+    const _path = getCachePath(id);
     const book_infos = JSON.stringify({title, ...rest});
     setDownload({...download, isloading: true});
     RNFetchBlob.config({
@@ -75,7 +77,7 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
       .progress({interval: 250}, (received, total) => {
         let progress = received / total;
         global.ADP = progress;
-        setDownload({...download, received, total, progress});
+        //setDownload({...download, received, total, progress});
       })
       .then(async () => {
         try {
@@ -94,48 +96,21 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
         console.log(e);
       });
   };
-  const fetchUserData = async (userID) => {
-    try {
-      const response = await firestore()
-        .collection('Users')
-        .where('id', '==', userID)
-        .get();
-      for (const o in response.docs) {
-        const bookID =
-          response.docs[o]._data?.purchased._documentPath._parts[1];
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  const setUser = (obj) => {
-    setState({user: obj});
-  };
+
   const setGplayer = (obj) => {
     let instance = Object.assign(GLOBAL_VALUE.gplayer, {...obj});
     setState({
       ...state,
       gplayer: {...instance, isActive: true, isToggled: true},
     });
-    globalDrag.value = withSpring(0);
+    GplayerIsActive.value = 1;
+    globalDrag.value = withSpring(0, MAIN.spring);
   };
-
-  const fetchBooks = async () => {
-    if (state.books.new_books.length > 0) return;
-    let newBooks = [];
-    try {
-      const response = await firestore().collection('books').get();
-      for (let o of response.docs) {
-        let instance = await Object.assign(single_values.book, {
-          ...o.data(),
-          isLocked: false,
-        });
-        newBooks.push(instance);
-      }
-      setNewBooks(newBooks);
-    } catch (e) {
-      console.log(e);
-    }
+  const clearGplayer = (callback = function () {}) => {
+    setState({...state, gplayer: GLOBAL_VALUE.gplayer});
+    globalDrag.value = withSpring(maxDrag, MAIN.spring);
+    GplayerIsActive.value = 0;
+    callback();
   };
   const toggleGplayer = (bool) => {
     setState({
@@ -145,10 +120,6 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
       },
     });
   };
-  const setNewBooks = (books) => {
-    if (books === undefined) return;
-    setState({...state, books: {...state.books, new_books: books}});
-  };
 
   return (
     <Contextulize.Provider
@@ -157,11 +128,14 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
         user,
         ADP: AnimatedDownloadProgress,
         dragValue: globalDrag,
+        GplayerIsActive,
         downloads,
         download,
+        newBooks,
         isOnline: connectionInfo.isConnected || false,
         methods: {
           setGplayer: (o) => setGplayer(o),
+          clearGplayer: () => clearGplayer(),
           toggleGplayer: (b) => toggleGplayer(b),
           downloadBook: (b) => downloadBook(b),
           startGlobalLoad: () => startLoad(),
@@ -171,53 +145,90 @@ const Context = ({connectionInfo, user, startLoad, ...props}) => {
     </Contextulize.Provider>
   );
 };
+const GrandContext = ({children, ...props}) => {
+  const [user, setUser] = useState(GLOBAL_VALUE.user);
+  const [newBooks, setNewBooks] = useState([]);
+  useEffect(() => {
+    if (props.incomingUser.uid) {
+      const subscriber = firestore()
+        .collection('Users')
+        .doc(props.incomingUser.uid)
+        .onSnapshot((snapshot) => {
+          update(snapshot);
+        });
+      return () => subscriber();
+    }
+  }, [props.incomingUser]);
+  const update = async (snapshot) => {
+    try {
+      const updatedUser = await updateUser(snapshot);
+      fetchBooksForThisUser(updatedUser);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const fetchBooksForThisUser = async (user) => {
+    if (user === undefined) return;
+    let newBooks = [];
+    try {
+      const response = await firestore().collection('books').get();
+      for (const o of response.docs) {
+        let isLocked = user.purchased[o.id] === undefined;
+        newBooks.push({id: o.id, isLocked, ...o.data()});
+      }
+      setNewBooks(newBooks);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const updateUser = (document) => {
+    if (document === undefined) return;
+    let user = props.incomingUser;
+    const purchased = {};
+    const userdata = document.data();
+    const newPurchased = userdata.purchased;
+    if (newPurchased !== undefined && newPurchased !== {}) {
+      for (const bookRef of newPurchased) {
+        purchased[bookRef.id] = bookRef.id;
+      }
+    }
+    user.purchased = purchased;
+    global.user = user;
+
+    setUser(user);
+    return user;
+  };
+  return (
+    <Context user={user} newBooks={newBooks} {...props}>
+      {children}
+    </Context>
+  );
+};
 export const ContextProvider = withConnectionInfoSubscription(
   ({children, ...rest}) => {
     const [initializing, setInitializing] = useState(true);
-    const [user, setUser] = useState(GLOBAL_VALUE.user);
+    const [incomingUser, setIncomingUser] = useState(null);
 
     // Handle user state changes
-    const startLoad = () => {
-      setInitializing(true);
-    };
-    const createNewUserData = async (user) => {
-      const userdata = {...user};
-      try {
-        const res = await firestore()
-          .collection('Users')
-          .add({...userdata});
-        console.log(res);
-      } catch (e) {
-        console.log(e);
+    const startLoad = (bool) => {
+      console.log(bool === true ? 'loading' : 'will stop load');
+      if (bool === undefined) {
+        setInitializing(true);
+      } else {
+        setInitializing(bool);
       }
     };
-    const onAuthStateChanged = async (res) => {
+
+    const onAuthStateChanged = (res) => {
       if (res === null) {
-        setUser({isAuth: false});
         Toast.show({
           type: 'info',
           text1: 'Шууд нэвтрэх',
           text2:
             'хэрэв та facebook эсвэл google ийн бүртгэлтэй бол шууд нэвтэрч болно',
         });
-        return initializing ? setInitializing(false) : null;
-      }
-      if (rest.connectionInfo.isConnected !== true) {
-        const User = Object.assign(GLOBAL_VALUE.user, {
-          ...res._user,
-          isAuth: true,
-        });
-        global.user = User;
-        setUser(User);
-        return setInitializing(false);
-      }
-      try {
-        const User = Object.assign(GLOBAL_VALUE.user, {
-          ...res._user,
-          isAuth: true,
-        });
-        global.user = User;
-        setUser(User);
+      } else if (res !== null) {
         Toast.show({
           type: 'success',
           props: {elevation: 10},
@@ -225,10 +236,9 @@ export const ContextProvider = withConnectionInfoSubscription(
           text2: 'Та амжилттай нэвтэрлээ',
           visibilityTime: 1000,
         });
-        if (initializing) setInitializing(false);
-      } catch (e) {
-        console.log(e);
       }
+      setIncomingUser(res);
+      if (initializing) setInitializing(false);
     };
     useEffect(() => {
       const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -252,11 +262,14 @@ export const ContextProvider = withConnectionInfoSubscription(
 
     return (
       <>
-        {!user.isAuth && <AuthScreen startLoad={startLoad} />}
-        {user.isAuth && (
-          <Context user={user} startLoad={startLoad} {...rest}>
+        {incomingUser === null && <AuthScreen startLoad={startLoad} />}
+        {incomingUser !== null && (
+          <GrandContext
+            incomingUser={incomingUser}
+            startLoad={startLoad}
+            {...rest}>
             {children}
-          </Context>
+          </GrandContext>
         )}
         {getLoadingView()}
       </>

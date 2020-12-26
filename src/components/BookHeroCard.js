@@ -18,7 +18,8 @@ import Animated, {
 import {MAIN, color} from '../configs';
 import {BoxShadow} from '../modules';
 const BookHeroCard = ({
-  onPress,
+  onPress = function () {},
+  isLocked = true,
   title = '',
   author = '',
   img,
@@ -67,19 +68,17 @@ const BookHeroCard = ({
           </BoxShadow>
         </Animated.View>
         {!disable && (
-          <View>
-            <View style={{flex: 2}}>
+          <View style={{height: 60}}>
+            <View style={{flex: 1, marginBottom: 5, alignItems: 'center'}}>
               <Text
                 numberOfLines={2}
-                style={{...Title, fontFamily: 'Conforta'}}>
+                style={{...Title, fontFamily: 'Conforta', textAlign: 'center'}}>
                 {title}
               </Text>
             </View>
             <View
               style={{
                 flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
               <Text
@@ -87,14 +86,29 @@ const BookHeroCard = ({
                 style={[FootNote, {fontFamily: 'Conforta', opacity: 0.7}]}>
                 {author}
               </Text>
-              <Text
-                numberOfLines={1}
-                style={[
-                  material.caption,
-                  {fontFamily: 'Conforta', opacity: 0.7},
-                ]}>
-                {numberWithCommas(price)}₮
-              </Text>
+              {isLocked && (
+                <Text
+                  numberOfLines={1}
+                  style={[
+                    material.caption,
+                    {fontFamily: 'Conforta', opacity: 0.7},
+                  ]}>
+                  {numberWithCommas(price)}₮
+                </Text>
+              )}
+              {!isLocked && (
+                <Text
+                  numberOfLines={1}
+                  style={[
+                    material.caption,
+                    {
+                      fontFamily: 'Conforta',
+                      color: 'green',
+                    },
+                  ]}>
+                  авсан
+                </Text>
+              )}
             </View>
           </View>
         )}

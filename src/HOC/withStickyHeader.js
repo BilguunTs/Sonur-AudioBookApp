@@ -1,16 +1,61 @@
 import React, {useRef} from 'react';
-import {SafeAreaView, Text, View} from 'react-native';
+import {SafeAreaView, Text, View, Pressable} from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import {useNavigation} from '@react-navigation/native';
 import {material} from 'react-native-typography';
 import {MAIN, color, D} from '../configs';
 import Header from '../layout/Header';
 import {BackWrapper} from '../components/BackWrapper';
 import SonurFox from '../svg/sonurfox.svg';
-import SonurLogo from '../svg/logowithletter.svg';
+import moment from 'moment';
+import {withGlobalContext} from '../context';
+//import SonurLogo from '../svg/logowithletter.svg';
+const UserStats = withGlobalContext(({global}) => {
+  const navigation = useNavigation();
+  // let timeInSeconds = moment(
+  //   global.user.metadata.lastSignInTime,
+  //   'HH:mm:ss: A',
+  // ).diff(moment().startOf('day'), 'seconds');
+
+  //moment.parseZone(global.user.metadata.lastSignInTime)
+  //let lastLogin = new Date(Date.now() - timeInSeconds * 1000);
+  //let lastLogInMin = moment(lastLogin, 'HH:mm').minutes();
+  return (
+    <Pressable
+      android_ripple={{color: color.ripple, borderless: true}}
+      onPress={() => navigation.navigate('Profile')}>
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'row',
+          marginBottom: 5,
+        }}>
+        <View
+          style={{
+            width: 8,
+            height: 8,
+            backgroundColor: global.isOnline ? '#90ee90' : 'lightgray',
+            borderRadius: 4,
+            marginHorizontal: 3,
+          }}
+        />
+        <Text style={[material.caption, {fontFamily: 'Conforta'}]}>
+          {global.isOnline ? 'Онлайн' : 'Офлайн'}
+        </Text>
+      </View>
+      <Text style={[material.headline, {fontFamily: 'Conforta'}]}>Сайн уу</Text>
+      <Text style={[material.body2, {fontFamily: 'Conforta'}]}>
+        {global.user?.email}
+      </Text>
+    </Pressable>
+  );
+});
+
 const ScrollContainer = ({children, headerType}) => {
   const isScrolling = useSharedValue(false);
   const transY = useSharedValue(0);
@@ -68,12 +113,7 @@ const ScrollContainer = ({children, headerType}) => {
             }}>
             <SonurFox height={160} />
             <Animated.View style={styleBoard}>
-              <Text style={[material.headline, {fontFamily: 'Conforta'}]}>
-                Сайн уу
-              </Text>
-              <Text style={[material.body2, {fontFamily: 'Conforta'}]}>
-                {global.user?.email}
-              </Text>
+              <UserStats />
             </Animated.View>
           </View>
         </BackWrapper>
@@ -95,7 +135,7 @@ const StickyHeaderWrapper = (headerType = MAIN.HEADER.WITH.SEARCH) => (
               relative
               backAction
               replace
-              title={<Text style={{fontFamily: 'Conforta'}}>дүдэр</Text>}
+              title={<Text>📖</Text>}
             />
             <Component {...this.props} />
           </SafeAreaView>

@@ -12,7 +12,6 @@ import Animated, {
   useSharedValue,
   useDerivedValue,
   withSpring,
-  useAnimatedStyle,
 } from 'react-native-reanimated';
 import {D, MAIN} from '../configs';
 import {BoxShadow} from '../modules';
@@ -29,6 +28,7 @@ const Elevation = ({elevated, children}) => {
 };
 const FlatBookItem = ({
   onPress,
+  isLocked,
   title = '',
   author = '',
   img,
@@ -51,12 +51,6 @@ const FlatBookItem = ({
   //const Title=!contrast?iOSUIKit.title3Object:iOSUIKit.title3White
   //const FootNote=!contrast?iOSUIKit.footnote:iOSUIKit.footnoteWhite
 
-  const styleCont = useAnimatedStyle(() => {
-    return {
-      transform: [{skewY: `${skewY}deg`}, {scale: scale.value}],
-    };
-  });
-
   const handleNavigate = () => {
     onPress();
   };
@@ -66,7 +60,7 @@ const FlatBookItem = ({
       onPress={handleNavigate.bind(this)}
       onPressIn={() => (pressing.value = true)}
       onPressOut={() => (pressing.value = false)}>
-      <Animated.View style={[styleCont, styles.container]}>
+      <Animated.View style={[styles.container]}>
         <View style={styles.left}>
           <View>
             <Elevation elevated={elevated}>
@@ -126,8 +120,14 @@ const FlatBookItem = ({
                 numberOfLines={1}
                 style={[
                   iOSUIKit.footnoteEmphasized,
-                  {fontFamily: 'Conforta', opacity: 0.7},
-                ]}>{`${numberWithCommas(price)}₮`}</Text>
+                  {
+                    fontFamily: 'Conforta',
+                    opacity: 0.7,
+                    color: !isLocked ? 'green' : '#212121',
+                  },
+                ]}>
+                {isLocked ? `${numberWithCommas(price)}₮` : 'авсан'}
+              </Text>
             </View>
           </View>
           {/* <BoxShadow setting={MAIN.shadow_Play_BTN}>

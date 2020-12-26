@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Icon from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
   StyleSheet,
   Text,
@@ -9,19 +9,17 @@ import {
   Alert,
 } from 'react-native';
 import Sound from 'react-native-sound';
-import {color} from '../../configs'
+import {color} from '../../configs';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    backgroundColor:"#f5f5f5"
   },
   scrollContainer: {},
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     paddingTop: 30,
-
     textAlign: 'center',
     backgroundColor: 'rgba(240,240,240,1)',
   },
@@ -39,7 +37,7 @@ const styles = StyleSheet.create({
   },
   feature: {
     flexDirection: 'row',
-    padding: 10,
+    padding: 5,
     alignSelf: 'stretch',
     alignItems: 'center',
     borderTopWidth: 0.5,
@@ -50,10 +48,14 @@ const styles = StyleSheet.create({
 });
 
 const Button = ({title, onPress}) => (
-  <Pressable android_ripple={{borderless:true,color:color.ripple}}style={{margin:5}} onPress={onPress}>
-   <View style={{backgroundColor:color.ripple,borderRadius:15,padding:10}}>
-    <Icon size={30} name="md-play" color={color.PRIMARY}/>
-   </View>
+  <Pressable
+    android_ripple={{borderless: true, color: color.ripple}}
+    style={{margin: 5}}
+    onPress={onPress}>
+    <View
+      style={{backgroundColor: color.ripple, borderRadius: 15, padding: 10}}>
+      <Icon size={30} name="md-play" color={color.PRIMARY} />
+    </View>
   </Pressable>
 );
 
@@ -63,7 +65,7 @@ const Header = ({children, style}) => (
 
 const Feature = ({title, onPress, buttonLabel = 'PLAY', status}) => (
   <View style={styles.feature}>
-    <Header style={{flex: 1,fontFamily:"Conforta"}}>{title}</Header>
+    <Header style={{flex: 1, fontFamily: 'Conforta'}}>{title}</Header>
     {status ? (
       <Text style={{padding: 5}}>{resultIcons[status] || ''}</Text>
     ) : null}
@@ -179,28 +181,28 @@ class MainView extends Component {
 
   render() {
     return (
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.scrollContainer}>
-          {audioTests.map((testInfo,i) => {
-            return (
-              <Feature
-                status={this.state.tests[testInfo.title]}
-                key={i}
-                title={testInfo.title}
-                onPress={() => {
-                  return playSound(testInfo, this);
-                }}
-              />
-            );
-          })}
-          <Feature
-            title="mp3 in bundle (looped)"
-            buttonLabel={'STOP'}
-            onPress={this.stopSoundLooped}
-          />
-        </ScrollView>
-      
+      <ScrollView
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContainer}>
+        {audioTests.map((testInfo, i) => {
+          return (
+            <Feature
+              status={this.state.tests[testInfo.title]}
+              key={i}
+              title={testInfo.title}
+              onPress={() => {
+                return playSound(testInfo, this);
+              }}
+            />
+          );
+        })}
+        <Feature
+          title="mp3 in bundle (looped)"
+          buttonLabel={'STOP'}
+          onPress={this.stopSoundLooped}
+        />
+      </ScrollView>
     );
   }
 }

@@ -1,8 +1,9 @@
 import React from 'react';
-import {Pressable, View, StyleSheet} from 'react-native';
+import {Pressable, View, StyleSheet, ToastAndroid, Alert} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useDerivedValue,
+  useSharedValue,
   useAnimatedGestureHandler,
   withSpring,
   interpolate,
@@ -10,7 +11,10 @@ import Animated, {
   Easing,
   withTiming,
 } from 'react-native-reanimated';
-import {PanGestureHandler} from 'react-native-gesture-handler';
+import {
+  PanGestureHandler,
+  LongPressGestureHandler,
+} from 'react-native-gesture-handler';
 import FluidChapters from '../../screens/AudioPlayer/FluidChapters';
 import MainPlayer from '../../screens/AudioPlayer/MainPlayer';
 import Header from '../../screens/AudioPlayer/Header';
@@ -25,7 +29,10 @@ const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
 const ALottieView = Animated.createAnimatedComponent(LottieView);
 const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
-  const {dragValue} = props.global;
+  const {dragValue, GplayerIsActive, methods} = props.global;
+
+  const tapRef = React.useRef();
+  // const [_update, setUpdate] = React.useState(false);
   const isToggled = useDerivedValue(() => {
     // if (dragValue.value === 0) {
     //   console.log('istoggled is true');
@@ -37,10 +44,10 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
     //   return false;
     // }
   }, [dragValue]);
-  const isActive = useDerivedValue(() => {
-    return props.global.stats.gplayer.isActive;
-  }, [props.global.stats.gplayer]);
-
+  // React.useEffect(() => {
+  //   setUpdate(stats.gplayer.isActive);
+  // }, [stats.gplayer]);
+  const pressing = useSharedValue(0);
   const getText = (txt, focused) => {
     const styleText = useAnimatedStyle(() => {
       return {
@@ -167,16 +174,15 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
       maxHeight: MAIN.CIRCLE_SIZE,
     };
   });
-
   const StickyContainer = () => {
     return (
       <View style={StyleSheet.absoluteFill}>
-        <PanGestureHandler onGestureEvent={handleEvent}>
+        <PanGestureHandler waitFor={tapRef} onGestureEvent={handleEvent}>
           <Animated.View style={styleGrabber}>
             <ALottieView
               autoPlay
               loop
-              speed={0.2}
+              speed={0.6}
               source={require('../../animation/ripplewave.json')}
               style={styleLottie}
               colorFilters={[{keypath: 'button', color: color.PRIMARY}]}
@@ -188,7 +194,13 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
                 isToggled={isToggled}
                 dragValue={dragValue}
                 maxDrag={maxDrag}
-                leftAction={handleCollapse}
+                onLeftAction={handleCollapse}
+                onRightAction={() => {
+                  methods.clearGplayer();
+                  setTimeout(() => {
+                    navigation.navigate('BookShelf');
+                  }, 1000);
+                }}
               />
             </Animated.View>
           </Animated.View>
@@ -337,64 +349,128 @@ const CustomTabBar = ({state, descriptors, navigation, ...props}) => {
       zIndex: 1,
     };
   });
+  const tapStyle = useAnimatedStyle(() => {
+    const scale = interpolate(
+      pressing.value,
+      [0, 1],
+      [1, 1.4],
+      Extrapolate.CLAMP,
+    );
+    return {transform: [{scale}]};
+  });
+
+  const handlTapEvent = useAnimatedGestureHandler({
+    onActive: () => {
+      if (dragValue.value === 0) {
+        return console.log('will do somethin');
+      }
+      pressing.value = withSpring(1);
+    },
+    onEnd: () => {
+      pressing.value = withSpring(0);
+    },
+    onCancel: () => {
+      pressing.value = withSpring(0);
+    },
+  });
+
   return (
-    <Animated.View style={[containerStyle]}>
-      <Animated.View style={[styleGplayerContainer]}>
-        {StickyContainer()}
-      </Animated.View>
-      <Animated.View style={[styleTabs]}>
-        {state.routes.map((route, index) => {
-          const {options} = descriptors[route.key];
-          const label =
-            options.tabBarLabel !== undefined
-              ? options.tabBarLabel
-              : options.title !== undefined
-              ? options.title
-              : route.name;
-          const isFocused = state.index === index;
-          const onPress = () => {
-            const event = navigation.emit({
-              type: 'tabPress',
-              target: route.key,
-            });
-
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name);
-            }
-          };
-
-          const onLongPress = () => {
-            navigation.emit({
-              type: 'tabLongPress',
-              target: route.key,
-            });
-          };
-
-          return (
-            <AnimatedTouchable
+    <>
+      <Animated.View style={[containerStyle]}>
+        {GplayerIsActive.value === 1 && (
+          <LongPressGestureHandler
+            ref={tapRef}
+            maxDurationMs={1000}
+            onHandlerStateChange={handlTapEvent}>
+            <Animated.View style={[styleGplayerContainer, tapStyle]}>
+              {StickyContainer()}
+            </Animated.View>
+          </LongPressGestureHandler>
+        )}
+        <Animated.View style={[styleTabs]}>
+          {GplayerIsActive.value === 0 && (
+            <Pressable
+              onPress={() => {
+                ToastAndroid.show('Хоосон 😗', 1000);
+              }}
+              onLongPress={() => {
+                Alert.alert(
+                  '▶ Сонур тоглуулагч',
+                  '👋 Таны татсан ном энэ хэсэгт тоглуулагдах болно 😀',
+                  [{text: 'Ok', onPress: () => {}}],
+                  {cancelable: false},
+                );
+              }}
+              style={styled.circle}
               android_ripple={{borderless: true, color: color.ripple}}
-              accessibilityRole="button"
-              key={route.key}
-              accessibilityStates={isFocused ? ['selected'] : []}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
-              onPress={onPress}
-              onLongPress={onLongPress}
-              style={[
-                {
-                  marginRight: index === 1 ? MAIN.CIRCLE_SIZE / 3 : 0,
-                  marginLeft: index === 2 ? MAIN.CIRCLE_SIZE / 3 : 0,
-                },
-                styleTab,
-              ]}>
-              {getIcon(route.name, isFocused)}
-              {getText(label, isFocused)}
-            </AnimatedTouchable>
-          );
-        })}
+            />
+          )}
+          {state.routes.map((route, index) => {
+            const {options} = descriptors[route.key];
+            const label =
+              options.tabBarLabel !== undefined
+                ? options.tabBarLabel
+                : options.title !== undefined
+                ? options.title
+                : route.name;
+            const isFocused = state.index === index;
+            const onPress = () => {
+              const event = navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+              });
+
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name);
+              }
+            };
+
+            const onLongPress = () => {
+              navigation.emit({
+                type: 'tabLongPress',
+                target: route.key,
+              });
+            };
+
+            return (
+              <AnimatedTouchable
+                android_ripple={{borderless: true, color: color.ripple}}
+                accessibilityRole="button"
+                key={route.key}
+                accessibilityStates={isFocused ? ['selected'] : []}
+                accessibilityLabel={options.tabBarAccessibilityLabel}
+                testID={options.tabBarTestID}
+                onPress={onPress}
+                onLongPress={onLongPress}
+                style={[
+                  {
+                    marginRight: index === 1 ? MAIN.CIRCLE_SIZE / 3 : 0,
+                    marginLeft: index === 2 ? MAIN.CIRCLE_SIZE / 3 : 0,
+                  },
+                  styleTab,
+                ]}>
+                {getIcon(route.name, isFocused)}
+                {getText(label, isFocused)}
+              </AnimatedTouchable>
+            );
+          })}
+        </Animated.View>
       </Animated.View>
-    </Animated.View>
+    </>
   );
 };
-
+const styled = StyleSheet.create({
+  circle: {
+    position: 'absolute',
+    width: MAIN.CIRCLE_SIZE * 0.4,
+    height: MAIN.CIRCLE_SIZE * 0.4,
+    borderRadius: (MAIN.CIRCLE_SIZE * 0.4) / 2,
+    bottom: MAIN.bottom_tab.HEIGHT / 2 - (MAIN.CIRCLE_SIZE * 0.4) / 2,
+    zIndex: 8,
+    borderColor: color.PRIMARY,
+    borderWidth: 1,
+    backgroundColor: color.ripple,
+    left: WIDTH / 2 - (MAIN.CIRCLE_SIZE * 0.4) / 2,
+  },
+});
 export default withGlobalContext(CustomTabBar);

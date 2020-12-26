@@ -14,8 +14,9 @@ import StatusBar from './LinearStatus';
 import {numberWithCommas} from '../utils';
 import Icon from 'react-native-vector-icons/Feather';
 const BookWithPlayerStatus = ({
-  onPress,
+  onPress = function () {},
   title = '',
+  onPressPlay = function () {},
   author = '',
   img,
   margin = 0,
@@ -81,6 +82,7 @@ const BookWithPlayerStatus = ({
           <View style={[styles.body]}>
             <BoxShadow setting={MAIN.shadow_Play_BTN}>
               <PlayButton
+                onPress={onPressPlay}
                 //colorBtn='#9088d4'
                 size={40}
               />

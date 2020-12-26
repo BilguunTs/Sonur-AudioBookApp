@@ -1,31 +1,20 @@
 import React, {Component} from 'react';
-import {
-  Text,
-  Alert,
-  ScrollView,
-  View,
-  StyleSheet,
-  TextInput,
-} from 'react-native';
-import {
-  GoogleSocialButton,
-  FacebookSocialButton,
-} from 'react-native-social-buttons';
-import {material} from 'react-native-typography';
+import {Text, ScrollView, View, StyleSheet, TextInput} from 'react-native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import OuthBtns from './OAuth';
+import Toast from 'react-native-toast-message';
+//import {material} from 'react-native-typography';
 import {color} from '../../configs';
 import MainLogo from '../../svg/logowithletter.svg';
 import Button from '../../components/Button';
 
 export default class SignIn extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      username: '',
-      password: '',
-    };
-  }
-
+  state = {
+    username: '',
+    password: '',
+    repass: '',
+  };
   go = () => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(this.state.email) === true) {
@@ -34,13 +23,79 @@ export default class SignIn extends Component {
       alert();
     }
   };
-
-  onLogin() {
-    const {username, password} = this.state;
-
-    Alert.alert('Credentials', `${username} + ${password}`);
+  onSignUp = async () => {
+    const {username, password, repass} = this.state;
+    if (username === '' || password === '' || repass === '') {
+      return Toast.show({
+        type: 'error',
+        text1: '😯 Уучлаарай',
+        text2: 'хоосон өгөгдөл байна',
+      });
+    }
+    if (password !== repass) {
+      return Toast.show({
+        type: 'error',
+        text1: '😯 Уучлаарай',
+        text2: 'Та нууц үгээ буруу давтсан байна',
+      });
+    }
+    try {
+      this.props.startLoad();
+      const result = await auth().createUserWithEmailAndPassword(
+        username,
+        password,
+      );
+      if (result.user !== undefined) {
+        await firestore()
+          .collection('Users')
+          .doc(result.user.uid)
+          .set({purchased: []});
+      }
+      //firestore().collection("Users").add()
+    } catch (e) {
+      this.AlertError(e);
+      console.log(e.code);
+    }
+  };
+  AlertError(error) {
+    this.props.startLoad(false);
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        Toast.show({
+          type: 'error',
+          text1: 'Тийм бүртгэлтэй хэрэглэгч байна 😯',
+          text2: 'Уучлаарай та өөр Имэйл оруулна уу !',
+        });
+        break;
+      case 'auth/invalid-email':
+        Toast.show({
+          type: 'error',
+          text1: 'Таны оруулсан имэйл буруу байна 😯',
+          text2: 'Уучлаарай та Имэйл-ээ шалгаад оруулна уу',
+        });
+        break;
+      case 'auth/unknown':
+        Toast.show({
+          type: 'error',
+          text1: '😯 Холболтын алдаа',
+          text2: 'Уучлаарай таны Wifi унтарсан байна',
+        });
+        break;
+      case 'auth/weak-password':
+        Toast.show({
+          type: 'error',
+          text1: '😯 Богино нууц үг',
+          text2: 'Уучлаарай таны нууц үг хэт богино байна',
+        });
+        break;
+      default:
+        Toast.show({
+          type: 'error',
+          text1: '😯',
+          text2: 'Уучлаарай ямар нэгэн алдаа гарлаа',
+        });
+    }
   }
-
   render() {
     return (
       <ScrollView contentContainerStyle={styles.container}>
@@ -64,8 +119,8 @@ export default class SignIn extends Component {
           style={styles.input}
         />
         <TextInput
-          value={this.state.password}
-          onChangeText={(password) => this.setState({password})}
+          value={this.state.repass}
+          onChangeText={(repass) => this.setState({repass})}
           label="Password"
           placeholder="🔑 Нууц үг давтах"
           secureTextEntry={true}
@@ -74,7 +129,7 @@ export default class SignIn extends Component {
         <Button
           title={'Батлах'}
           style={{width: 270, elevation: 1}}
-          onPress={this.onLogin.bind(this)}
+          onPress={this.onSignUp.bind(this)}
         />
         <View
           style={{
@@ -85,14 +140,7 @@ export default class SignIn extends Component {
             alignItems: 'center',
           }}></View>
         <View style={{marginBottom: 30, alignItems: 'center'}}>
-          <GoogleSocialButton
-            buttonViewStyle={styles.socialBtn}
-            buttonText={'Google-ээр нэвтрэх'}
-          />
-          <FacebookSocialButton
-            buttonText={'Facebook-ээр нэвтрэх'}
-            buttonViewStyle={styles.socialBtn}
-          />
+          <OuthBtns />
           <Button
             style={{
               width: 270,
@@ -128,11 +176,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Conforta',
     backgroundColor: '#f6f6f6',
     marginBottom: 10,
-  },
-  socialBtn: {
-    width: 270,
-    borderRadius: 10,
-    elevation: 1,
   },
   inputext: {
     width: 270,

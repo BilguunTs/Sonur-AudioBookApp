@@ -25,6 +25,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-toast-message';
 export default withGlobalContext(({navigation, route, global}) => {
   const {
+    id,
     isLocked,
     title,
     author,
@@ -33,10 +34,14 @@ export default withGlobalContext(({navigation, route, global}) => {
     isDownloaded,
   } = route.params;
   const [downloaded, setDownloaded] = useState(isDownloaded);
+  const [locked, setLocked] = useState(isLocked);
   const [isVisible, setVisible] = useState(false);
   React.useEffect(() => {
+    if (global.user.purchased[id] !== undefined) {
+      setLocked(false);
+    }
     if (global.download.isloading === false && global.downloads !== {}) {
-      const key = title.replace(/\s/g, '');
+      const key = id;
       if (global.downloads[key] !== undefined) {
         setDownloaded(true);
         setVisible(false);
@@ -44,7 +49,7 @@ export default withGlobalContext(({navigation, route, global}) => {
     } else if (global.download.isloading) {
       setVisible(true);
     }
-  }, [global.download.isloading, global.downloads]);
+  }, [global.user.purchased, global.download.isloading, global.downloads]);
   const onDismiss = () => {
     if (!downloaded) {
       return Toast.show({
@@ -91,10 +96,10 @@ export default withGlobalContext(({navigation, route, global}) => {
           <View style={style.midSection}>
             <View style={style.info}>
               <View style={[style.infoItem, style.center]}>
-                <Rating rate={4} />
+                <Rating rate={0} />
               </View>
               <View style={[style.infoItem, style.center]}>
-                <Text style={style.text}>{'124 хуудас'}</Text>
+                <Text style={style.text}>{'0 хуудас'}</Text>
               </View>
             </View>
             <View style={style.about}>
@@ -116,7 +121,7 @@ export default withGlobalContext(({navigation, route, global}) => {
               item={route.params}
               global={global}
               isDownloaded={downloaded}
-              type={isLocked ? 'purchase' : 'play'}
+              type={locked ? 'purchase' : 'play'}
             />
           </View>
         </LinearGradient>
