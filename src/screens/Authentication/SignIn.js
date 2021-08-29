@@ -24,8 +24,8 @@ import Button from '../../components/Button';
 
 const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const SingInForm = ({onSubmit = function () {}, startLoad}) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('test@example.mn');
+  const [password, setPassword] = useState('123456');
   const [error, setError] = useState({
     at: '',
     message: '',

@@ -150,6 +150,7 @@ const GrandContext = ({children, ...props}) => {
   const [newBooks, setNewBooks] = useState([]);
   useEffect(() => {
     if (props.incomingUser.uid) {
+      console.log(user);
       const subscriber = firestore()
         .collection('Users')
         .doc(props.incomingUser.uid)
